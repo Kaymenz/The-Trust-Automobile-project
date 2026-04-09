@@ -1,0 +1,3006 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Trust Automobile Ghana</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Barlow", sans-serif;
+        color: #1c2b40;
+        background: #f0f3f8;
+        min-height: 100vh;
+      }
+
+      /* ═══════════════════════════════════════
+   LOGIN GATE
+═══════════════════════════════════════ */
+      .login-gate {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          #060f1e 0%,
+          #0b1e3d 60%,
+          #1a4b8c 100%
+        );
+        padding: 20px;
+      }
+      .login-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 40px 36px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+      }
+      .login-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+      .logo-mark {
+        width: 36px;
+        height: 36px;
+        background: #e8a020;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.2rem;
+        color: #0b1e3d;
+      }
+      .logo-text {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #0b1e3d;
+        letter-spacing: 0.06em;
+        line-height: 1.1;
+      }
+      .logo-text small {
+        display: block;
+        font-size: 0.6rem;
+        color: #5e7490;
+        letter-spacing: 0.12em;
+      }
+      .login-card h2 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.7rem;
+        letter-spacing: 0.04em;
+        color: #0b1e3d;
+        margin-bottom: 4px;
+      }
+      .login-card p {
+        font-size: 0.84rem;
+        color: #5e7490;
+        margin-bottom: 24px;
+      }
+      .lg {
+        margin-bottom: 14px;
+      }
+      .lg label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5e7490;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .lg input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.9rem;
+        color: #1c2b40;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .lg input:focus {
+        border-color: #1a4b8c;
+        box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.08);
+      }
+      .btn-login {
+        width: 100%;
+        background: #0b1e3d;
+        color: #fff;
+        border: none;
+        padding: 13px;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 6px;
+      }
+      .btn-login:hover {
+        background: #1a4b8c;
+      }
+      .login-err {
+        font-size: 0.8rem;
+        color: #d63b3b;
+        margin-top: 8px;
+        text-align: center;
+        display: none;
+      }
+      .login-hint {
+        font-size: 0.76rem;
+        color: #8fa3bd;
+        text-align: center;
+        margin-top: 12px;
+      }
+
+      /* ═══════════════════════════════════════
+   ADMIN LAYOUT
+═══════════════════════════════════════ */
+      .admin-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+        display: none;
+      }
+
+      /* ── SIDEBAR ── */
+      .adm-sidebar {
+        background: #0b1e3d;
+        display: flex;
+        flex-direction: column;
+      }
+      .adm-logo {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .adm-logo a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .adm-logo .logo-text {
+        color: #fff;
+      }
+      .adm-logo .logo-text small {
+        color: #8fa3bd;
+      }
+      .adm-nav {
+        flex: 1;
+        padding: 12px 0;
+      }
+      .adm-nav-section {
+        padding: 10px 20px 4px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.28);
+      }
+      .adm-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.88rem;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        position: relative;
+      }
+      .adm-nav-item:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .adm-nav-item.active {
+        color: #e8a020;
+        background: rgba(232, 160, 32, 0.08);
+        border-left: 3px solid #e8a020;
+      }
+      .adm-nav-item i {
+        font-size: 1rem;
+        width: 18px;
+        text-align: center;
+      }
+      .adm-badge {
+        background: #d63b3b;
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 100px;
+        margin-left: auto;
+      }
+      .adm-footer {
+        padding: 16px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .adm-footer .adm-user {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.55);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .adm-footer .adm-user i {
+        color: #e8a020;
+      }
+      .btn-logout {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 9px;
+        border-radius: 7px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+      }
+      .btn-logout:hover {
+        background: rgba(214, 59, 59, 0.15);
+        border-color: rgba(214, 59, 59, 0.3);
+        color: #d63b3b;
+      }
+
+      /* ── MAIN AREA ── */
+      .adm-main {
+        display: flex;
+        flex-direction: column;
+      }
+      .adm-topbar {
+        background: #ffffff;
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #dde4ef;
+        box-shadow: 0 2px 8px rgba(11, 30, 61, 0.06);
+      }
+      .adm-topbar h1 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.5rem;
+        letter-spacing: 0.04em;
+        color: #0b1e3d;
+      }
+      .adm-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .adm-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f4f7fb;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        padding: 8px 14px;
+        transition: border-color 0.2s;
+      }
+      .adm-search:focus-within {
+        border-color: #1a4b8c;
+      }
+      .adm-search i {
+        color: #8fa3bd;
+        font-size: 0.9rem;
+      }
+      .adm-search input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.86rem;
+        color: #1c2b40;
+        width: 180px;
+      }
+      .adm-content {
+        flex: 1;
+        padding: 28px;
+      }
+
+      /* ── PANELS ── */
+      .adm-panel {
+        display: none;
+      }
+      .adm-panel.active {
+        display: block;
+      }
+
+      /* ── STAT CARDS ── */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .stat-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid #dde4ef;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .stat-num {
+        font-family: "Bebas Neue", cursive;
+        font-size: 2rem;
+        color: #0b1e3d;
+        letter-spacing: 0.04em;
+        line-height: 1;
+      }
+      .stat-label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #5e7490;
+        margin-top: 3px;
+      }
+      .stat-delta {
+        font-size: 0.72rem;
+        color: #1a7a3a;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      /* ── TABLE ── */
+      .table-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #dde4ef;
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+      .table-head {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #dde4ef;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .table-head h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.88rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #0b1e3d;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .table-head h3 i {
+        color: #e8a020;
+      }
+      .table-filters {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .tf-pill {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 100px;
+        border: 1.5px solid #dde4ef;
+        background: #ffffff;
+        color: #5e7490;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .tf-pill:hover {
+        border-color: #0b1e3d;
+        color: #0b1e3d;
+      }
+      .tf-pill.active {
+        background: #0b1e3d;
+        border-color: #0b1e3d;
+        color: #ffffff;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead tr {
+        background: #f4f7fb;
+      }
+      th {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5e7490;
+        padding: 10px 14px;
+        text-align: left;
+        white-space: nowrap;
+      }
+      td {
+        padding: 12px 14px;
+        font-size: 0.86rem;
+        color: #1c2b40;
+        border-bottom: 1px solid #eef2f8;
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #fafbfd;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sb-pending {
+        background: rgba(232, 160, 32, 0.12);
+        color: #8a5a00;
+      }
+      .sb-active {
+        background: rgba(26, 122, 58, 0.1);
+        color: #1a7a3a;
+      }
+      .sb-rejected {
+        background: rgba(214, 59, 59, 0.1);
+        color: #d63b3b;
+      }
+      .sb-blocked {
+        background: rgba(11, 30, 61, 0.1);
+        color: #0b1e3d;
+      }
+      .role-chip {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 100px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .rc-customer {
+        background: rgba(26, 75, 140, 0.08);
+        color: #1a4b8c;
+      }
+      .rc-seller {
+        background: rgba(26, 122, 58, 0.08);
+        color: #1a7a3a;
+      }
+      .rc-renter {
+        background: rgba(232, 160, 32, 0.1);
+        color: #8a5a00;
+      }
+      .rc-mechanic {
+        background: rgba(11, 30, 61, 0.08);
+        color: #0b1e3d;
+      }
+      .rc-parts {
+        background: rgba(139, 69, 19, 0.1);
+        color: #7a3a00;
+      }
+      .rc-pending {
+        background: rgba(214, 59, 59, 0.08);
+        color: #d63b3b;
+      }
+      .action-btns-td {
+        display: flex;
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+      .btn-tbl {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .btn-approve {
+        background: rgba(26, 122, 58, 0.1);
+        color: #1a7a3a;
+      }
+      .btn-approve:hover {
+        background: #1a7a3a;
+        color: #fff;
+      }
+      .btn-reject {
+        background: rgba(214, 59, 59, 0.08);
+        color: #d63b3b;
+      }
+      .btn-reject:hover {
+        background: #d63b3b;
+        color: #fff;
+      }
+      .btn-view {
+        background: rgba(26, 75, 140, 0.08);
+        color: #1a4b8c;
+      }
+      .btn-view:hover {
+        background: #1a4b8c;
+        color: #fff;
+      }
+      .btn-block {
+        background: rgba(11, 30, 61, 0.07);
+        color: #0b1e3d;
+      }
+      .btn-block:hover {
+        background: #0b1e3d;
+        color: #fff;
+      }
+      .btn-unblock {
+        background: rgba(232, 160, 32, 0.1);
+        color: #8a5a00;
+      }
+      .btn-unblock:hover {
+        background: #e8a020;
+        color: #0b1e3d;
+      }
+      .btn-delete {
+        background: rgba(214, 59, 59, 0.06);
+        color: #d63b3b;
+      }
+      .btn-delete:hover {
+        background: #d63b3b;
+        color: #fff;
+      }
+      .empty-row td {
+        text-align: center;
+        color: #8fa3bd;
+        padding: 40px;
+        font-size: 0.88rem;
+      }
+
+      /* ── DETAIL MODAL ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 30, 61, 0.6);
+        backdrop-filter: blur(6px);
+        z-index: 900;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 40px 20px;
+        overflow-y: auto;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 620px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(11, 30, 61, 0.2);
+        animation: modalIn 0.25s ease;
+        margin: auto;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .modal-head {
+        background: linear-gradient(135deg, #0b1e3d 0%, #1a4b8c 100%);
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal-head h3 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.3rem;
+        letter-spacing: 0.08em;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .modal-head h3 i {
+        color: #e8a020;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .modal-close:hover {
+        color: #fff;
+      }
+      .modal-body {
+        padding: 22px;
+      }
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .detail-item {
+      }
+      .detail-item label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #8fa3bd;
+        display: block;
+        margin-bottom: 3px;
+      }
+      .detail-item span {
+        font-size: 0.9rem;
+        color: #1c2b40;
+        font-weight: 500;
+      }
+      .doc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-bottom: 14px;
+      }
+      .doc-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: #f4f7fb;
+        border: 1px solid #dde4ef;
+        border-radius: 7px;
+        padding: 9px 12px;
+        font-size: 0.82rem;
+        color: #1c2b40;
+      }
+      .doc-item i {
+        color: #1a4b8c;
+        font-size: 0.95rem;
+      }
+      .doc-item .doc-size {
+        color: #8fa3bd;
+        font-size: 0.72rem;
+        margin-left: 4px;
+      }
+      .doc-item .doc-simulate {
+        margin-left: auto;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #1a4b8c;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .doc-item .doc-simulate:hover {
+        color: #e8a020;
+      }
+      .notes-area {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.86rem;
+        color: #1c2b40;
+        resize: vertical;
+        min-height: 72px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .notes-area:focus {
+        border-color: #1a4b8c;
+      }
+      .modal-footer {
+        padding: 14px 22px;
+        background: #f4f7fb;
+        border-top: 1px solid #dde4ef;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-mf {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.2s;
+        border: none;
+      }
+      .btn-mf-cancel {
+        background: transparent;
+        color: #5e7490;
+        border: 1.5px solid #dde4ef;
+      }
+      .btn-mf-cancel:hover {
+        border-color: #0b1e3d;
+        color: #0b1e3d;
+      }
+      .btn-mf-approve {
+        background: #1a7a3a;
+        color: #fff;
+      }
+      .btn-mf-approve:hover {
+        background: #1a6030;
+      }
+      .btn-mf-reject {
+        background: #d63b3b;
+        color: #fff;
+      }
+      .btn-mf-reject:hover {
+        background: #b02020;
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0b1e3d;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.86rem;
+        letter-spacing: 0.04em;
+        box-shadow: 0 8px 28px rgba(11, 30, 61, 0.3);
+        z-index: 1100;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.35s;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 320px;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast i {
+        color: #e8a020;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 1024px) {
+        .stat-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 860px) {
+        .admin-layout {
+          grid-template-columns: 1fr;
+        }
+        .adm-sidebar {
+          display: none;
+        }
+        .adm-topbar h1 {
+          font-size: 1.2rem;
+        }
+        .stat-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .stat-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ════════════════════════════════════════
+   LOGIN GATE
+════════════════════════════════════════ -->
+    <div class="login-gate" id="login-gate">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="logo-mark">TA</div>
+          <div class="logo-text">
+            Trust Automobile<small>Admin Portal</small>
+          </div>
+        </div>
+        <h2>Admin Login</h2>
+        <p>Restricted area — authorised personnel only.</p>
+        <div class="lg">
+          <label>Admin Email</label
+          ><input
+            type="email"
+            id="adm-email"
+            placeholder="admin@trustautomobile.gh"
+            value="admin@trustautomobile.gh"
+          />
+        </div>
+        <div class="lg">
+          <label>Password</label
+          ><input
+            type="password"
+            id="adm-pw"
+            placeholder="••••••••"
+            value="admin123"
+            onkeydown="if(event.key==='Enter')doLogin()"
+          />
+        </div>
+        <button class="btn-login" onclick="doLogin()">
+          <i class="bi bi-box-arrow-in-right"></i> Sign In to Dashboard
+        </button>
+        <div class="login-err" id="login-err">
+          Invalid credentials. Try
+          <a
+            href="/cdn-cgi/l/email-protection"
+            class="__cf_email__"
+            data-cfemail="5f3e3b3236311f2b2d2a2c2b3e2a2b3032303d36333a713837"
+            >[email&#160;protected]</a
+          >
+          / admin123
+        </div>
+        <p class="login-hint">Demo credentials are pre-filled above.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+   ADMIN LAYOUT
+════════════════════════════════════════ -->
+    <div class="admin-layout" id="admin-layout">
+      <!-- SIDEBAR -->
+      <div class="adm-sidebar">
+        <div class="adm-logo">
+          <a href="index.html">
+            <div class="logo-mark">TA</div>
+            <div class="logo-text">
+              Trust Automobile<small>Admin Portal</small>
+            </div>
+          </a>
+        </div>
+        <nav class="adm-nav">
+          <div class="adm-nav-section">Overview</div>
+          <div class="adm-nav-item active" onclick="showPanel('overview')">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </div>
+
+          <div class="adm-nav-section">Approvals</div>
+          <div
+            class="adm-nav-item"
+            id="nav-pending"
+            onclick="showPanel('pending')"
+          >
+            <i class="bi bi-hourglass-split"></i> Pending Applications
+            <span class="adm-badge" id="pending-badge">0</span>
+          </div>
+
+          <div class="adm-nav-section">Users</div>
+          <div class="adm-nav-item" onclick="showPanel('all-users')">
+            <i class="bi bi-people-fill"></i> All Accounts
+          </div>
+          <div class="adm-nav-item" onclick="showPanel('users-seller')">
+            <i class="bi bi-car-front-fill"></i> Car Sellers
+          </div>
+          <div class="adm-nav-item" onclick="showPanel('users-renter')">
+            <i class="bi bi-key-fill"></i> Car Renters
+          </div>
+          <div class="adm-nav-item" onclick="showPanel('users-mechanic')">
+            <i class="bi bi-tools"></i> Mechanics
+          </div>
+          <div class="adm-nav-item" onclick="showPanel('users-parts')">
+            <i class="bi bi-box-seam-fill"></i> Parts Dealers
+          </div>
+          <div class="adm-nav-item" onclick="showPanel('users-customer')">
+            <i class="bi bi-person-fill"></i> Customers
+          </div>
+
+          <div class="adm-nav-section">Content</div>
+          <div class="adm-nav-item" onclick="showPanel('videos')">
+            <i class="bi bi-play-circle-fill"></i> Video Library
+            <span
+              class="adm-badge"
+              id="video-badge"
+              style="background: #1a4b8c; display: none"
+              >0</span
+            >
+          </div>
+        </nav>
+        <div class="adm-footer">
+          <div class="adm-user">
+            <i class="bi bi-shield-check"></i> Logged in as Admin
+          </div>
+          <button class="btn-logout" onclick="doLogout()">
+            <i class="bi bi-box-arrow-left"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="adm-main">
+        <div class="adm-topbar">
+          <h1 id="topbar-title">Dashboard</h1>
+          <div class="adm-topbar-right">
+            <div class="adm-search">
+              <i class="bi bi-search"></i
+              ><input
+                type="text"
+                id="global-search"
+                placeholder="Search users…"
+                oninput="applySearch()"
+              />
+            </div>
+            <span
+              style="font-size: 0.78rem; color: #5e7490"
+              id="topbar-date"
+            ></span>
+          </div>
+        </div>
+        <div class="adm-content">
+          <!-- ── OVERVIEW PANEL ── -->
+          <div class="adm-panel active" id="panel-overview">
+            <div class="stat-grid" id="stat-grid"></div>
+            <div class="table-card">
+              <div class="table-head">
+                <h3>
+                  <i class="bi bi-hourglass-split"></i> Pending Applications
+                </h3>
+                <button class="tf-pill active" onclick="showPanel('pending')">
+                  View All <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Email</th>
+                      <th>Submitted</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="overview-pending-body"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="table-card">
+              <div class="table-head">
+                <h3>
+                  <i class="bi bi-clock-history"></i> Recent Registrations
+                </h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="overview-recent-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PENDING PANEL ── -->
+          <div class="adm-panel" id="panel-pending">
+            <div class="table-card">
+              <div class="table-head">
+                <h3>
+                  <i class="bi bi-hourglass-split"></i> Pending Applications
+                </h3>
+                <div class="table-filters">
+                  <button
+                    class="tf-pill active"
+                    data-filter="all"
+                    onclick="filterPending(this,'all')"
+                  >
+                    All
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="seller"
+                    onclick="filterPending(this,'seller')"
+                  >
+                    Car Sellers
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="renter"
+                    onclick="filterPending(this,'renter')"
+                  >
+                    Car Renters
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="mechanic"
+                    onclick="filterPending(this,'mechanic')"
+                  >
+                    Mechanics
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="parts"
+                    onclick="filterPending(this,'parts')"
+                  >
+                    Parts Dealers
+                  </button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Business</th>
+                      <th>Email</th>
+                      <th>Region</th>
+                      <th>Docs</th>
+                      <th>Submitted</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pending-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── ALL USERS PANEL ── -->
+          <div class="adm-panel" id="panel-all-users">
+            <div class="table-card">
+              <div class="table-head">
+                <h3>
+                  <i class="bi bi-people-fill"></i> All Registered Accounts
+                </h3>
+                <div class="table-filters">
+                  <button
+                    class="tf-pill active"
+                    data-filter="all"
+                    onclick="filterUsers(this,'all-users','all')"
+                  >
+                    All
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="active"
+                    onclick="filterUsers(this,'all-users','active')"
+                  >
+                    Active
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="pending"
+                    onclick="filterUsers(this,'all-users','pending')"
+                  >
+                    Pending
+                  </button>
+                  <button
+                    class="tf-pill"
+                    data-filter="blocked"
+                    onclick="filterUsers(this,'all-users','blocked')"
+                  >
+                    Blocked
+                  </button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="all-users-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── ROLE-SPECIFIC PANELS ── -->
+          <div class="adm-panel" id="panel-users-seller">
+            <div class="table-card">
+              <div class="table-head">
+                <h3><i class="bi bi-car-front-fill"></i> Car Sellers</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Business</th>
+                      <th>Email</th>
+                      <th>Region</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="seller-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="adm-panel" id="panel-users-renter">
+            <div class="table-card">
+              <div class="table-head">
+                <h3><i class="bi bi-key-fill"></i> Car Renters</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Business</th>
+                      <th>Email</th>
+                      <th>Region</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="renter-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="adm-panel" id="panel-users-mechanic">
+            <div class="table-card">
+              <div class="table-head">
+                <h3><i class="bi bi-tools"></i> Mechanics</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Workshop</th>
+                      <th>Email</th>
+                      <th>Region</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mechanic-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="adm-panel" id="panel-users-parts">
+            <div class="table-card">
+              <div class="table-head">
+                <h3><i class="bi bi-box-seam-fill"></i> Spare Parts Dealers</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Shop</th>
+                      <th>Email</th>
+                      <th>Region</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="parts-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="adm-panel" id="panel-users-customer">
+            <div class="table-card">
+              <div class="table-head">
+                <h3><i class="bi bi-person-fill"></i> Customers</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Status</th>
+                      <th>Joined</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customer-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── VIDEO LIBRARY PANEL ── -->
+          <div class="adm-panel" id="panel-videos">
+            <!-- Stats strip -->
+            <div
+              class="stat-grid"
+              id="video-stat-grid"
+              style="margin-bottom: 20px"
+            ></div>
+
+            <!-- Toolbar -->
+            <div class="table-card" style="margin-bottom: 20px">
+              <div class="table-head" style="flex-wrap: wrap; gap: 10px">
+                <h3><i class="bi bi-play-circle-fill"></i> All Videos</h3>
+                <div class="table-filters" style="flex-wrap: wrap">
+                  <button
+                    class="tf-pill active"
+                    onclick="filterVideos(this,'all')"
+                  >
+                    All
+                  </button>
+                  <button
+                    class="tf-pill"
+                    onclick="filterVideos(this,'platform')"
+                  >
+                    TA Platform
+                  </button>
+                  <button
+                    class="tf-pill"
+                    onclick="filterVideos(this,'mechanic')"
+                  >
+                    Mechanics
+                  </button>
+                  <button class="tf-pill" onclick="filterVideos(this,'seller')">
+                    Car Sellers
+                  </button>
+                  <button
+                    class="tf-pill"
+                    onclick="filterVideos(this,'featured')"
+                  >
+                    Featured
+                  </button>
+                  <button
+                    class="tf-pill"
+                    onclick="filterVideos(this,'flagged')"
+                    id="flagged-pill"
+                  >
+                    Flagged
+                  </button>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 8px;
+                    align-items: center;
+                    margin-left: auto;
+                  "
+                >
+                  <div class="adm-search" style="min-width: 200px">
+                    <i class="bi bi-search"></i>
+                    <input
+                      type="text"
+                      id="video-search"
+                      placeholder="Search videos…"
+                      oninput="renderVideoPanel()"
+                    />
+                  </div>
+                  <select
+                    id="video-sort"
+                    onchange="renderVideoPanel()"
+                    style="
+                      padding: 8px 12px;
+                      border: 1.5px solid #dde4ef;
+                      border-radius: 8px;
+                      font-family: 'Barlow Condensed', sans-serif;
+                      font-weight: 600;
+                      font-size: 0.8rem;
+                      color: #1c2b40;
+                      background: #fff;
+                      outline: none;
+                      cursor: pointer;
+                    "
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="popular">Most Viewed</option>
+                    <option value="oldest">Oldest First</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 60px">Thumb</th>
+                      <th>Title</th>
+                      <th>Poster</th>
+                      <th>Category</th>
+                      <th>Source</th>
+                      <th>Views</th>
+                      <th>Posted</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="video-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO DETAIL MODAL -->
+    <div class="modal-overlay" id="video-modal">
+      <div class="modal-box" style="max-width: 680px">
+        <div class="modal-head">
+          <h3><i class="bi bi-play-circle-fill"></i> Video Details</h3>
+          <button class="modal-close" onclick="closeVideoModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Preview embed -->
+          <div
+            id="vm-preview"
+            style="
+              position: relative;
+              padding-top: 56.25%;
+              background: #0b1e3d;
+              border-radius: 10px;
+              overflow: hidden;
+              margin-bottom: 18px;
+            "
+          >
+            <iframe
+              id="vm-iframe"
+              style="
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+              "
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="detail-grid" id="vm-detail-grid"></div>
+          <div class="fg" style="margin-bottom: 0">
+            <label
+              style="
+                font-family: 'Barlow Condensed', sans-serif;
+                font-weight: 700;
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #5e7490;
+                display: block;
+                margin-bottom: 6px;
+              "
+              >Admin Notes</label
+            >
+            <textarea
+              class="notes-area"
+              id="vm-notes"
+              placeholder="Add notes about this video…"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" id="vm-footer"></div>
+      </div>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div class="modal-overlay" id="detail-modal">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3><i class="bi bi-person-lines-fill"></i> User Details</h3>
+          <button class="modal-close" onclick="closeModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-grid" id="detail-grid"></div>
+          <div id="doc-section" style="display: none">
+            <p
+              style="
+                font-family: 'Barlow Condensed', sans-serif;
+                font-weight: 700;
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #5e7490;
+                margin-bottom: 8px;
+              "
+            >
+              Submitted Documents
+            </p>
+            <div class="doc-list" id="doc-list"></div>
+          </div>
+          <div id="role-assign-section" style="margin-bottom: 14px"></div>
+          <div class="fg" style="margin-bottom: 0">
+            <label
+              style="
+                font-family: 'Barlow Condensed', sans-serif;
+                font-weight: 700;
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #5e7490;
+                display: block;
+                margin-bottom: 6px;
+              "
+              >Admin Notes</label
+            >
+            <textarea
+              class="notes-area"
+              id="admin-notes"
+              placeholder="Add notes about this application…"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+      <i class="bi bi-check-circle-fill"></i><span id="toast-msg"></span>
+    </div>
+
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script>
+      /* ═══════════════════════════════════════
+   AUTH
+═══════════════════════════════════════ */
+      const ADMIN_CREDS = {
+        email: "admin@trustautomobile.gh",
+        password: "admin123",
+      };
+
+      function doLogin() {
+        const email = document.getElementById("adm-email").value.trim();
+        const pw = document.getElementById("adm-pw").value;
+        if (email === ADMIN_CREDS.email && pw === ADMIN_CREDS.password) {
+          document.getElementById("login-gate").style.display = "none";
+          document.getElementById("admin-layout").style.display = "grid";
+          initDashboard();
+        } else {
+          document.getElementById("login-err").style.display = "block";
+        }
+      }
+
+      function doLogout() {
+        document.getElementById("admin-layout").style.display = "none";
+        document.getElementById("login-gate").style.display = "flex";
+      }
+
+      /* ═══════════════════════════════════════
+   DATA HELPERS
+═══════════════════════════════════════ */
+      function getUsers() {
+        return JSON.parse(localStorage.getItem("ta_users") || "[]");
+      }
+      function saveUsers(users) {
+        localStorage.setItem("ta_users", JSON.stringify(users));
+      }
+
+      function seedDemoUsers() {
+        const existing = getUsers();
+        if (existing.length > 0) return;
+        const demo = [
+          {
+            id: "PA-DEMO1",
+            role: "seller",
+            status: "pending",
+            firstName: "Kwame",
+            lastName: "Asante",
+            email: "kwame@asantemotors.gh",
+            phone: "+233 24 111 0001",
+            businessName: "Asante Motors Ltd",
+            region: "Greater Accra",
+            createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+            documents: [
+              {
+                name: "business_cert.pdf",
+                size: 245000,
+                type: "application/pdf",
+              },
+              { name: "national_id.jpg", size: 128000, type: "image/jpeg" },
+            ],
+            notes: "",
+          },
+          {
+            id: "PA-DEMO2",
+            role: "renter",
+            status: "pending",
+            firstName: "Abena",
+            lastName: "Mensah",
+            email: "abena@mensahrentals.gh",
+            phone: "+233 30 222 0002",
+            businessName: "Mensah Car Rentals",
+            region: "Greater Accra",
+            createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+            documents: [
+              {
+                name: "registration.pdf",
+                size: 312000,
+                type: "application/pdf",
+              },
+              { name: "insurance.pdf", size: 198000, type: "application/pdf" },
+              { name: "ownership.jpg", size: 156000, type: "image/jpeg" },
+            ],
+            notes: "",
+          },
+          {
+            id: "PA-DEMO3",
+            role: "mechanic",
+            status: "pending",
+            firstName: "Emmanuel",
+            lastName: "Darko",
+            email: "emmanuel@profix.gh",
+            phone: "+233 55 444 0003",
+            businessName: "ProFix Auto Electricals",
+            region: "Greater Accra",
+            createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
+            documents: [
+              {
+                name: "national_id.pdf",
+                size: 185000,
+                type: "application/pdf",
+              },
+            ],
+            notes: "",
+          },
+          {
+            id: "PA-DEMO4",
+            role: "parts",
+            status: "pending",
+            firstName: "Fiifi",
+            lastName: "Acquah",
+            email: "fiifi@takoradiparts.gh",
+            phone: "+233 31 666 0004",
+            businessName: "Takoradi Genuine Parts",
+            region: "Western",
+            createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+            documents: [
+              { name: "biz_reg.pdf", size: 220000, type: "application/pdf" },
+              { name: "id_card.jpg", size: 145000, type: "image/jpeg" },
+            ],
+            notes: "",
+          },
+          {
+            id: "PA-DEMO5",
+            role: "seller",
+            status: "active",
+            firstName: "Kofi",
+            lastName: "Boateng",
+            email: "kofi@kcars.gh",
+            phone: "+233 24 333 0005",
+            businessName: "K Cars Kumasi",
+            region: "Ashanti",
+            createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
+            documents: [
+              { name: "cert.pdf", size: 203000, type: "application/pdf" },
+            ],
+            notes: "Verified. Clean records.",
+          },
+          {
+            id: "PA-DEMO6",
+            role: "mechanic",
+            status: "active",
+            firstName: "Selorm",
+            lastName: "Adzogble",
+            email: "selorm@saferoad.gh",
+            phone: "+233 36 888 0006",
+            businessName: "SafeRoad Auto Clinic",
+            region: "Volta",
+            createdAt: new Date(Date.now() - 20 * 86400000).toISOString(),
+            documents: [{ name: "id.jpg", size: 132000, type: "image/jpeg" }],
+            notes: "",
+          },
+          {
+            id: "CU-DEMO7",
+            role: "customer",
+            status: "active",
+            firstName: "Ama",
+            lastName: "Owusu",
+            email: "ama@email.gh",
+            phone: "+233 26 555 0007",
+            createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+            documents: [],
+            notes: "",
+          },
+          {
+            id: "CU-DEMO8",
+            role: "customer",
+            status: "active",
+            firstName: "Yaw",
+            lastName: "Asante",
+            email: "yaw@email.gh",
+            phone: "+233 34 400 0008",
+            createdAt: new Date(Date.now() - 8 * 86400000).toISOString(),
+            documents: [],
+            notes: "",
+          },
+          {
+            id: "PA-DEMO9",
+            role: "seller",
+            status: "rejected",
+            firstName: "Nana",
+            lastName: "Adjei",
+            email: "nana@rejected.gh",
+            phone: "+233 54 100 0009",
+            businessName: "–",
+            region: "Greater Accra",
+            createdAt: new Date(Date.now() - 10 * 86400000).toISOString(),
+            documents: [{ name: "id.jpg", size: 95000, type: "image/jpeg" }],
+            notes: "Documents insufficient. Requested resubmission.",
+          },
+          {
+            id: "PA-DEMO10",
+            role: "renter",
+            status: "blocked",
+            firstName: "Isaac",
+            lastName: "Frimpong",
+            email: "isaac@blocked.gh",
+            phone: "+233 24 777 0010",
+            businessName: "Suame Rentals",
+            region: "Ashanti",
+            createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
+            documents: [
+              { name: "reg.pdf", size: 178000, type: "application/pdf" },
+            ],
+            notes: "Account blocked pending fraud investigation.",
+          },
+        ];
+        saveUsers(demo);
+      }
+
+      /* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+      let currentUserId = null;
+      let pendingFilter = "all";
+      let allUsersFilter = "all";
+
+      function initDashboard() {
+        seedDemoUsers();
+        document.getElementById("topbar-date").textContent =
+          new Date().toLocaleDateString("en-GH", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+        renderAll();
+      }
+
+      function renderAll() {
+        renderStats();
+        renderOverview();
+        renderPending();
+        renderAllUsers();
+        renderRoleTable("seller", "seller-body", true);
+        renderRoleTable("renter", "renter-body", true);
+        renderRoleTable("mechanic", "mechanic-body", true);
+        renderRoleTable("parts", "parts-body", true);
+        renderRoleTable("customer", "customer-body", false);
+        renderVideoPanel();
+        updatePendingBadge();
+      }
+
+      /* ═══════════════════════════════════════
+   PANEL NAVIGATION
+═══════════════════════════════════════ */
+      const PANEL_TITLES = {
+        overview: "Dashboard",
+        pending: "Pending Applications",
+        "all-users": "All Accounts",
+        "users-seller": "Car Sellers",
+        "users-renter": "Car Renters",
+        "users-mechanic": "Mechanics",
+        "users-parts": "Spare Parts Dealers",
+        "users-customer": "Customers",
+        videos: "Video Library",
+      };
+
+      function showPanel(name) {
+        document
+          .querySelectorAll(".adm-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".adm-nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document.getElementById("panel-" + name).classList.add("active");
+        document.getElementById("topbar-title").textContent =
+          PANEL_TITLES[name] || name;
+        const nav = document.querySelector(
+          `.adm-nav-item[onclick*="'${name}'"]`
+        );
+        if (nav) nav.classList.add("active");
+      }
+
+      /* ═══════════════════════════════════════
+   STATS
+═══════════════════════════════════════ */
+      function renderStats() {
+        const users = getUsers();
+        const pending = users.filter((u) => u.status === "pending").length;
+        const active = users.filter((u) => u.status === "active").length;
+        const total = users.length;
+        const blocked = users.filter((u) => u.status === "blocked").length;
+
+        const stats = [
+          {
+            label: "Total Users",
+            num: total,
+            icon: "bi-people-fill",
+            bg: "rgba(26,75,140,.1)",
+            ic: "#1A4B8C",
+          },
+          {
+            label: "Active Accounts",
+            num: active,
+            icon: "bi-check-circle-fill",
+            bg: "rgba(26,122,58,.1)",
+            ic: "#1A7A3A",
+          },
+          {
+            label: "Pending Review",
+            num: pending,
+            icon: "bi-hourglass-split",
+            bg: "rgba(232,160,32,.12)",
+            ic: "#E8A020",
+          },
+          {
+            label: "Blocked",
+            num: blocked,
+            icon: "bi-slash-circle-fill",
+            bg: "rgba(214,59,59,.1)",
+            ic: "#D63B3B",
+          },
+        ];
+        document.getElementById("stat-grid").innerHTML = stats
+          .map(
+            (s) => `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:${s.bg};"><i class="bi ${s.icon}" style="color:${s.ic};"></i></div>
+      <div><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>
+    </div>`
+          )
+          .join("");
+      }
+
+      function updatePendingBadge() {
+        const n = getUsers().filter((u) => u.status === "pending").length;
+        document.getElementById("pending-badge").textContent = n;
+        document.getElementById("pending-badge").style.display =
+          n > 0 ? "inline-flex" : "none";
+      }
+
+      /* ═══════════════════════════════════════
+   OVERVIEW
+═══════════════════════════════════════ */
+      function renderOverview() {
+        const users = getUsers();
+        const pending = users.filter((u) => u.status === "pending").slice(0, 5);
+        const recent = [...users]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 6);
+
+        document.getElementById("overview-pending-body").innerHTML =
+          pending.length
+            ? pending
+                .map(
+                  (u) =>
+                    `<tr>${tdName(u)}${tdRole(u)}${tdEmail(u)}${tdDate(
+                      u
+                    )}<td>${actionBtns(u, "compact")}</td></tr>`
+                )
+                .join("")
+            : '<tr class="empty-row"><td colspan="5">No pending applications</td></tr>';
+
+        document.getElementById("overview-recent-body").innerHTML =
+          recent.length
+            ? recent
+                .map(
+                  (u) =>
+                    `<tr>${tdName(u)}${tdRole(u)}${tdStatus(u)}${tdDate(
+                      u
+                    )}<td>${actionBtns(u, "compact")}</td></tr>`
+                )
+                .join("")
+            : '<tr class="empty-row"><td colspan="5">No registrations yet</td></tr>';
+      }
+
+      /* ═══════════════════════════════════════
+   PENDING TABLE
+═══════════════════════════════════════ */
+      function renderPending() {
+        const users = getUsers().filter(
+          (u) =>
+            u.status === "pending" &&
+            (pendingFilter === "all" || u.role === pendingFilter)
+        );
+        const q = document
+          .getElementById("global-search")
+          .value.trim()
+          .toLowerCase();
+        const rows = q ? users.filter((u) => matchSearch(u, q)) : users;
+        document.getElementById("pending-body").innerHTML = rows.length
+          ? rows
+              .map(
+                (u) =>
+                  `<tr>${tdName(u)}${tdRole(u)}<td>${
+                    u.businessName || "–"
+                  }</td>${tdEmail(u)}<td>${
+                    u.region || "–"
+                  }</td><td><span style="font-family:'Barlow Condensed',sans-serif;font-size:.78rem;color:#1A4B8C;">${
+                    u.documents?.length || 0
+                  } file${
+                    u.documents?.length !== 1 ? "s" : ""
+                  }</span></td>${tdDate(u)}<td>${actionBtns(
+                    u,
+                    "pending"
+                  )}</td></tr>`
+              )
+              .join("")
+          : '<tr class="empty-row"><td colspan="8">No pending applications</td></tr>';
+      }
+
+      function filterPending(el, filter) {
+        pendingFilter = filter;
+        document
+          .querySelectorAll("#panel-pending .tf-pill")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        renderPending();
+      }
+
+      /* ═══════════════════════════════════════
+   ALL USERS TABLE
+═══════════════════════════════════════ */
+      function renderAllUsers() {
+        let users = getUsers();
+        if (allUsersFilter !== "all")
+          users = users.filter((u) => u.status === allUsersFilter);
+        const q = document
+          .getElementById("global-search")
+          .value.trim()
+          .toLowerCase();
+        if (q) users = users.filter((u) => matchSearch(u, q));
+        document.getElementById("all-users-body").innerHTML = users.length
+          ? users
+              .map(
+                (u) =>
+                  `<tr>${tdName(u)}${tdRole(u)}${tdEmail(u)}${tdStatus(
+                    u
+                  )}${tdDate(u)}<td>${actionBtns(u, "full")}</td></tr>`
+              )
+              .join("")
+          : '<tr class="empty-row"><td colspan="6">No accounts found</td></tr>';
+      }
+
+      function filterUsers(el, panel, filter) {
+        allUsersFilter = filter;
+        document
+          .querySelectorAll(`#panel-${panel} .tf-pill`)
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        renderAllUsers();
+      }
+
+      /* ═══════════════════════════════════════
+   ROLE TABLES
+═══════════════════════════════════════ */
+      function renderRoleTable(role, bodyId, hasBiz) {
+        const q = document
+          .getElementById("global-search")
+          .value.trim()
+          .toLowerCase();
+        let users = getUsers().filter((u) => u.role === role);
+        if (q) users = users.filter((u) => matchSearch(u, q));
+        const hasRegion = role !== "customer";
+        document.getElementById(bodyId).innerHTML = users.length
+          ? users
+              .map(
+                (u) => `<tr>
+        ${tdName(u)}
+        ${hasBiz ? `<td>${u.businessName || "–"}</td>` : ""}
+        ${tdEmail(u)}
+        ${role !== "customer" ? `<td>${u.phone || "–"}</td>` : ""}
+        ${hasRegion ? `<td>${u.region || "–"}</td>` : ""}
+        ${tdStatus(u)}
+        ${tdDate(u)}
+        <td>${actionBtns(u, "full")}</td>
+      </tr>`
+              )
+              .join("")
+          : `<tr class="empty-row"><td colspan="${
+              hasBiz ? 7 : 6
+            }">No ${role} accounts yet</td></tr>`;
+      }
+
+      /* ═══════════════════════════════════════
+   TABLE CELL HELPERS
+═══════════════════════════════════════ */
+      function tdName(u) {
+        const initials = (
+          (u.firstName || "?")[0] + (u.lastName || "?")[0]
+        ).toUpperCase();
+        return `<td><div style="display:flex;align-items:center;gap:9px;"><div style="width:32px;height:32px;border-radius:50%;background:#0B1E3D;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.8rem;color:#E8A020;flex-shrink:0;">${initials}</div><div style="font-weight:600;font-size:.86rem;">${
+          u.firstName || ""
+        } ${u.lastName || ""}</div></div></td>`;
+      }
+      function tdRole(u) {
+        const map = {
+          customer: "rc-customer",
+          seller: "rc-seller",
+          renter: "rc-renter",
+          mechanic: "rc-mechanic",
+          parts: "rc-parts",
+        };
+        const lbl = {
+          customer: "Customer",
+          seller: "Seller",
+          renter: "Renter",
+          mechanic: "Mechanic",
+          parts: "Parts Dealer",
+        };
+        return `<td><span class="role-chip ${map[u.role] || ""}">${
+          lbl[u.role] || u.role
+        }</span></td>`;
+      }
+      function tdEmail(u) {
+        return `<td style="font-size:.82rem;color:#5E7490;">${
+          u.email || "–"
+        }</td>`;
+      }
+      function tdStatus(u) {
+        const map = {
+          pending: "sb-pending",
+          active: "sb-active",
+          rejected: "sb-rejected",
+          blocked: "sb-blocked",
+        };
+        const ico = {
+          pending: "bi-clock",
+          active: "bi-check-circle-fill",
+          rejected: "bi-x-circle-fill",
+          blocked: "bi-slash-circle",
+        };
+        return `<td><span class="status-badge ${
+          map[u.status] || ""
+        }"><i class="bi ${ico[u.status] || "bi-circle"}"></i> ${
+          u.status
+        }</span></td>`;
+      }
+      function tdDate(u) {
+        return `<td style="font-size:.78rem;color:#8FA3BD;">${timeAgo(
+          u.createdAt
+        )}</td>`;
+      }
+
+      function actionBtns(u, mode) {
+        let btns = `<button class="btn-tbl btn-view" onclick="viewUser('${u.id}')"><i class="bi bi-eye"></i> View</button>`;
+        if (
+          mode === "pending" ||
+          (mode === "compact" && u.status === "pending")
+        ) {
+          btns += `<button class="btn-tbl btn-approve" onclick="approveUser('${u.id}')"><i class="bi bi-check-lg"></i> Approve</button>`;
+          btns += `<button class="btn-tbl btn-reject"  onclick="rejectUser('${u.id}')"><i class="bi bi-x-lg"></i> Reject</button>`;
+        }
+        if (mode === "full") {
+          if (u.status === "blocked")
+            btns += `<button class="btn-tbl btn-unblock" onclick="unblockUser('${u.id}')"><i class="bi bi-unlock"></i> Unblock</button>`;
+          else if (u.status !== "pending")
+            btns += `<button class="btn-tbl btn-block" onclick="blockUser('${u.id}')"><i class="bi bi-slash-circle"></i> Block</button>`;
+          btns += `<button class="btn-tbl btn-delete" onclick="deleteUser('${u.id}')"><i class="bi bi-trash3"></i></button>`;
+        }
+        return `<div class="action-btns-td">${btns}</div>`;
+      }
+
+      /* ═══════════════════════════════════════
+   USER ACTIONS
+═══════════════════════════════════════ */
+      function approveUser(id) {
+        const users = getUsers();
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        u.status = "active";
+        u.approvedAt = new Date().toISOString();
+        saveUsers(users);
+        renderAll();
+        closeModal();
+        showToast("✅ Account approved — user can now sign in.");
+      }
+
+      function rejectUser(id) {
+        const note = prompt("Reason for rejection (will be saved to notes):");
+        if (note === null) return;
+        const users = getUsers();
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        u.status = "rejected";
+        u.notes = note || u.notes;
+        u.rejectedAt = new Date().toISOString();
+        saveUsers(users);
+        renderAll();
+        closeModal();
+        showToast("Account rejected.");
+      }
+
+      function blockUser(id) {
+        if (
+          !confirm("Block this account? The user will not be able to sign in.")
+        )
+          return;
+        const users = getUsers();
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        u.status = "blocked";
+        saveUsers(users);
+        renderAll();
+        showToast("Account blocked.");
+      }
+
+      function unblockUser(id) {
+        const users = getUsers();
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        u.status = "active";
+        saveUsers(users);
+        renderAll();
+        showToast("Account unblocked — user can sign in again.");
+      }
+
+      function deleteUser(id) {
+        if (!confirm("Permanently delete this account? This cannot be undone."))
+          return;
+        const users = getUsers().filter((u) => u.id !== id);
+        saveUsers(users);
+        renderAll();
+        showToast("Account deleted.");
+      }
+
+      function saveNotes(id) {
+        const users = getUsers();
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        u.notes = document.getElementById("admin-notes").value;
+        // Save role assignments if present
+        const roleCheckboxes = document.querySelectorAll(
+          ".role-assign-cb:checked"
+        );
+        if (roleCheckboxes.length > 0) {
+          const assignedRoles = [...roleCheckboxes].map((cb) => cb.value);
+          u.roles = assignedRoles;
+          u.role = assignedRoles[0]; // keep primary role
+          showToast(
+            "Roles and notes saved. User can now access " +
+              (assignedRoles.length > 1
+                ? "portal-multi.html"
+                : "their portal") +
+              "."
+          );
+        } else {
+          showToast("Notes saved.");
+        }
+        saveUsers(users);
+        renderAll();
+      }
+
+      function renderRoleAssignment(u) {
+        const ALL_ROLES = ["seller", "renter", "mechanic", "parts"];
+        const LABELS = {
+          seller: "Car Seller",
+          renter: "Car Renter",
+          mechanic: "Mechanic",
+          parts: "Parts Dealer",
+        };
+        const ICONS = {
+          seller: "bi-car-front-fill",
+          renter: "bi-key-fill",
+          mechanic: "bi-tools",
+          parts: "bi-box-seam-fill",
+        };
+        const userRoles =
+          u.roles || (u.role && u.role !== "customer" ? [u.role] : []);
+        if (u.role === "customer") return "";
+        return (
+          '<div style="margin-bottom:14px;">' +
+          "<p style=\"font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;display:block;margin-bottom:8px;\">Assign Roles</p>" +
+          '<p style="font-size:.78rem;color:#8FA3BD;margin-bottom:10px;">Tick multiple roles to grant multi-role access. User will be directed to <strong>portal-multi.html</strong>.</p>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+          ALL_ROLES.map((role) => {
+            const checked = userRoles.includes(role) ? "checked" : "";
+            return `<label style="display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid ${
+              checked ? "#E8A020" : "#DDE4EF"
+            };border-radius:8px;cursor:pointer;transition:all .2s;" onclick="this.style.borderColor=this.querySelector('input').checked?'#DDE4EF':'#E8A020'">
+        <input type="checkbox" class="role-assign-cb" value="${role}" ${checked} style="accent-color:#E8A020;width:16px;height:16px;"/>
+        <i class="bi ${ICONS[role]}" style="font-size:.9rem;color:#5E7490;"></i>
+        <span style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.04em;color:#0B1E3D;">${
+          LABELS[role]
+        }</span>
+      </label>`;
+          }).join("") +
+          "</div></div>"
+        );
+      }
+
+      /* ═══════════════════════════════════════
+   DETAIL MODAL
+═══════════════════════════════════════ */
+      function viewUser(id) {
+        const u = getUsers().find((x) => x.id === id);
+        if (!u) return;
+        currentUserId = id;
+
+        // Grid of details
+        const fields = [
+          {
+            label: "Full Name",
+            value: `${u.firstName || ""} ${u.lastName || ""}`,
+          },
+          { label: "Role", value: u.role },
+          { label: "Email", value: u.email || "–" },
+          { label: "Phone", value: u.phone || "–" },
+          { label: "Status", value: u.status },
+          {
+            label: "Joined",
+            value: new Date(u.createdAt).toLocaleDateString("en-GH"),
+          },
+          ...(u.businessName
+            ? [{ label: "Business", value: u.businessName }]
+            : []),
+          ...(u.region ? [{ label: "Region", value: u.region }] : []),
+          ...(u.approvedAt
+            ? [
+                {
+                  label: "Approved",
+                  value: new Date(u.approvedAt).toLocaleDateString("en-GH"),
+                },
+              ]
+            : []),
+          ...(u.rejectedAt
+            ? [
+                {
+                  label: "Rejected",
+                  value: new Date(u.rejectedAt).toLocaleDateString("en-GH"),
+                },
+              ]
+            : []),
+          { label: "Reference", value: u.id },
+        ];
+        document.getElementById("detail-grid").innerHTML = fields
+          .map(
+            (f) =>
+              `<div class="detail-item"><label>${f.label}</label><span>${f.value}</span></div>`
+          )
+          .join("");
+
+        // Documents
+        const docs = u.documents || [];
+        const docSec = document.getElementById("doc-section");
+        if (docs.length > 0) {
+          docSec.style.display = "block";
+          document.getElementById("doc-list").innerHTML = docs
+            .map(
+              (d) => `
+      <div class="doc-item">
+        <i class="bi bi-file-earmark-${
+          d.type === "application/pdf" ? "pdf" : "image"
+        }-fill"></i>
+        <span>${d.name}</span><span class="doc-size">${(d.size / 1024).toFixed(
+                0
+              )} KB</span>
+        <span class="doc-simulate" onclick="showToast('📄 ${
+          d.name
+        } — preview would open here in production.')">View</span>
+      </div>`
+            )
+            .join("");
+        } else {
+          docSec.style.display = "none";
+        }
+
+        // Role assignment
+        const ras = document.getElementById("role-assign-section");
+        if (ras) ras.innerHTML = renderRoleAssignment(u);
+        // Notes
+        document.getElementById("admin-notes").value = u.notes || "";
+
+        // Footer buttons
+        let footer = `<button class="btn-mf btn-mf-cancel" onclick="saveNotes('${u.id}')"><i class="bi bi-save"></i> Save Notes</button>`;
+        if (u.status === "pending") {
+          footer += `<button class="btn-mf btn-mf-approve" onclick="approveUser('${u.id}')"><i class="bi bi-check-circle"></i> Approve</button>`;
+          footer += `<button class="btn-mf btn-mf-reject"  onclick="rejectUser('${u.id}')"><i class="bi bi-x-circle"></i> Reject</button>`;
+        } else if (u.status === "active") {
+          footer += `<button class="btn-mf" style="background:#0B1E3D;color:#fff;" onclick="blockUser('${u.id}');closeModal()"><i class="bi bi-slash-circle"></i> Block</button>`;
+        } else if (u.status === "blocked") {
+          footer += `<button class="btn-mf" style="background:#E8A020;color:#0B1E3D;" onclick="unblockUser('${u.id}');closeModal()"><i class="bi bi-unlock"></i> Unblock</button>`;
+        }
+        document.getElementById("modal-footer").innerHTML = footer;
+
+        document.getElementById("detail-modal").classList.add("open");
+      }
+
+      function closeModal() {
+        document.getElementById("detail-modal").classList.remove("open");
+        currentUserId = null;
+      }
+
+      /* ═══════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════ */
+      function matchSearch(u, q) {
+        return [
+          u.firstName,
+          u.lastName,
+          u.email,
+          u.phone,
+          u.businessName,
+          u.region,
+          u.role,
+          u.status,
+        ].some((v) => (v || "").toLowerCase().includes(q));
+      }
+
+      function applySearch() {
+        renderPending();
+        renderAllUsers();
+        renderRoleTable("seller", "seller-body", true);
+        renderRoleTable("renter", "renter-body", true);
+        renderRoleTable("mechanic", "mechanic-body", true);
+        renderRoleTable("parts", "parts-body", true);
+        renderRoleTable("customer", "customer-body", false);
+      }
+
+      /* ═══════════════════════════════════════
+   UTILS
+═══════════════════════════════════════ */
+      function timeAgo(iso) {
+        if (!iso) return "–";
+        const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+        return d === 0 ? "Today" : d === 1 ? "Yesterday" : d + "d ago";
+      }
+
+      function showToast(msg, type) {
+        const t = document.getElementById("toast");
+        document.getElementById("toast-msg").textContent = msg;
+        const ic = t.querySelector("i");
+        ic.className =
+          type === "error"
+            ? "bi bi-exclamation-circle-fill"
+            : "bi bi-check-circle-fill";
+        t.style.background = type === "error" ? "#D63B3B" : "#0B1E3D";
+        t.classList.add("show");
+        clearTimeout(window._tt);
+        window._tt = setTimeout(() => t.classList.remove("show"), 3500);
+      }
+
+      /* ═══════════════════════════════════════
+   VIDEO MANAGEMENT
+   Reads: ta_videos (user-posted via videos.html)
+   Seed videos are defined inline below.
+   Flagged videos stored in ta_flagged_videos.
+═══════════════════════════════════════ */
+
+      const SEED_VIDEOS = [
+        {
+          id: "v1",
+          title: "How to Change Your Engine Oil — Full Guide",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=0lSLPMgMdXs",
+          views: 4821,
+          duration: "12:34",
+          postedAt: "2026-03-10T10:00:00Z",
+          featured: true,
+          new: false,
+        },
+        {
+          id: "v2",
+          title: "5 Things to Check Before Buying a Used Car",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=qvR3Yrj1PkE",
+          views: 7230,
+          duration: "9:18",
+          postedAt: "2026-03-08T09:00:00Z",
+          featured: true,
+          new: false,
+        },
+        {
+          id: "v3",
+          title: "How to Diagnose a Dead Car Battery",
+          poster: "Kwame Auto Services",
+          role: "mechanic",
+          category: "electrical",
+          url: "https://www.youtube.com/watch?v=0IKiKDHNPIM",
+          views: 3104,
+          duration: "7:42",
+          postedAt: "2026-03-14T11:00:00Z",
+          featured: false,
+          new: true,
+        },
+        {
+          id: "v4",
+          title: "Tyre Maintenance & When to Replace",
+          poster: "Takoradi Tyres & More",
+          role: "mechanic",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=TivfmJumJGE",
+          views: 2288,
+          duration: "8:05",
+          postedAt: "2026-03-12T14:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v5",
+          title: "Understand Your Car's Warning Lights",
+          poster: "ProFix Auto Electricals",
+          role: "mechanic",
+          category: "diagnostics",
+          url: "https://www.youtube.com/watch?v=QKhFBDXNdT0",
+          views: 5910,
+          duration: "10:21",
+          postedAt: "2026-03-06T08:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v6",
+          title: "How to Negotiate a Car Price Like a Pro",
+          poster: "Accra Central Motors",
+          role: "seller",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=YR0gEQFYVP0",
+          views: 1987,
+          duration: "6:55",
+          postedAt: "2026-03-15T13:00:00Z",
+          featured: false,
+          new: true,
+        },
+        {
+          id: "v7",
+          title: "Basic Car Air Conditioning Repair",
+          poster: "Cool Breeze Auto AC",
+          role: "mechanic",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=TKjMFZOhvpI",
+          views: 3450,
+          duration: "14:02",
+          postedAt: "2026-03-03T10:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v8",
+          title: "Bodywork Repair — Dent Removal Without a Spray",
+          poster: "Accra Central Motors",
+          role: "seller",
+          category: "bodywork",
+          url: "https://www.youtube.com/watch?v=lq2_Cz5hlYg",
+          views: 1654,
+          duration: "11:30",
+          postedAt: "2026-03-01T09:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v9",
+          title: "How the Ghana Car Market Works — 2026 Guide",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=k4sAKirfLhM",
+          views: 6341,
+          duration: "15:10",
+          postedAt: "2026-02-25T10:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v10",
+          title: "OBD2 Scanner Tutorial — Read & Clear Fault Codes",
+          poster: "GreenLight Auto Works",
+          role: "mechanic",
+          category: "diagnostics",
+          url: "https://www.youtube.com/watch?v=8Iz3JQfFmYA",
+          views: 2890,
+          duration: "9:48",
+          postedAt: "2026-02-20T11:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v11",
+          title: "How to Spot a Flooded Car Before You Buy",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=6Bl4Q_gRwgI",
+          views: 8102,
+          duration: "8:33",
+          postedAt: "2026-02-18T09:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v12",
+          title: "Kumasi Workshop Tour — Gearbox Rebuild Timelapse",
+          poster: "Kumasi AutoCare Hub",
+          role: "mechanic",
+          category: "community",
+          url: "https://www.youtube.com/watch?v=vgBh-7QGMpM",
+          views: 1240,
+          duration: "5:20",
+          postedAt: "2026-03-17T15:00:00Z",
+          featured: false,
+          new: true,
+        },
+      ];
+
+      const VID_CAT_LABELS = {
+        maintenance: "Maintenance",
+        buying: "Buying Tips",
+        electrical: "Electrical",
+        bodywork: "Bodywork",
+        diagnostics: "Diagnostics",
+        community: "Community",
+      };
+      const VID_CAT_COLOURS = {
+        maintenance: "#1A7A3A",
+        buying: "#1A4B8C",
+        electrical: "#E8A020",
+        bodywork: "#8B4513",
+        diagnostics: "#6B21A8",
+        community: "#0B1E3D",
+      };
+      const VID_ROLE_LABELS = {
+        mechanic: "Mechanic",
+        seller: "Car Seller",
+        platform: "TA Platform",
+      };
+
+      let videoFilter = "all";
+      let currentVidId = null;
+
+      function getAllVideos() {
+        const user = JSON.parse(localStorage.getItem("ta_videos") || "[]");
+        return [...user, ...SEED_VIDEOS];
+      }
+
+      function getFlaggedIds() {
+        return new Set(
+          JSON.parse(localStorage.getItem("ta_flagged_videos") || "[]")
+        );
+      }
+
+      function parseYtId(url) {
+        const m = (url || "").match(
+          /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/
+        );
+        return m ? m[1] : null;
+      }
+      function getThumb(url) {
+        const ytId = parseYtId(url);
+        return ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : "";
+      }
+      function getEmbed(url) {
+        const ytId = parseYtId(url);
+        if (ytId)
+          return `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+        const vm = (url || "").match(/vimeo\.com\/(?:video\/)?(\d+)/);
+        if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1`;
+        return "";
+      }
+
+      /* ─── RENDER PANEL ─────────────────────── */
+      function renderVideoPanel() {
+        const all = getAllVideos();
+        const flagged = getFlaggedIds();
+        const q = (document.getElementById("video-search")?.value || "")
+          .trim()
+          .toLowerCase();
+        const sort = document.getElementById("video-sort")?.value || "newest";
+
+        let vids = [...all];
+
+        // Filter
+        if (videoFilter === "featured") vids = vids.filter((v) => v.featured);
+        else if (videoFilter === "flagged")
+          vids = vids.filter((v) => flagged.has(v.id));
+        else if (videoFilter !== "all")
+          vids = vids.filter((v) => v.role === videoFilter);
+
+        if (q)
+          vids = vids.filter(
+            (v) =>
+              (v.title || "").toLowerCase().includes(q) ||
+              (v.poster || "").toLowerCase().includes(q) ||
+              (v.category || "").toLowerCase().includes(q)
+          );
+
+        // Sort
+        if (sort === "popular")
+          vids.sort((a, b) => (b.views || 0) - (a.views || 0));
+        else if (sort === "oldest")
+          vids.sort((a, b) => new Date(a.postedAt) - new Date(b.postedAt));
+        else vids.sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
+
+        // Render stats
+        renderVideoStats(all, flagged);
+
+        // Badge
+        const badge = document.getElementById("video-badge");
+        if (badge) {
+          badge.textContent = all.length;
+          badge.style.display = "inline-flex";
+        }
+
+        // Flagged pill
+        const fp = document.getElementById("flagged-pill");
+        if (fp) fp.textContent = `Flagged (${flagged.size})`;
+
+        // Table
+        const tbody = document.getElementById("video-table-body");
+        if (!tbody) return;
+
+        if (vids.length === 0) {
+          tbody.innerHTML =
+            '<tr class="empty-row"><td colspan="9">No videos match this filter</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = vids
+          .map((v) => {
+            const thumb = v.thumbnail || getThumb(v.url);
+            const catCol = VID_CAT_COLOURS[v.category] || "#0B1E3D";
+            const catLabel = VID_CAT_LABELS[v.category] || v.category;
+            const roleLabel = VID_ROLE_LABELS[v.role] || v.role;
+            const isFlagged = flagged.has(v.id);
+            const isFeat = v.featured;
+            const isUser = v.id.startsWith("uv-");
+            const statusBadge = isFlagged
+              ? '<span class="status-badge sb-rejected"><i class="bi bi-flag-fill"></i> Flagged</span>'
+              : isFeat
+              ? '<span class="status-badge sb-active"><i class="bi bi-star-fill"></i> Featured</span>'
+              : '<span class="status-badge" style="background:#F4F7FB;color:#5E7490;">Active</span>';
+            const sourceBadge = isUser
+              ? '<span class="role-chip" style="background:rgba(26,122,58,.1);color:#1A7A3A;">User Posted</span>'
+              : '<span class="role-chip rc-customer">Seed</span>';
+
+            return `<tr>
+      <td>
+        <div style="width:56px;height:36px;border-radius:5px;overflow:hidden;background:#0B1E3D;flex-shrink:0;">
+          ${
+            thumb
+              ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display='none'"/>`
+              : ""
+          }
+        </div>
+      </td>
+      <td style="max-width:240px;">
+        <div style="font-weight:600;font-size:.84rem;color:#0B1E3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;" title="${
+          v.title
+        }">${v.title}</div>
+        <div style="font-size:.72rem;color:#8FA3BD;margin-top:2px;">${
+          v.duration || "–"
+        }</div>
+      </td>
+      <td style="font-size:.82rem;color:#5E7490;">${v.poster || "–"}</td>
+      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:${catCol}15;color:${catCol};border:1px solid ${catCol}30;">${catLabel}</span></td>
+      <td>${sourceBadge} <span style="font-size:.72rem;color:#8FA3BD;">${roleLabel}</span></td>
+      <td style="font-family:'Bebas Neue',cursive;font-size:1rem;color:#0B1E3D;">${
+        (v.views || 0) >= 1000
+          ? (v.views / 1000).toFixed(1) + "k"
+          : v.views || 0
+      }</td>
+      <td style="font-size:.78rem;color:#8FA3BD;">${timeAgo(v.postedAt)}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div class="action-btns-td">
+          <button class="btn-tbl btn-view" onclick="viewVideo('${
+            v.id
+          }')"><i class="bi bi-eye"></i> View</button>
+          ${
+            isFeat
+              ? `<button class="btn-tbl btn-block" onclick="unfeatureVideo('${v.id}')"><i class="bi bi-star"></i> Unfeature</button>`
+              : `<button class="btn-tbl btn-approve" onclick="featureVideo('${v.id}')"><i class="bi bi-star-fill"></i> Feature</button>`
+          }
+          ${
+            isFlagged
+              ? `<button class="btn-tbl btn-approve" onclick="unflagVideo('${v.id}')"><i class="bi bi-flag"></i> Unflag</button>`
+              : `<button class="btn-tbl btn-reject" onclick="flagVideo('${v.id}')"><i class="bi bi-flag-fill"></i> Flag</button>`
+          }
+          <button class="btn-tbl btn-delete" onclick="deleteVideo('${
+            v.id
+          }')"><i class="bi bi-trash3"></i></button>
+        </div>
+      </td>
+    </tr>`;
+          })
+          .join("");
+      }
+
+      function renderVideoStats(all, flagged) {
+        const el = document.getElementById("video-stat-grid");
+        if (!el) return;
+        const total = all.length;
+        const userPost = all.filter((v) => v.id.startsWith("uv-")).length;
+        const featured = all.filter((v) => v.featured).length;
+        const flg = flagged.size;
+        const totalViews = all.reduce((s, v) => s + (v.views || 0), 0);
+
+        el.innerHTML = [
+          {
+            label: "Total Videos",
+            num: total,
+            icon: "bi-collection-play-fill",
+            bg: "rgba(26,75,140,.1)",
+            ic: "#1A4B8C",
+          },
+          {
+            label: "User Posted",
+            num: userPost,
+            icon: "bi-person-video3",
+            bg: "rgba(26,122,58,.1)",
+            ic: "#1A7A3A",
+          },
+          {
+            label: "Featured",
+            num: featured,
+            icon: "bi-star-fill",
+            bg: "rgba(232,160,32,.12)",
+            ic: "#E8A020",
+          },
+          {
+            label: "Flagged",
+            num: flg,
+            icon: "bi-flag-fill",
+            bg: "rgba(214,59,59,.1)",
+            ic: "#D63B3B",
+          },
+          {
+            label: "Total Views",
+            num:
+              totalViews >= 1000
+                ? Math.round(totalViews / 1000) + "k"
+                : totalViews,
+            icon: "bi-eye-fill",
+            bg: "rgba(11,30,61,.08)",
+            ic: "#0B1E3D",
+          },
+        ]
+          .map(
+            (s) => `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:${s.bg};"><i class="bi ${s.icon}" style="color:${s.ic};"></i></div>
+      <div><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>
+    </div>`
+          )
+          .join("");
+      }
+
+      /* ─── VIDEO ACTIONS ─────────────────────── */
+      function filterVideos(el, filter) {
+        videoFilter = filter;
+        document
+          .querySelectorAll("#panel-videos .tf-pill")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        renderVideoPanel();
+      }
+
+      function featureVideo(id) {
+        const user = JSON.parse(localStorage.getItem("ta_videos") || "[]");
+        const v = user.find((x) => x.id === id);
+        if (v) {
+          v.featured = true;
+          localStorage.setItem("ta_videos", JSON.stringify(user));
+        }
+        // For seed videos, store override in localStorage
+        const overrides = JSON.parse(
+          localStorage.getItem("ta_video_overrides") || "{}"
+        );
+        overrides[id] = { ...(overrides[id] || {}), featured: true };
+        localStorage.setItem("ta_video_overrides", JSON.stringify(overrides));
+        renderVideoPanel();
+        showToast("Video marked as Featured.");
+      }
+
+      function unfeatureVideo(id) {
+        const user = JSON.parse(localStorage.getItem("ta_videos") || "[]");
+        const v = user.find((x) => x.id === id);
+        if (v) {
+          v.featured = false;
+          localStorage.setItem("ta_videos", JSON.stringify(user));
+        }
+        const overrides = JSON.parse(
+          localStorage.getItem("ta_video_overrides") || "{}"
+        );
+        overrides[id] = { ...(overrides[id] || {}), featured: false };
+        localStorage.setItem("ta_video_overrides", JSON.stringify(overrides));
+        renderVideoPanel();
+        showToast("Video removed from Featured.");
+      }
+
+      function flagVideo(id) {
+        const flagged = JSON.parse(
+          localStorage.getItem("ta_flagged_videos") || "[]"
+        );
+        if (!flagged.includes(id)) flagged.push(id);
+        localStorage.setItem("ta_flagged_videos", JSON.stringify(flagged));
+        renderVideoPanel();
+        closeVideoModal();
+        showToast("Video flagged for review.", "error");
+      }
+
+      function unflagVideo(id) {
+        const flagged = JSON.parse(
+          localStorage.getItem("ta_flagged_videos") || "[]"
+        ).filter((x) => x !== id);
+        localStorage.setItem("ta_flagged_videos", JSON.stringify(flagged));
+        renderVideoPanel();
+        showToast("Flag removed from video.");
+      }
+
+      function deleteVideo(id) {
+        if (!confirm("Permanently delete this video? This cannot be undone."))
+          return;
+        // Remove from user-posted
+        const user = JSON.parse(
+          localStorage.getItem("ta_videos") || "[]"
+        ).filter((v) => v.id !== id);
+        localStorage.setItem("ta_videos", JSON.stringify(user));
+        // Remove from flagged
+        const flagged = JSON.parse(
+          localStorage.getItem("ta_flagged_videos") || "[]"
+        ).filter((x) => x !== id);
+        localStorage.setItem("ta_flagged_videos", JSON.stringify(flagged));
+        renderVideoPanel();
+        closeVideoModal();
+        showToast("Video deleted.");
+      }
+
+      function saveVideoNotes(id) {
+        const notes = document.getElementById("vm-notes").value;
+        const overrides = JSON.parse(
+          localStorage.getItem("ta_video_overrides") || "{}"
+        );
+        overrides[id] = { ...(overrides[id] || {}), adminNotes: notes };
+        localStorage.setItem("ta_video_overrides", JSON.stringify(overrides));
+        showToast("Notes saved.");
+      }
+
+      /* ─── VIDEO DETAIL MODAL ────────────────── */
+      function viewVideo(id) {
+        const all = getAllVideos();
+        const flagged = getFlaggedIds();
+        const overrides = JSON.parse(
+          localStorage.getItem("ta_video_overrides") || "{}"
+        );
+        let v = all.find((x) => x.id === id);
+        if (!v) return;
+
+        // Apply overrides
+        if (overrides[id]) v = { ...v, ...overrides[id] };
+        currentVidId = id;
+
+        // Embed
+        const embedUrl = getEmbed(v.url);
+        const iframe = document.getElementById("vm-iframe");
+        iframe.src = embedUrl || "";
+        document.getElementById("vm-preview").style.display = embedUrl
+          ? "block"
+          : "none";
+
+        // Detail grid
+        const isFlagged = flagged.has(id);
+        document.getElementById("vm-detail-grid").innerHTML = [
+          { label: "Title", value: v.title },
+          { label: "Poster", value: v.poster || "–" },
+          { label: "Role", value: VID_ROLE_LABELS[v.role] || v.role },
+          {
+            label: "Category",
+            value: VID_CAT_LABELS[v.category] || v.category,
+          },
+          { label: "Views", value: (v.views || 0).toLocaleString() },
+          { label: "Duration", value: v.duration || "–" },
+          {
+            label: "Posted",
+            value: v.postedAt
+              ? new Date(v.postedAt).toLocaleDateString("en-GH", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              : "–",
+          },
+          {
+            label: "Status",
+            value: isFlagged
+              ? "🚩 Flagged"
+              : v.featured
+              ? "⭐ Featured"
+              : "Active",
+          },
+          {
+            label: "Source",
+            value: v.id.startsWith("uv-") ? "User Posted" : "Seed / Platform",
+          },
+          {
+            label: "URL",
+            value: `<a href="${v.url}" target="_blank" style="color:#1A4B8C;word-break:break-all;">${v.url}</a>`,
+          },
+        ]
+          .map(
+            (f) =>
+              `<div class="detail-item"><label>${f.label}</label><span>${f.value}</span></div>`
+          )
+          .join("");
+
+        // Notes
+        document.getElementById("vm-notes").value =
+          v.adminNotes || overrides[id]?.adminNotes || "";
+
+        // Footer
+        const isUser = v.id.startsWith("uv-");
+        document.getElementById("vm-footer").innerHTML = `
+    <button class="btn-mf btn-mf-cancel" onclick="saveVideoNotes('${id}')"><i class="bi bi-save"></i> Save Notes</button>
+    ${
+      v.featured
+        ? `<button class="btn-mf" style="background:#5E7490;color:#fff;" onclick="unfeatureVideo('${id}');closeVideoModal()"><i class="bi bi-star"></i> Unfeature</button>`
+        : `<button class="btn-mf btn-mf-approve" onclick="featureVideo('${id}');closeVideoModal()"><i class="bi bi-star-fill"></i> Feature</button>`
+    }
+    ${
+      isFlagged
+        ? `<button class="btn-mf btn-mf-approve" onclick="unflagVideo('${id}');closeVideoModal()"><i class="bi bi-flag"></i> Unflag</button>`
+        : `<button class="btn-mf btn-mf-reject" onclick="flagVideo('${id}')"><i class="bi bi-flag-fill"></i> Flag</button>`
+    }
+    ${
+      isUser
+        ? `<button class="btn-mf btn-mf-reject" onclick="deleteVideo('${id}')"><i class="bi bi-trash3"></i> Delete</button>`
+        : ""
+    }
+  `;
+
+        document.getElementById("video-modal").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeVideoModal() {
+        // Stop video playback
+        const iframe = document.getElementById("vm-iframe");
+        if (iframe) iframe.src = "";
+        document.getElementById("video-modal").classList.remove("open");
+        document.body.style.overflow = "";
+        currentVidId = null;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("detail-modal")
+          .addEventListener("click", function (e) {
+            if (e.target === document.getElementById("detail-modal"))
+              closeModal();
+          });
+        document
+          .getElementById("video-modal")
+          .addEventListener("click", function (e) {
+            if (e.target === document.getElementById("video-modal"))
+              closeVideoModal();
+          });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            closeModal();
+            closeVideoModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

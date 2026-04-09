@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find a Mechanic — Trust Automobile Ghana</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ══════════════════════════════════════════════
+       RESET & BASE
+    ══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Barlow', sans-serif; color: #1C2B40; background: #F4F7FB; min-height: 100vh; }
+
+    /* ══════════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════════ */
+    .ta-nav { position: sticky; top: 0; z-index: 200; background: rgba(11,30,61,.97); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,.3); }
+    .nav-inner { max-width: 1340px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; gap: 20px; }
+    .ta-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+    .logo-mark { width: 36px; height: 36px; background: #E8A020; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: #0B1E3D; flex-shrink: 0; }
+    .logo-text { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; color: #fff; letter-spacing: .06em; line-height: 1.1; }
+    .logo-text small { display: block; font-size: .6rem; font-weight: 400; color: #8FA3BD; letter-spacing: .14em; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .88rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.72); text-decoration: none; transition: color .2s; cursor: pointer; }
+    .nav-links a:hover, .nav-links a.active { color: #E8A020; }
+    .nav-cta { display: flex; gap: 10px; align-items: center; }
+    .btn-nav { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: all .2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-nav-outline { background: transparent; border: 1.5px solid rgba(255,255,255,.4); color: #fff; }
+    .btn-nav-outline:hover { border-color: #E8A020; color: #E8A020; }
+    .btn-nav-solid { background: #E8A020; color: #0B1E3D; }
+    .btn-nav-solid:hover { background: #F5C05A; }
+    .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(11,30,61,.97); backdrop-filter: blur(12px); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: #fff; text-decoration: none; letter-spacing: .08em; cursor: pointer; }
+    .mobile-menu a:hover { color: #E8A020; }
+    .mobile-close { position: absolute; top: 24px; right: 32px; background: none; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; }
+
+    /* ══════════════════════════════════════════════
+       VIEWS
+    ══════════════════════════════════════════════ */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ══════════════════════════════════════════════
+       PAGE HERO
+    ══════════════════════════════════════════════ */
+    .page-hero { background: linear-gradient(135deg, #0b1e3d 0%, #1a4b8c 100%); padding: 64px 28px 80px; position: relative; overflow: hidden; }
+    .page-hero::after { content: ""; position: absolute; bottom: -2px; left: 0; right: 0; height: 60px; background: #f4f7fb; clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+    .page-hero::before { content: ""; position: absolute; top: -40%; right: -6%; width: 420px; height: 420px; border-radius: 50%; background: rgba(232,160,32,.07); pointer-events: none; }
+    .hero-inner { max-width: 1340px; margin: 0 auto; position: relative; z-index: 2; }
+    .page-hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,160,32,.14); border: 1px solid rgba(232,160,32,.3); border-radius: 100px; padding: 6px 16px; margin-bottom: 20px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: #e8a020; }
+    .page-hero h1 { font-family: 'Bebas Neue', cursive; font-size: clamp(2.4rem,5vw,4rem); letter-spacing: .04em; color: #ffffff; line-height: .95; margin-bottom: 14px; }
+    .page-hero h1 span { color: #e8a020; }
+    .page-hero p { font-size: clamp(.9rem,2vw,1.05rem); color: rgba(255,255,255,.62); max-width: 520px; line-height: 1.65; margin-bottom: 32px; }
+
+    /* SEARCH BAR */
+    .search-wrap { background: #ffffff; border-radius: 12px; box-shadow: 0 8px 40px rgba(11,30,61,.22); padding: 22px 24px; display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; border-top: 4px solid #e8a020; max-width: 900px; }
+    .sf { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
+    .sf label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #5e7490; }
+    .sf input, .sf select { padding: 10px 14px; border: 1.5px solid #dde4ef; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: .9rem; color: #1c2b40; background: #f4f7fb; outline: none; transition: border-color .2s; appearance: none; width: 100%; }
+    .sf input:focus, .sf select:focus { border-color: #1a4b8c; background: #fff; }
+    .btn-search-main { background: #0b1e3d; color: #ffffff; border: none; padding: 12px 28px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .92rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; flex-shrink: 0; }
+    .btn-search-main:hover { background: #1a4b8c; }
+
+    /* STATS STRIP */
+    .stats-strip { background: #0b1e3d; padding: 18px 28px; }
+    .stats-strip-inner { max-width: 1340px; margin: 0 auto; display: flex; gap: 48px; flex-wrap: wrap; align-items: center; }
+    .stat-item { display: flex; align-items: center; gap: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: .88rem; font-weight: 600; color: rgba(255,255,255,.7); letter-spacing: .04em; }
+    .stat-item i { color: #e8a020; font-size: 1.1rem; }
+    .stat-item strong { color: #e8a020; font-size: 1rem; }
+
+    /* LAYOUT */
+    .page-body { max-width: 1340px; margin: 0 auto; padding: 48px 28px 80px; display: grid; grid-template-columns: 280px 1fr; gap: 28px; align-items: start; }
+
+    /* FILTER SIDEBAR */
+    .filter-sidebar { background: #ffffff; border-radius: 12px; border: 1px solid #dde4ef; overflow: hidden; position: sticky; top: 80px; }
+    .filter-head { background: #0b1e3d; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .filter-head h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+    .filter-head h3 i { color: #e8a020; }
+    .filter-clear { font-family: 'Barlow Condensed', sans-serif; font-size: .74rem; font-weight: 600; letter-spacing: .08em; color: rgba(255,255,255,.5); background: none; border: none; cursor: pointer; text-transform: uppercase; transition: color .2s; }
+    .filter-clear:hover { color: #e8a020; }
+    .filter-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+    .filter-group label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #5e7490; display: block; margin-bottom: 8px; }
+    .filter-group select, .filter-group input[type="text"] { width: 100%; padding: 9px 12px; border: 1.5px solid #dde4ef; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: .88rem; color: #1c2b40; background: #f4f7fb; outline: none; transition: border-color .2s; appearance: none; }
+    .filter-group select:focus, .filter-group input:focus { border-color: #1a4b8c; background: #fff; }
+    .rating-options { display: flex; flex-direction: column; gap: 7px; }
+    .rating-opt { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: .86rem; color: #5e7490; padding: 5px 8px; border-radius: 6px; transition: background .15s; }
+    .rating-opt:hover { background: #f4f7fb; }
+    .rating-opt input { accent-color: #0b1e3d; }
+    .rating-opt .stars { color: #e8a020; font-size: .8rem; letter-spacing: 1px; }
+    .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .service-tag { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; padding: 5px 11px; border-radius: 100px; border: 1.5px solid #dde4ef; background: #ffffff; color: #5e7490; cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .service-tag.active, .service-tag:hover { border-color: #0b1e3d; background: #0b1e3d; color: #ffffff; }
+
+    /* RESULTS AREA */
+    .results-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .results-count { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .85rem; letter-spacing: .06em; color: #5e7490; }
+    .results-count strong { color: #0b1e3d; }
+    .sort-select { padding: 8px 14px; border: 1.5px solid #dde4ef; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .82rem; letter-spacing: .06em; color: #1c2b40; background: #ffffff; outline: none; appearance: none; cursor: pointer; }
+
+    /* MECHANIC CARD */
+    .mechanics-grid { display: flex; flex-direction: column; gap: 18px; }
+    .mech-card { background: #ffffff; border-radius: 12px; border: 1px solid #dde4ef; overflow: hidden; display: grid; grid-template-columns: 200px 1fr auto; transition: all .3s; position: relative; }
+    .mech-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(11,30,61,.12); border-color: #c5d0e0; }
+    .mech-card.featured { border-color: #e8a020; border-width: 1.5px; }
+    .featured-ribbon { position: absolute; top: 0; left: 0; background: #e8a020; color: #0b1e3d; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; padding: 3px 12px; border-radius: 0 0 8px 0; z-index: 2; }
+    .mech-img { position: relative; background: #f4f7fb; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .mech-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .mech-card:hover .mech-img img { transform: scale(1.05); }
+    .mech-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10px; color: #8fa3bd; }
+    .mech-img-placeholder i { font-size: 2.4rem; }
+    .mech-img-placeholder span { font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+    .verified-badge { position: absolute; bottom: 10px; left: 10px; background: #1a7a3a; color: #ffffff; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; display: flex; align-items: center; gap: 4px; }
+    .open-badge { position: absolute; top: 10px; right: 10px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; }
+    .open-badge.open { background: rgba(26,122,58,.12); color: #1a7a3a; border: 1px solid rgba(26,122,58,.3); }
+    .open-badge.closed { background: rgba(214,59,59,.08); color: #d63b3b; border: 1px solid rgba(214,59,59,.2); }
+    .mech-body { padding: 20px; display: flex; flex-direction: column; gap: 0; }
+    .mech-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.15rem; color: #0b1e3d; letter-spacing: .04em; margin-bottom: 4px; }
+    .mech-location { font-size: .82rem; color: #5e7490; display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+    .mech-location i { color: #e8a020; font-size: .8rem; }
+    .mech-rating { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+    .stars { color: #e8a020; font-size: .85rem; letter-spacing: 1px; }
+    .rating-num { font-weight: 700; font-size: .9rem; color: #0b1e3d; }
+    .review-count { font-size: .78rem; color: #8fa3bd; }
+    .mech-services { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .svc-tag { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; background: rgba(26,75,140,.07); color: #1a4b8c; border: 1px solid rgba(26,75,140,.15); }
+    .mech-meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: auto; padding-top: 14px; border-top: 1px solid #eef2f8; }
+    .meta-item { display: flex; align-items: center; gap: 5px; font-size: .8rem; color: #5e7490; }
+    .meta-item i { color: #8fa3bd; font-size: .82rem; }
+    .meta-item strong { color: #0b1e3d; }
+    .mech-svc-prices { flex: 1; }
+    .svc-prices-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: #8fa3bd; margin-bottom: 10px; }
+    .svc-price-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f4f7fb; gap: 10px; }
+    .svc-price-row:last-child { border-bottom: none; }
+    .svc-price-name { font-size: .82rem; color: #1c2b40; font-weight: 500; }
+    .svc-price-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .88rem; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; white-space: nowrap; }
+    .svc-price-val em { font-style: normal; font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    .svc-price-val.free { color: #1a7a3a; }
+    .svc-price-val.free em { color: #1a7a3a; opacity: .7; }
+    .svc-price-val.fixed { color: #0b1e3d; }
+    .svc-price-val.fixed em { color: #8fa3bd; }
+    .svc-price-val.negotiable { color: #b07a10; }
+    .svc-price-val.negotiable em { color: #b07a10; opacity: .8; }
+    .mech-actions { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid #eef2f8; min-width: 220px; gap: 16px; }
+    .action-btns { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .btn-book { background: #e8a020; color: #0b1e3d; border: none; padding: 10px 16px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .2s; text-decoration: none; }
+    .btn-book:hover { background: #f5c05a; transform: translateY(-1px); }
+    .btn-profile { background: transparent; color: #0b1e3d; border: 1.5px solid #dde4ef; padding: 9px 16px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .2s; text-decoration: none; }
+    .btn-profile:hover { border-color: #0b1e3d; background: #f4f7fb; }
+    .btn-call { background: transparent; color: #1a4b8c; border: 1.5px solid rgba(26,75,140,.25); padding: 8px 16px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .2s; text-decoration: none; }
+    .btn-call:hover { border-color: #1a4b8c; background: rgba(26,75,140,.05); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 80px 30px; background: #ffffff; border-radius: 12px; border: 1px solid #dde4ef; }
+    .empty-state i { font-size: 3.2rem; color: #dde4ef; display: block; margin-bottom: 16px; }
+    .empty-state h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; letter-spacing: .06em; color: #0b1e3d; margin-bottom: 6px; }
+    .empty-state p { font-size: .88rem; color: #5e7490; }
+
+    /* PAGINATION */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 32px; }
+    .page-btn { width: 36px; height: 36px; border: 1.5px solid #dde4ef; border-radius: 7px; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; color: #5e7490; cursor: pointer; transition: all .2s; }
+    .page-btn:hover, .page-btn.active { background: #0b1e3d; border-color: #0b1e3d; color: #ffffff; }
+
+    /* ══════════════════════════════════════════════
+       PROFILE VIEW
+    ══════════════════════════════════════════════ */
+    .breadcrumb { background: #0B1E3D; padding: 12px 28px; }
+    .breadcrumb-inner { max-width: 1340px; margin: 0 auto; display: flex; align-items: center; gap: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; letter-spacing: .06em; color: rgba(255,255,255,.45); }
+    .breadcrumb-inner a { color: rgba(255,255,255,.55); text-decoration: none; transition: color .2s; cursor: pointer; }
+    .breadcrumb-inner a:hover { color: #E8A020; }
+    .breadcrumb-inner i { font-size: .65rem; }
+    .breadcrumb-inner span { color: #E8A020; }
+    .profile-page { max-width: 1340px; margin: 0 auto; padding: 36px 28px 80px; display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+
+    /* GALLERY */
+    .gallery-wrap { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; overflow: hidden; margin-bottom: 22px; }
+    .gallery-main { position: relative; height: 420px; background: #0B1E3D; overflow: hidden; cursor: pointer; }
+    .gallery-main .slide { display: none; position: absolute; inset: 0; }
+    .gallery-main .slide.active { display: block; }
+    .gallery-main .slide img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(11,30,61,.65); border: none; color: #FFFFFF; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; z-index: 5; transition: background .2s; }
+    .gallery-arrow:hover { background: #0B1E3D; }
+    .gallery-arrow.prev { left: 14px; }
+    .gallery-arrow.next { right: 14px; }
+    .gallery-counter { position: absolute; bottom: 14px; left: 14px; background: rgba(11,30,61,.75); color: #FFFFFF; font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 600; letter-spacing: .06em; padding: 4px 10px; border-radius: 100px; display: flex; align-items: center; gap: 5px; z-index: 5; }
+    .gallery-verified { position: absolute; top: 14px; left: 14px; background: #1A7A3A; color: #FFFFFF; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; display: flex; align-items: center; gap: 5px; z-index: 5; }
+    .gallery-thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; padding: 3px; background: #F4F7FB; }
+    .gallery-thumb { height: 72px; overflow: hidden; cursor: pointer; border-radius: 4px; border: 2px solid transparent; transition: border-color .2s; position: relative; }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-thumb.active { border-color: #E8A020; }
+    .gallery-thumb .more-overlay { position: absolute; inset: 0; background: rgba(11,30,61,.6); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: #FFFFFF; letter-spacing: .04em; }
+
+    /* PROFILE HEADER */
+    .profile-header { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; padding: 24px; margin-bottom: 22px; display: flex; align-items: flex-start; gap: 20px; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: #0B1E3D; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: #E8A020; flex-shrink: 0; }
+    .profile-meta { flex: 1; min-width: 0; }
+    .profile-name { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: .04em; color: #0B1E3D; line-height: 1; margin-bottom: 6px; }
+    .profile-sub { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+    .profile-sub-item { font-size: .82rem; color: #5E7490; display: flex; align-items: center; gap: 5px; }
+    .profile-sub-item i { color: #8FA3BD; font-size: .8rem; }
+    .profile-sub-item.open { color: #1A7A3A; }
+    .profile-sub-item.open i { color: #1A7A3A; }
+    .profile-sub-item.closed { color: #D63B3B; }
+    .profile-sub-item.closed i { color: #D63B3B; }
+    .profile-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .p-badge { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+    .p-badge.verified { background: rgba(26,122,58,.1); color: #1A7A3A; border: 1px solid rgba(26,122,58,.25); }
+    .p-badge.warranty { background: rgba(26,75,140,.08); color: #1A4B8C; border: 1px solid rgba(26,75,140,.2); }
+    .p-badge.featured { background: rgba(232,160,32,.12); color: #8A5A00; border: 1px solid rgba(232,160,32,.3); }
+    .p-badge.home { background: rgba(232,160,32,.08); color: #7A5500; border: 1px solid rgba(232,160,32,.25); }
+    .profile-rating-row { display: flex; align-items: center; gap: 10px; }
+    .profile-stars { color: #E8A020; font-size: 1rem; letter-spacing: 2px; }
+    .profile-rating-num { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; color: #0B1E3D; letter-spacing: .04em; }
+    .profile-review-count { font-size: .8rem; color: #8FA3BD; }
+
+    /* SECTION CARD */
+    .section-card { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; overflow: hidden; margin-bottom: 22px; }
+    .section-card-head { padding: 16px 22px; border-bottom: 1px solid #DDE4EF; display: flex; align-items: center; justify-content: space-between; }
+    .section-card-head h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .88rem; letter-spacing: .12em; text-transform: uppercase; color: #0B1E3D; display: flex; align-items: center; gap: 8px; }
+    .section-card-head h3 i { color: #E8A020; }
+    .section-card-body { padding: 22px; }
+    .about-text { font-size: .92rem; color: #5E7490; line-height: 1.75; }
+    .about-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #EEF2F8; }
+    .about-stat { text-align: center; padding: 14px; background: #F4F7FB; border-radius: 9px; }
+    .about-stat-num { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: #E8A020; letter-spacing: .04em; line-height: 1; }
+    .about-stat-label { font-size: .72rem; color: #5E7490; margin-top: 3px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+
+    /* SERVICES TABLE */
+    .svc-table { width: 100%; border-collapse: collapse; }
+    .svc-table thead tr { background: #F4F7FB; border-bottom: 1px solid #DDE4EF; }
+    .svc-table th { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #5E7490; padding: 10px 14px; text-align: left; }
+    .svc-table td { padding: 13px 14px; font-size: .9rem; color: #1C2B40; border-bottom: 1px solid #EEF2F8; vertical-align: middle; }
+    .svc-table tr:last-child td { border-bottom: none; }
+    .svc-table tr:hover td { background: #FAFBFD; }
+    .svc-name { font-weight: 600; color: #0B1E3D; }
+    .svc-desc { font-size: .78rem; color: #8FA3BD; margin-top: 2px; }
+    .svc-price-cell { font-family: 'Bebas Neue', cursive; font-size: 1.2rem; letter-spacing: .04em; white-space: nowrap; }
+    .svc-price-cell.free { color: #1A7A3A; }
+    .svc-price-cell.fixed { color: #0B1E3D; }
+    .svc-price-cell.negotiable { color: #B07A10; }
+    .svc-pill { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; display: inline-block; }
+    .pill-free { background: rgba(26,122,58,.1); color: #1A7A3A; border: 1px solid rgba(26,122,58,.25); }
+    .pill-fixed { background: rgba(26,75,140,.08); color: #1A4B8C; border: 1px solid rgba(26,75,140,.2); }
+    .pill-negotiable { background: rgba(232,160,32,.12); color: #8A5A00; border: 1px solid rgba(232,160,32,.3); }
+    .svc-book-btn { background: #E8A020; color: #0B1E3D; border: none; padding: 6px 14px; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .svc-book-btn:hover { background: #F5C05A; }
+
+    /* REVIEWS */
+    .reviews-list { display: flex; flex-direction: column; gap: 18px; }
+    .review-item { padding-bottom: 18px; border-bottom: 1px solid #EEF2F8; }
+    .review-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .reviewer { display: flex; align-items: center; gap: 10px; }
+    .reviewer-avatar { width: 36px; height: 36px; border-radius: 50%; background: #0B1E3D; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: .95rem; color: #E8A020; flex-shrink: 0; }
+    .reviewer-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .9rem; color: #0B1E3D; }
+    .reviewer-meta { font-size: .74rem; color: #8FA3BD; }
+    .review-stars { color: #E8A020; font-size: .85rem; }
+    .review-text { font-size: .88rem; color: #5E7490; line-height: 1.65; }
+    .review-service-tag { display: inline-flex; align-items: center; gap: 5px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 9px; border-radius: 100px; background: rgba(26,75,140,.07); color: #1A4B8C; border: 1px solid rgba(26,75,140,.15); margin-top: 8px; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 80px; }
+    .contact-card { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; overflow: hidden; }
+    .contact-card-head { background: linear-gradient(135deg, #0B1E3D 0%, #1A4B8C 100%); padding: 18px 20px; }
+    .contact-price { font-family: 'Bebas Neue', cursive; font-size: 2rem; letter-spacing: .04em; color: #FFFFFF; line-height: 1; }
+    .contact-price small { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .72rem; letter-spacing: .1em; color: rgba(255,255,255,.55); margin-left: 4px; vertical-align: middle; }
+    .contact-price-note { font-family: 'Barlow Condensed', sans-serif; font-size: .74rem; font-weight: 600; letter-spacing: .08em; color: rgba(255,255,255,.55); margin-top: 3px; }
+    .contact-card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-contact-primary { width: 100%; background: #E8A020; color: #0B1E3D; border: none; padding: 13px 20px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .92rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+    .btn-contact-primary:hover { background: #F5C05A; transform: translateY(-1px); }
+    .btn-contact-secondary { width: 100%; background: transparent; color: #0B1E3D; border: 1.5px solid #DDE4EF; padding: 11px 20px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+    .btn-contact-secondary:hover { border-color: #0B1E3D; background: #F4F7FB; }
+    .btn-contact-call { width: 100%; background: #0B1E3D; color: #FFFFFF; border: none; padding: 11px 20px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; text-decoration: none; }
+    .btn-contact-call:hover { background: #1A4B8C; }
+    .contact-divider { height: 1px; background: #EEF2F8; margin: 2px 0; }
+    .seller-card { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; padding: 20px; }
+    .seller-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .seller-avatar { width: 48px; height: 48px; border-radius: 50%; background: #0B1E3D; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.3rem; color: #E8A020; flex-shrink: 0; }
+    .seller-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; color: #0B1E3D; margin-bottom: 2px; }
+    .seller-meta { font-size: .78rem; color: #5E7490; display: flex; flex-direction: column; gap: 2px; }
+    .seller-meta span { display: flex; align-items: center; gap: 5px; }
+    .seller-meta i { color: #8FA3BD; font-size: .78rem; }
+    .seller-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 14px; border-top: 1px solid #EEF2F8; }
+    .seller-stat { background: #F4F7FB; border-radius: 7px; padding: 10px 12px; text-align: center; }
+    .seller-stat-num { font-family: 'Bebas Neue', cursive; font-size: 1.3rem; color: #0B1E3D; letter-spacing: .04em; line-height: 1; }
+    .seller-stat-label { font-size: .68rem; color: #8FA3BD; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+    .safety-card { background: #FFFFFF; border-radius: 12px; border: 1px solid #DDE4EF; padding: 18px 20px; }
+    .safety-card h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; color: #0B1E3D; margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+    .safety-card h4 i { color: #E8A020; }
+    .safety-tips { display: flex; flex-direction: column; gap: 9px; }
+    .safety-tip { display: flex; align-items: flex-start; gap: 9px; font-size: .82rem; color: #5E7490; line-height: 1.5; }
+    .safety-tip i { color: #1A7A3A; font-size: .8rem; flex-shrink: 0; margin-top: 2px; }
+    .btn-report { width: 100%; background: transparent; color: #D63B3B; border: 1.5px solid rgba(214,59,59,.3); padding: 10px 18px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .2s; }
+    .btn-report:hover { background: #D63B3B; color: #FFFFFF; border-color: #D63B3B; }
+
+    /* ══════════════════════════════════════════════
+       BOOKING MODAL
+    ══════════════════════════════════════════════ */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(11,30,61,.6); backdrop-filter: blur(6px); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #ffffff; border-radius: 16px; width: 100%; max-width: 560px; overflow: hidden; animation: modalIn .25s ease; box-shadow: 0 24px 64px rgba(11,30,61,.2); max-height: 90vh; overflow-y: auto; }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: none; } }
+    .modal-header { background: linear-gradient(135deg, #0b1e3d 0%, #1a4b8c 100%); padding: 22px 26px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 2; }
+    .modal-header h3 { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; letter-spacing: .08em; color: #ffffff; display: flex; align-items: center; gap: 9px; }
+    .modal-header h3 i { color: #e8a020; }
+    .modal-close { background: none; border: none; color: rgba(255,255,255,.6); font-size: 1.4rem; cursor: pointer; padding: 4px; transition: color .2s; }
+    .modal-close:hover { color: #ffffff; }
+    .modal-body { padding: 26px; }
+    .modal-mech-info { display: flex; align-items: center; gap: 14px; padding: 16px; background: #f4f7fb; border-radius: 10px; margin-bottom: 22px; border: 1px solid #dde4ef; }
+    .modal-mech-avatar { width: 52px; height: 52px; border-radius: 50%; background: #0b1e3d; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1.3rem; color: #e8a020; flex-shrink: 0; }
+    .modal-mech-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; color: #0b1e3d; margin-bottom: 2px; }
+    .modal-mech-loc { font-size: .8rem; color: #5e7490; display: flex; align-items: center; gap: 4px; }
+    .modal-mech-loc i { color: #e8a020; }
+    .modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .modal-form-group { margin-bottom: 16px; }
+    .modal-form-group label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #5e7490; display: block; margin-bottom: 6px; }
+    .modal-form-group input, .modal-form-group select, .modal-form-group textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #dde4ef; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: .9rem; color: #1c2b40; background: #ffffff; outline: none; transition: border-color .2s, box-shadow .2s; }
+    .modal-form-group input:focus, .modal-form-group select:focus, .modal-form-group textarea:focus { border-color: #1a4b8c; box-shadow: 0 0 0 3px rgba(26,75,140,.08); }
+    .modal-form-group textarea { resize: vertical; min-height: 80px; }
+    .modal-footer { padding: 18px 26px; background: #f4f7fb; border-top: 1px solid #dde4ef; display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-modal-cancel { background: transparent; color: #5e7490; border: 1.5px solid #dde4ef; padding: 10px 22px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+    .btn-modal-cancel:hover { border-color: #0b1e3d; color: #0b1e3d; }
+    .btn-modal-confirm { background: #e8a020; color: #0b1e3d; border: none; padding: 10px 26px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all .2s; text-decoration: none; }
+    .btn-modal-confirm:hover { background: #f5c05a; }
+
+    /* PRICE ESTIMATE */
+    .price-estimate { display: flex; align-items: center; gap: 14px; background: #f4f7fb; border: 1.5px solid #dde4ef; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; transition: all .25s; }
+    .price-estimate.negotiable { border-color: rgba(232,160,32,.4); background: rgba(232,160,32,.06); }
+    .price-estimate.fixed { border-color: rgba(26,75,140,.25); background: rgba(26,75,140,.04); }
+    .price-estimate.free { border-color: rgba(26,122,58,.3); background: rgba(26,122,58,.05); }
+    .pe-icon { width: 40px; height: 40px; border-radius: 50%; background: #0b1e3d; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #e8a020; flex-shrink: 0; }
+    .price-estimate.negotiable .pe-icon { background: rgba(232,160,32,.15); color: #b07a10; }
+    .price-estimate.fixed .pe-icon { background: rgba(26,75,140,.1); color: #1a4b8c; }
+    .price-estimate.free .pe-icon { background: rgba(26,122,58,.1); color: #1a7a3a; }
+    .pe-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: #8fa3bd; margin-bottom: 3px; }
+    .pe-price { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; letter-spacing: .04em; color: #0b1e3d; line-height: 1; }
+    .price-estimate.negotiable .pe-price { color: #b07a10; }
+    .price-estimate.fixed .pe-price { color: #1a4b8c; }
+    .price-estimate.free .pe-price { color: #1a7a3a; }
+    .pe-note { font-size: .78rem; color: #5e7490; margin-top: 3px; line-height: 1.4; }
+
+    /* SUCCESS STATE */
+    .booking-success { display: none; text-align: center; padding: 36px 26px; }
+    .booking-success.show { display: block; }
+    .success-icon-wrap { width: 72px; height: 72px; border-radius: 50%; background: #e8f5ed; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #1a7a3a; margin: 0 auto 16px; }
+    .booking-success h3 { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; letter-spacing: .08em; color: #0b1e3d; margin-bottom: 8px; }
+    .booking-success p { font-size: .88rem; color: #5e7490; line-height: 1.65; margin-bottom: 6px; }
+    .booking-ref { display: inline-block; background: rgba(232,160,32,.1); border: 1px solid rgba(232,160,32,.3); border-radius: 8px; padding: 8px 20px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .9rem; letter-spacing: .08em; color: #7a5500; margin: 12px 0; }
+
+    /* ══════════════════════════════════════════════
+       CHAT MODAL
+    ══════════════════════════════════════════════ */
+    .chat-overlay { display: none; position: fixed; inset: 0; background: rgba(11,30,61,.55); backdrop-filter: blur(5px); z-index: 950; align-items: flex-end; justify-content: flex-end; padding: 24px; }
+    .chat-overlay.open { display: flex; }
+    .chat-window { background: #FFFFFF; border-radius: 16px; width: 380px; max-width: 100%; height: 560px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 24px 64px rgba(11,30,61,.25); animation: modalIn .25s ease; overflow: hidden; }
+    .chat-head { background: linear-gradient(135deg, #0B1E3D 0%, #1A4B8C 100%); padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .chat-head-avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(232,160,32,.25); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 1rem; color: #E8A020; flex-shrink: 0; }
+    .chat-head-info { flex: 1; min-width: 0; }
+    .chat-head-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .95rem; color: #FFFFFF; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-head-status { font-size: .72rem; color: rgba(255,255,255,.55); display: flex; align-items: center; gap: 5px; margin-top: 1px; }
+    .online-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; flex-shrink: 0; }
+    .chat-head-actions { display: flex; gap: 8px; align-items: center; }
+    .chat-head-btn { background: none; border: none; color: rgba(255,255,255,.65); font-size: 1rem; cursor: pointer; padding: 4px; transition: color .2s; border-radius: 5px; }
+    .chat-head-btn:hover { color: #FFFFFF; background: rgba(255,255,255,.1); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #F4F7FB; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #DDE4EF; border-radius: 2px; }
+    .chat-date-divider { text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #8FA3BD; padding: 4px 0; position: relative; }
+    .chat-date-divider::before, .chat-date-divider::after { content: ''; position: absolute; top: 50%; width: 28%; height: 1px; background: #DDE4EF; }
+    .chat-date-divider::before { left: 0; }
+    .chat-date-divider::after { right: 0; }
+    .msg { display: flex; flex-direction: column; max-width: 80%; }
+    .msg.sent { align-self: flex-end; align-items: flex-end; }
+    .msg.received { align-self: flex-start; align-items: flex-start; }
+    .msg-sender { font-family: 'Barlow Condensed', sans-serif; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8FA3BD; margin-bottom: 3px; }
+    .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: .88rem; line-height: 1.5; position: relative; word-break: break-word; }
+    .msg.sent .msg-bubble { background: #0B1E3D; color: #FFFFFF; border-bottom-right-radius: 4px; }
+    .msg.received .msg-bubble { background: #FFFFFF; color: #1C2B40; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(11,30,61,.08); border: 1px solid #EEF2F8; }
+    .msg-time { font-size: .68rem; color: #8FA3BD; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+    .msg.sent .msg-time { color: rgba(255,255,255,.5); }
+    .msg-tick.read { color: #4ADE80; }
+    .typing-indicator .msg-bubble { padding: 12px 16px; display: flex; gap: 4px; align-items: center; }
+    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: #8FA3BD; animation: typingBounce 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+    .chat-input-area { padding: 12px 14px; background: #FFFFFF; border-top: 1px solid #DDE4EF; display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+    .chat-input { flex: 1; padding: 10px 14px; border: 1.5px solid #DDE4EF; border-radius: 22px; font-family: 'Barlow', sans-serif; font-size: .88rem; color: #1C2B40; background: #F4F7FB; outline: none; resize: none; min-height: 42px; max-height: 100px; line-height: 1.45; transition: border-color .2s; overflow-y: auto; }
+    .chat-input:focus { border-color: #1A4B8C; background: #FFFFFF; }
+    .chat-send-btn { width: 42px; height: 42px; border-radius: 50%; background: #E8A020; border: none; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #0B1E3D; cursor: pointer; flex-shrink: 0; transition: all .2s; }
+    .chat-send-btn:hover { background: #F5C05A; transform: scale(1.08); }
+    .chat-wa-bar { padding: 8px 14px; background: #F0FDF4; border-top: 1px solid #DCFCE7; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .chat-wa-bar span { font-size: .74rem; color: #166534; flex: 1; line-height: 1.4; }
+    .btn-wa { background: #25D366; color: #FFFFFF; border: none; padding: 6px 12px; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all .2s; white-space: nowrap; text-decoration: none; }
+    .btn-wa:hover { background: #22C55E; }
+    .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; background: #F4F7FB; gap: 10px; }
+    .chat-empty i { font-size: 2.4rem; color: #DDE4EF; }
+    .chat-empty p { font-size: .84rem; color: #8FA3BD; line-height: 1.55; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #0b1e3d; color: #ffffff; padding: 13px 20px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: .88rem; letter-spacing: .04em; box-shadow: 0 8px 28px rgba(11,30,61,.3); z-index: 9999; transform: translateY(80px); opacity: 0; transition: all .35s; display: flex; align-items: center; gap: 9px; max-width: 340px; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast i { color: #e8a020; }
+
+    /* FOOTER */
+    .ta-footer { background: #060F1E; color: rgba(255,255,255,.5); padding: 56px 28px 28px; }
+    .footer-inner { max-width: 1340px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p { font-size: .86rem; line-height: 1.7; margin-top: 14px; max-width: 280px; color: rgba(255,255,255,.4); }
+    .footer-col h5 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; color: #fff; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 9px; }
+    .footer-col a { font-size: .85rem; color: rgba(255,255,255,.4); text-decoration: none; transition: color .2s; cursor: pointer; }
+    .footer-col a:hover { color: #E8A020; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.08); flex-wrap: wrap; gap: 10px; }
+    .footer-bottom p { font-size: .8rem; }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .page-body { grid-template-columns: 1fr; }
+      .filter-sidebar { position: static; }
+      .mech-card { grid-template-columns: 160px 1fr auto; }
+      .profile-page { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: block !important; }
+      .search-wrap { flex-direction: column; }
+      .sf { min-width: auto; width: 100%; }
+      .stats-strip-inner { gap: 20px; }
+      .mech-card { grid-template-columns: 1fr; }
+      .mech-img { height: 200px; }
+      .mech-actions { border-left: none; border-top: 1px solid #eef2f8; flex-direction: row; align-items: center; justify-content: space-between; padding: 14px 20px; }
+      .action-btns { flex-direction: row; width: auto; }
+      .modal-form-row { grid-template-columns: 1fr; }
+      .gallery-main { height: 260px; }
+      .gallery-thumb { height: 52px; }
+      .profile-header { flex-direction: column; gap: 14px; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .page-hero { padding: 44px 18px 70px; }
+      .page-body { padding: 28px 18px 60px; }
+      .mech-actions { flex-direction: column; align-items: stretch; }
+      .action-btns { flex-direction: column; width: 100%; }
+      .chat-overlay { padding: 0; align-items: flex-end; justify-content: stretch; }
+      .chat-window { width: 100%; border-radius: 16px 16px 0 0; height: 75vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="ta-nav" id="ta-nav">
+  <div class="nav-inner">
+    <a class="ta-logo" onclick="showView('list')">
+      <div class="logo-mark">TA</div>
+      <div class="logo-text">Trust Automobile<small>Verified Marketplace</small></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Buy a Car</a></li>
+      <li><a class="active" onclick="showView('list')">Mechanics</a></li>
+      <li><a href="#">Spare Parts</a></li>
+      <li><a href="#">My Bookings</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn-nav btn-nav-outline">Sign In</a>
+      <a href="#" class="btn-nav btn-nav-solid">List a Car</a>
+    </div>
+    <button class="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open')">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <button onclick="document.getElementById('mobile-menu').classList.remove('open')" class="mobile-close"><i class="bi bi-x-lg"></i></button>
+  <a onclick="showView('list');document.getElementById('mobile-menu').classList.remove('open')">Find a Mechanic</a>
+  <a href="#">Buy a Car</a>
+  <a href="#">Spare Parts</a>
+  <a href="#">My Bookings</a>
+  <a href="#">Sign In</a>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VIEW: MECHANICS LIST
+═══════════════════════════════════════════ -->
+<div class="view active" id="view-list">
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="hero-inner">
+      <div class="page-hero-badge"><i class="bi bi-tools"></i> Ghana's Mechanic Directory</div>
+      <h1>Find a Trusted<br /><span>Mechanic</span> Near You</h1>
+      <p>Browse verified mechanics and auto workshops across Ghana. Compare ratings, services, and prices — then book in minutes.</p>
+      <div class="search-wrap">
+        <div class="sf">
+          <label><i class="bi bi-search"></i> Search</label>
+          <input type="text" id="heroSearch" placeholder="Name, workshop, or speciality…" />
+        </div>
+        <div class="sf">
+          <label><i class="bi bi-geo-alt"></i> Region</label>
+          <select id="heroRegion">
+            <option value="">All Regions</option>
+            <option>Greater Accra</option><option>Ashanti</option><option>Western</option>
+            <option>Eastern</option><option>Central</option><option>Northern</option>
+            <option>Volta</option><option>Brong-Ahafo</option>
+          </select>
+        </div>
+        <div class="sf">
+          <label><i class="bi bi-wrench"></i> Service Type</label>
+          <select id="heroService">
+            <option value="">All Services</option>
+            <option value="general">General Repairs</option>
+            <option value="electrical">Auto Electrical</option>
+            <option value="bodywork">Bodywork & Paint</option>
+            <option value="aircon">Air Conditioning</option>
+            <option value="diagnostic">Diagnostics</option>
+            <option value="transmission">Transmission</option>
+            <option value="tyres">Tyres & Alignment</option>
+          </select>
+        </div>
+        <button class="btn-search-main" onclick="applySearch()"><i class="bi bi-search"></i> Search</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stats-strip-inner">
+      <div class="stat-item"><i class="bi bi-patch-check-fill"></i><span><strong>186</strong> Verified Mechanics</span></div>
+      <div class="stat-item"><i class="bi bi-geo-alt-fill"></i><span><strong>10</strong> Regions Covered</span></div>
+      <div class="stat-item"><i class="bi bi-star-fill"></i><span><strong>4.7</strong> Average Rating</span></div>
+      <div class="stat-item"><i class="bi bi-calendar-check"></i><span><strong>3,200+</strong> Bookings Made</span></div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="page-body">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="filter-sidebar">
+      <div class="filter-head">
+        <h3><i class="bi bi-sliders"></i> Filters</h3>
+        <button class="filter-clear" onclick="clearFilters()">Clear All</button>
+      </div>
+      <div class="filter-body">
+        <div class="filter-group">
+          <label>Region</label>
+          <select id="f-region" onchange="renderMechanics()">
+            <option value="">All Regions</option>
+            <option>Greater Accra</option><option>Ashanti</option><option>Western</option>
+            <option>Eastern</option><option>Central</option><option>Northern</option>
+            <option>Volta</option><option>Brong-Ahafo</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Speciality</label>
+          <select id="f-service" onchange="renderMechanics()">
+            <option value="">All Services</option>
+            <option value="general">General Repairs</option>
+            <option value="electrical">Auto Electrical</option>
+            <option value="bodywork">Bodywork &amp; Paint</option>
+            <option value="aircon">Air Conditioning</option>
+            <option value="diagnostic">Diagnostics</option>
+            <option value="transmission">Transmission</option>
+            <option value="tyres">Tyres &amp; Alignment</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Minimum Rating</label>
+          <div class="rating-options">
+            <label class="rating-opt"><input type="radio" name="rating" value="" checked onchange="renderMechanics()" /> Any rating</label>
+            <label class="rating-opt"><input type="radio" name="rating" value="3" onchange="renderMechanics()" /><span class="stars">★★★</span>&nbsp;3+ stars</label>
+            <label class="rating-opt"><input type="radio" name="rating" value="4" onchange="renderMechanics()" /><span class="stars">★★★★</span>&nbsp;4+ stars</label>
+            <label class="rating-opt"><input type="radio" name="rating" value="4.5" onchange="renderMechanics()" /><span class="stars">★★★★★</span>&nbsp;4.5+ stars</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Quick Filters</label>
+          <div class="tag-grid">
+            <span class="service-tag" onclick="toggleTag(this,'verified')">✓ Verified</span>
+            <span class="service-tag" onclick="toggleTag(this,'open')">Open Now</span>
+            <span class="service-tag" onclick="toggleTag(this,'free_diag')">Free Diagnosis</span>
+            <span class="service-tag" onclick="toggleTag(this,'home_service')">Home Service</span>
+            <span class="service-tag" onclick="toggleTag(this,'warranty')">Warranty</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RESULTS -->
+    <div>
+      <div class="results-bar">
+        <div class="results-count" id="results-count">Showing <strong>0</strong> mechanics</div>
+        <select class="sort-select" id="sort-select" onchange="renderMechanics()">
+          <option value="featured">Sort: Featured First</option>
+          <option value="rating">Highest Rated</option>
+          <option value="reviews">Most Reviewed</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div class="mechanics-grid" id="mechanics-grid"></div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <i class="bi bi-search"></i>
+        <h3>No Mechanics Found</h3>
+        <p>Try adjusting your filters or searching a different area.</p>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+</div><!-- /view-list -->
+
+<!-- ═══════════════════════════════════════════
+     VIEW: MECHANIC PROFILE
+═══════════════════════════════════════════ -->
+<div class="view" id="view-profile">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a onclick="showView('list')">Home</a>
+      <i class="bi bi-chevron-right"></i>
+      <a onclick="showView('list')">Mechanics</a>
+      <i class="bi bi-chevron-right"></i>
+      <span id="bc-name">Profile</span>
+    </div>
+  </div>
+
+  <div class="profile-page">
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- GALLERY -->
+      <div class="gallery-wrap">
+        <div class="gallery-main" id="gallery-main">
+          <button class="gallery-arrow prev" onclick="galleryNav(-1)"><i class="bi bi-chevron-left"></i></button>
+          <button class="gallery-arrow next" onclick="galleryNav(1)"><i class="bi bi-chevron-right"></i></button>
+          <div class="gallery-counter" id="gallery-counter"><i class="bi bi-camera"></i> 1 / 1</div>
+          <div class="gallery-verified" id="gallery-verified" style="display:none;"><i class="bi bi-patch-check-fill"></i> Verified Workshop</div>
+        </div>
+        <div class="gallery-thumbs" id="gallery-thumbs"></div>
+      </div>
+
+      <!-- HEADER -->
+      <div class="profile-header">
+        <div class="profile-avatar" id="p-avatar">–</div>
+        <div class="profile-meta">
+          <div class="profile-name" id="p-name">–</div>
+          <div class="profile-sub" id="p-sub"></div>
+          <div class="profile-rating-row" id="p-rating"></div>
+          <div class="profile-badges" id="p-badges" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="section-card">
+        <div class="section-card-head"><h3><i class="bi bi-info-circle-fill"></i> About this Workshop</h3></div>
+        <div class="section-card-body">
+          <p class="about-text" id="p-bio">–</p>
+          <div class="about-stats" id="p-stats"></div>
+        </div>
+      </div>
+
+      <!-- SERVICES & PRICING -->
+      <div class="section-card">
+        <div class="section-card-head"><h3><i class="bi bi-wrench-adjustable-circle-fill"></i> Services &amp; Pricing</h3></div>
+        <div class="section-card-body" style="padding:0;">
+          <table class="svc-table">
+            <thead><tr><th>Service</th><th>Price (GHS)</th><th>Type</th><th></th></tr></thead>
+            <tbody id="svc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="section-card">
+        <div class="section-card-head">
+          <h3><i class="bi bi-star-fill"></i> Customer Reviews</h3>
+          <span id="review-summary" style="font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:600;color:#5E7490;letter-spacing:.06em;"></span>
+        </div>
+        <div class="section-card-body">
+          <div class="reviews-list" id="reviews-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="contact-card">
+        <div class="contact-card-head">
+          <div class="contact-price" id="s-price">–</div>
+          <div class="contact-price-note" id="s-price-note">–</div>
+        </div>
+        <div class="contact-card-body">
+          <button class="btn-contact-primary" onclick="openModal()"><i class="bi bi-calendar-plus"></i> Book Appointment</button>
+          <div class="contact-divider"></div>
+          <a class="btn-contact-call" id="s-call-btn" href="#"><i class="bi bi-telephone-fill"></i> Show Contact</a>
+          <button class="btn-contact-secondary" onclick="openChat()"><i class="bi bi-chat-dots"></i> Start Chat</button>
+        </div>
+      </div>
+      <div class="seller-card">
+        <div class="seller-row">
+          <div class="seller-avatar" id="s-avatar">–</div>
+          <div>
+            <div class="seller-name" id="s-name">–</div>
+            <div class="seller-meta" id="s-meta"></div>
+          </div>
+        </div>
+        <div class="seller-stats" id="s-stats"></div>
+      </div>
+      <div class="safety-card">
+        <h4><i class="bi bi-shield-check"></i> Safety Tips</h4>
+        <div class="safety-tips">
+          <div class="safety-tip"><i class="bi bi-check-circle-fill"></i> Check reviews and ratings before booking.</div>
+          <div class="safety-tip"><i class="bi bi-check-circle-fill"></i> Agree on the full scope of work and payment upfront.</div>
+          <div class="safety-tip"><i class="bi bi-check-circle-fill"></i> Request a written quote for major repairs.</div>
+          <div class="safety-tip"><i class="bi bi-check-circle-fill"></i> Only pay for completed and verified work.</div>
+          <div class="safety-tip"><i class="bi bi-check-circle-fill"></i> Use verified workshops for warranty protection.</div>
+        </div>
+      </div>
+      <button class="btn-report" onclick="showToast('Report submitted. Our team will review.','error')">
+        <i class="bi bi-flag-fill"></i> Report this Listing
+      </button>
+    </aside>
+  </div>
+
+</div><!-- /view-profile -->
+
+<!-- ═══ BOOKING MODAL ═══ -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="bi bi-calendar-check"></i> Book Appointment</h3>
+      <button class="modal-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div id="booking-form-wrap">
+      <div class="modal-body">
+        <div class="modal-mech-info">
+          <div class="modal-mech-avatar" id="modal-avatar">–</div>
+          <div>
+            <div class="modal-mech-name" id="modal-mech-name">–</div>
+            <div class="modal-mech-loc"><i class="bi bi-geo-alt"></i><span id="modal-mech-loc">–</span></div>
+          </div>
+        </div>
+        <div class="modal-form-row">
+          <div class="modal-form-group"><label for="bk-name">Your Name *</label><input type="text" id="bk-name" placeholder="Kofi Mensah" autocomplete="name" /></div>
+          <div class="modal-form-group"><label for="bk-phone">Phone Number *</label><input type="tel" id="bk-phone" placeholder="+233 54 000 0000" autocomplete="tel" /></div>
+        </div>
+        <div class="modal-form-row">
+          <div class="modal-form-group"><label for="bk-date">Preferred Date *</label><input type="date" id="bk-date" /></div>
+          <div class="modal-form-group"><label for="bk-time">Preferred Time *</label>
+            <select id="bk-time">
+              <option value="">Select time</option>
+              <option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option>
+              <option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option>
+              <option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-form-group"><label for="bk-service">Service Needed *</label>
+          <select id="bk-service" onchange="updateServicePrice()"><option value="">Select a service</option></select>
+        </div>
+        <div class="price-estimate" id="price-estimate" style="display:none;">
+          <div class="pe-icon"><i class="bi bi-tag-fill"></i></div>
+          <div>
+            <div class="pe-label">Estimated Charge</div>
+            <div class="pe-price" id="pe-price">–</div>
+            <div class="pe-note" id="pe-note">–</div>
+          </div>
+        </div>
+        <div class="modal-form-group"><label for="bk-vehicle">Vehicle Details</label><input type="text" id="bk-vehicle" placeholder="e.g. Toyota Corolla 2018, Silver" /></div>
+        <div class="modal-form-group"><label for="bk-notes">Additional Notes</label><textarea id="bk-notes" placeholder="Describe the issue or any special requests…"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-modal-confirm" onclick="submitBooking()"><i class="bi bi-check-circle"></i> Confirm Booking</button>
+      </div>
+    </div>
+    <div class="booking-success" id="booking-success">
+      <div class="success-icon-wrap"><i class="bi bi-check-circle-fill"></i></div>
+      <h3>Booking Confirmed!</h3>
+      <p>Your appointment has been sent to <strong id="success-mech-name">–</strong>.</p>
+      <p>They will contact you shortly to confirm the time.</p>
+      <div class="booking-ref" id="booking-ref">–</div>
+      <p style="font-size:.78rem;color:#8fa3bd;">Save this reference for your records.</p>
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-modal-cancel" onclick="closeModal()">Close</button>
+        <a href="#" class="btn-modal-confirm" style="text-decoration:none;"><i class="bi bi-list-check"></i> View Bookings</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHAT MODAL ═══ -->
+<div class="chat-overlay" id="chat-overlay">
+  <div class="chat-window">
+    <div class="chat-head">
+      <div class="chat-head-avatar" id="chat-avatar">–</div>
+      <div class="chat-head-info">
+        <div class="chat-head-name" id="chat-mech-name">–</div>
+        <div class="chat-head-status"><div class="online-dot"></div><span>Active now · <span id="chat-response-time">replies quickly</span></span></div>
+      </div>
+      <div class="chat-head-actions">
+        <a class="chat-head-btn" id="chat-call-btn" href="#" title="Call mechanic"><i class="bi bi-telephone-fill"></i></a>
+        <button class="chat-head-btn" onclick="clearChatHistory()" title="Clear conversation"><i class="bi bi-trash3"></i></button>
+        <button class="chat-head-btn" onclick="closeChat()" title="Close"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-wa-bar">
+      <span>Send directly to mechanic via WhatsApp for guaranteed delivery.</span>
+      <a class="btn-wa" id="wa-link" href="#" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chat-input" placeholder="Type a message…" rows="1"
+        onkeydown="handleChatKey(event)" oninput="autoResizeInput(this)"></textarea>
+      <button class="chat-send-btn" onclick="sendMessage()"><i class="bi bi-send-fill"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="bi bi-check-circle-fill"></i><span id="toast-msg"></span></div>
+
+<!-- FOOTER -->
+<footer class="ta-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="ta-logo" onclick="showView('list')" style="cursor:pointer;">
+          <div class="logo-mark">TA</div>
+          <div class="logo-text">Trust Automobile<small>Verified Marketplace</small></div>
+        </a>
+        <p>Ghana's most trusted automotive platform. Buy, sell, rent cars and find verified mechanics nationwide.</p>
+      </div>
+      <div class="footer-col"><h5>Marketplace</h5><ul>
+        <li><a href="#">Home</a></li>
+        <li><a onclick="showView('list')">Find a Mechanic</a></li>
+        <li><a href="#">Buy a Car</a></li>
+        <li><a href="#">Spare Parts</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Account</h5><ul>
+        <li><a href="#">Sign In</a></li>
+        <li><a href="#">Register</a></li>
+        <li><a href="#">Dashboard</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Contact</h5><ul>
+        <li><a href="tel:+233301234567">+233 30 123 4567</a></li>
+        <li><a href="mailto:hello@trustautomobile.gh">hello@trustautomobile.gh</a></li>
+        <li><a href="#">Accra, Ghana</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Trust Automobile Ghana. All rights reserved.</p>
+      <p>Genuine Cars &nbsp;·&nbsp; Verified Sellers &nbsp;·&nbsp; Trusted Mechanics</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════════ */
+const MECHANICS = [
+  { id:1, name:'Kwame Auto Services', owner:'Kwame Asante', region:'Greater Accra', city:'East Legon, Accra', rating:4.9, reviews:214, yearsExp:14,
+    services:['general','electrical','diagnostic'], serviceLabels:['General Repairs','Auto Electrical','Diagnostics'],
+    servicePricing:[
+      { key:'general',    label:'General Repairs', price:200, negotiable:true,  desc:'Full vehicle inspection, oil change, brake check, minor repairs.' },
+      { key:'electrical', label:'Auto Electrical', price:250, negotiable:false, desc:'Wiring faults, alternator, starter motor, ECU diagnosis.' },
+      { key:'diagnostic', label:'Diagnostics',     price:0,   negotiable:false, free:true, desc:'OBD-II scan and fault code reading. Free with any booked service.' },
+    ],
+    freeDiag:true, homeService:true, verified:true, featured:true, open:true, warranty:true,
+    phone:'+233 24 111 2233',
+    images:['https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=900&q=80','https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=900&q=80','https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=900&q=80','https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80','https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80'],
+    bio:'Over 14 years servicing Japanese and European vehicles. Full OBD-II diagnostic suite. Trusted by 200+ repeat customers across Greater Accra. We use only OEM and certified aftermarket parts.',
+    memberSince:'2021', responseTime:'Within 2 hours', jobsDone:340 },
+  { id:2, name:'Accra Central Motors', owner:'Abena Mensah', region:'Greater Accra', city:'Tema, Greater Accra', rating:4.7, reviews:178, yearsExp:9,
+    services:['bodywork','general'], serviceLabels:['Bodywork & Paint','General Repairs'],
+    servicePricing:[
+      { key:'bodywork', label:'Bodywork & Paint', price:500, negotiable:true, desc:'Dent removal, panel beating, full and partial resprays. ISO-approved paint booth.' },
+      { key:'general',  label:'General Repairs',  price:180, negotiable:true, desc:'Routine servicing, brake pads, filters, belts and general mechanical work.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:true, open:true, warranty:true,
+    phone:'+233 30 222 4455',
+    images:['https://images.unsplash.com/photo-1632823471565-1ecdf5c6da22?w=900&q=80','https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=900&q=80','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80'],
+    bio:'Specialising in body repairs, dent removal, and full respray work. ISO-approved paint booth. Serving Tema and Greater Accra since 2015.',
+    memberSince:'2020', responseTime:'Within a day', jobsDone:215 },
+  { id:3, name:'Kumasi AutoCare Hub', owner:'Kofi Boateng', region:'Ashanti', city:'Adum, Kumasi', rating:4.8, reviews:301, yearsExp:18,
+    services:['general','transmission','tyres'], serviceLabels:['General Repairs','Transmission','Tyres & Alignment'],
+    servicePricing:[
+      { key:'general',      label:'General Repairs',   price:150, negotiable:true,  desc:'Full vehicle service including oil change, filters, brakes and general checks.' },
+      { key:'transmission', label:'Transmission',      price:800, negotiable:true,  desc:'Gearbox rebuild, automatic and manual transmission service. OEM parts stocked.' },
+      { key:'tyres',        label:'Tyres & Alignment', price:120, negotiable:false, desc:'Tyre fitting, balancing and computerised 4-wheel alignment.' },
+    ],
+    freeDiag:true, homeService:false, verified:true, featured:true, open:true, warranty:true,
+    phone:'+233 24 333 5566',
+    images:['https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=900&q=80','https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80','https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=900&q=80'],
+    bio:"Kumasi's most reviewed workshop with 18 years experience. Gearbox specialists with OEM parts for Toyota, Honda, and Nissan. Free diagnosis on all first visits.",
+    memberSince:'2019', responseTime:'Within 3 hours', jobsDone:520 },
+  { id:4, name:'ProFix Auto Electricals', owner:'Emmanuel Darko', region:'Greater Accra', city:'Spintex Road, Accra', rating:4.6, reviews:132, yearsExp:7,
+    services:['electrical','diagnostic'], serviceLabels:['Auto Electrical','Diagnostics'],
+    servicePricing:[
+      { key:'electrical', label:'Auto Electrical', price:300, negotiable:false, desc:'ECU repairs, wiring harness, alternator, starter motor and full electrical fault finding.' },
+      { key:'diagnostic', label:'Diagnostics',     price:0,   negotiable:false, free:true, desc:'Full OBD scan and report. Free of charge. Home visit available.' },
+    ],
+    freeDiag:true, homeService:true, verified:true, featured:false, open:true, warranty:false,
+    phone:'+233 55 444 7788',
+    images:['https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80','https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=900&q=80'],
+    bio:'Wiring harness repair, ECU diagnostics, alternator and starter motor specialists. Mobile service available across Greater Accra.',
+    memberSince:'2022', responseTime:'Within 1 hour', jobsDone:180 },
+  { id:5, name:'Cool Breeze Auto AC', owner:'Ama Owusu', region:'Greater Accra', city:'Airport Residential, Accra', rating:4.8, reviews:89, yearsExp:6,
+    services:['aircon','electrical'], serviceLabels:['Air Conditioning','Auto Electrical'],
+    servicePricing:[
+      { key:'aircon',     label:'Air Conditioning', price:350, negotiable:false, desc:'Gas recharge, compressor replacement, evaporator cleaning and full AC overhaul.' },
+      { key:'electrical', label:'Auto Electrical',  price:220, negotiable:true,  desc:'General electrical fault-finding and repair.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:false, open:false, warranty:true,
+    phone:'+233 26 555 9900',
+    images:['https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=900&q=80','https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&q=80'],
+    bio:"Ghana's leading AC specialists. Gas recharge, compressor replacement, and full AC system overhaul. All vehicles accepted.",
+    memberSince:'2022', responseTime:'Within 4 hours', jobsDone:120 },
+  { id:6, name:'Takoradi Tyres & More', owner:'Fiifi Acquah', region:'Western', city:'Market Circle, Takoradi', rating:4.5, reviews:67, yearsExp:11,
+    services:['tyres','general'], serviceLabels:['Tyres & Alignment','General Repairs'],
+    servicePricing:[
+      { key:'tyres',   label:'Tyres & Alignment', price:100, negotiable:false, desc:'All brand tyre fitting, balancing and computerised wheel alignment.' },
+      { key:'general', label:'General Repairs',   price:130, negotiable:true,  desc:'Routine servicing and general mechanical repairs.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:false, open:true, warranty:false,
+    phone:'+233 31 666 0011',
+    images:['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80','https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=900&q=80'],
+    bio:"Western Region's go-to for tyre fitting, balancing, and computerised wheel alignment for all vehicle types.",
+    memberSince:'2021', responseTime:'Within a day', jobsDone:95 },
+  { id:7, name:'Suame Magazine Repairs', owner:'Isaac Frimpong', region:'Ashanti', city:'Suame, Kumasi', rating:4.4, reviews:245, yearsExp:22,
+    services:['general','transmission','bodywork'], serviceLabels:['General Repairs','Transmission','Bodywork & Paint'],
+    servicePricing:[
+      { key:'general',      label:'General Repairs',  price:100, negotiable:true, desc:'Full range of general mechanical repairs. Heavy-duty and commercial vehicles welcome.' },
+      { key:'transmission', label:'Transmission',     price:600, negotiable:true, desc:'Manual and automatic gearbox rebuilds. Large parts inventory on site.' },
+      { key:'bodywork',     label:'Bodywork & Paint', price:400, negotiable:true, desc:'Panel beating, dent repair and spray painting.' },
+    ],
+    freeDiag:false, homeService:false, verified:false, featured:false, open:true, warranty:false,
+    phone:'+233 24 777 2233',
+    images:['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=80','https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=900&q=80'],
+    bio:'Decades of experience in heavy-duty and commercial vehicle repairs. Large parts inventory on site.',
+    memberSince:'2018', responseTime:'Within a day', jobsDone:650 },
+  { id:8, name:'SafeRoad Auto Clinic', owner:'Selorm Adzogble', region:'Volta', city:'Ho, Volta Region', rating:4.7, reviews:54, yearsExp:8,
+    services:['general','diagnostic','electrical'], serviceLabels:['General Repairs','Diagnostics','Auto Electrical'],
+    servicePricing:[
+      { key:'general',    label:'General Repairs', price:160, negotiable:true,  desc:'Full vehicle service with transparent pricing. No hidden costs.' },
+      { key:'diagnostic', label:'Diagnostics',     price:0,   negotiable:false, free:true, desc:'Free diagnostic scan. Available as home service.' },
+      { key:'electrical', label:'Auto Electrical', price:200, negotiable:false, desc:'Electrical fault diagnosis and repair.' },
+    ],
+    freeDiag:true, homeService:true, verified:true, featured:false, open:true, warranty:true,
+    phone:'+233 36 888 4455',
+    images:['https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=900&q=80','https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80'],
+    bio:"Volta Region's most trusted clinic. Friendly service with transparent pricing and no hidden costs. Home service available.",
+    memberSince:'2022', responseTime:'Within 2 hours', jobsDone:78 },
+  { id:9, name:'North Star Mechanics', owner:'Abdul Mumuni', region:'Northern', city:'Tamale, Northern Region', rating:4.6, reviews:42, yearsExp:10,
+    services:['general','tyres','transmission'], serviceLabels:['General Repairs','Tyres & Alignment','Transmission'],
+    servicePricing:[
+      { key:'general',      label:'General Repairs',   price:120, negotiable:true,  desc:'Servicing trucks, 4x4s and commercial vehicles.' },
+      { key:'tyres',        label:'Tyres & Alignment', price:90,  negotiable:false, desc:'Tyre fitting and alignment. All sizes stocked.' },
+      { key:'transmission', label:'Transmission',      price:700, negotiable:true,  desc:'Gearbox and transfer case repairs for heavy vehicles.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:false, open:true, warranty:false,
+    phone:'+233 37 999 6677',
+    images:['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80'],
+    bio:"Northern Ghana's premier workshop serving trucks, 4x4s, and commercial vehicles.",
+    memberSince:'2021', responseTime:'Within 4 hours', jobsDone:62 },
+  { id:10, name:'GreenLight Auto Works', owner:'Nana Adjei', region:'Greater Accra', city:'Adenta, Accra', rating:4.5, reviews:98, yearsExp:5,
+    services:['electrical','aircon','diagnostic'], serviceLabels:['Auto Electrical','Air Conditioning','Diagnostics'],
+    servicePricing:[
+      { key:'electrical', label:'Auto Electrical',  price:280, negotiable:false, desc:'Modern electrical diagnostics for hybrid and OBDII vehicles.' },
+      { key:'aircon',     label:'Air Conditioning', price:400, negotiable:false, desc:'Full AC service including gas recharge and compressor work.' },
+      { key:'diagnostic', label:'Diagnostics',      price:0,   negotiable:false, free:true, desc:'Free advanced OBD scan available with any service.' },
+    ],
+    freeDiag:true, homeService:true, verified:true, featured:false, open:false, warranty:true,
+    phone:'+233 54 100 2200',
+    images:['https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=900&q=80','https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=900&q=80'],
+    bio:'Modern diagnostic equipment. Specialists in hybrid and modern OBDII vehicle systems. Mobile service available.',
+    memberSince:'2023', responseTime:'Within 1 hour', jobsDone:145 },
+  { id:11, name:'Cape Coast Auto Hub', owner:'Ekow Brew', region:'Central', city:'Cape Coast, Central Region', rating:4.3, reviews:37, yearsExp:12,
+    services:['general','bodywork','tyres'], serviceLabels:['General Repairs','Bodywork & Paint','Tyres & Alignment'],
+    servicePricing:[
+      { key:'general',  label:'General Repairs',   price:140, negotiable:true,  desc:'Full vehicle servicing and general mechanical repairs.' },
+      { key:'bodywork', label:'Bodywork & Paint',  price:450, negotiable:true,  desc:'Panel repair, dent removal and professional spray painting.' },
+      { key:'tyres',    label:'Tyres & Alignment', price:110, negotiable:false, desc:'Tyre supply, fitting and wheel balancing.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:false, open:true, warranty:false,
+    phone:'+233 33 200 3300',
+    images:['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&q=80','https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80'],
+    bio:"Central Region's full-service workshop. Known for honest quotes and quality workmanship.",
+    memberSince:'2021', responseTime:'Within a day', jobsDone:88 },
+  { id:12, name:'Delta Motors Koforidua', owner:'Yaw Asante', region:'Eastern', city:'Koforidua, Eastern Region', rating:4.4, reviews:61, yearsExp:9,
+    services:['general','transmission','electrical'], serviceLabels:['General Repairs','Transmission','Auto Electrical'],
+    servicePricing:[
+      { key:'general',      label:'General Repairs', price:160, negotiable:true,  desc:'Routine and non-routine mechanical repairs for all vehicle types.' },
+      { key:'transmission', label:'Transmission',    price:750, negotiable:true,  desc:'Automatic and manual gearbox rebuilds and service.' },
+      { key:'electrical',   label:'Auto Electrical', price:240, negotiable:false, desc:'Electrical fault diagnosis and full repairs.' },
+    ],
+    freeDiag:false, homeService:false, verified:true, featured:false, open:true, warranty:true,
+    phone:'+233 34 400 5500',
+    images:['https://images.unsplash.com/photo-1570733577524-3a047079e80d?w=900&q=80','https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=900&q=80'],
+    bio:'Serving Eastern Region for nearly a decade. Gearbox rebuilds and automatic transmission specialists. Warranty on all completed work.',
+    memberSince:'2020', responseTime:'Within 3 hours', jobsDone:105 },
+];
+
+const REVIEWS = {
+  1:[{name:'Kwabena A.',svc:'General Repairs',rating:5,date:'12 Mar 2026',text:'Absolutely professional. Fixed my Toyota Corolla in a few hours and the price was exactly as quoted. Will definitely return.'},
+     {name:'Abena K.',svc:'Diagnostics',rating:5,date:'5 Mar 2026',text:'Free diagnostic scan was thorough. The team explained every fault code clearly. Very trustworthy.'},
+     {name:'Fiifi T.',svc:'Auto Electrical',rating:4,date:'18 Feb 2026',text:'Good work on my alternator. Took slightly longer than expected but the quality was excellent.'}],
+  2:[{name:'Nana O.',svc:'Bodywork & Paint',rating:5,date:'8 Mar 2026',text:'My car looks brand new after the respray. Perfect colour match and professional finish.'},
+     {name:'Ama S.',svc:'General Repairs',rating:4,date:'20 Feb 2026',text:'Solid workshop, fair pricing. The bodywork was top quality.'}],
+  3:[{name:'Kofi B.',svc:'Transmission',rating:5,date:'10 Mar 2026',text:'Best gearbox workshop in Kumasi. My Honda CRV gearbox is running perfectly after the rebuild.'},
+     {name:'Yaw D.',svc:'General Repairs',rating:5,date:'2 Mar 2026',text:'Over 300 reviews and they deserve every one. Punctual, honest and high quality.'},
+     {name:'Akua M.',svc:'Tyres & Alignment',rating:4,date:'25 Jan 2026',text:'Fast tyre change and the alignment was done properly. Good value.'}],
+  8:[{name:'Selorm K.',svc:'General Repairs',rating:5,date:'1 Mar 2026',text:'Transparent pricing and no surprises on the bill. Excellent experience overall.'}],
+};
+
+/* ════════════════════════════════════════════════════
+   VIEW MANAGEMENT
+════════════════════════════════════════════════════ */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ════════════════════════════════════════════════════
+   LIST VIEW — FILTER & RENDER
+════════════════════════════════════════════════════ */
+let activeTags  = new Set();
+let activeSearch = '';
+let currentPage = 1;
+const PER_PAGE  = 6;
+
+function getFiltered() {
+  const region    = document.getElementById('f-region').value;
+  const service   = document.getElementById('f-service').value;
+  const minRating = parseFloat(document.querySelector('input[name="rating"]:checked')?.value || 0);
+  const sort      = document.getElementById('sort-select').value;
+  let results     = [...MECHANICS];
+
+  if (activeSearch) {
+    const q = activeSearch.toLowerCase();
+    results = results.filter(m =>
+      m.name.toLowerCase().includes(q) ||
+      m.city.toLowerCase().includes(q) ||
+      m.owner.toLowerCase().includes(q) ||
+      m.serviceLabels.some(s => s.toLowerCase().includes(q))
+    );
+  }
+  if (region)    results = results.filter(m => m.region === region);
+  if (service)   results = results.filter(m => m.services.includes(service));
+  if (minRating) results = results.filter(m => m.rating >= minRating);
+  if (activeTags.has('verified'))     results = results.filter(m => m.verified);
+  if (activeTags.has('open'))         results = results.filter(m => m.open);
+  if (activeTags.has('free_diag'))    results = results.filter(m => m.freeDiag);
+  if (activeTags.has('home_service')) results = results.filter(m => m.homeService);
+  if (activeTags.has('warranty'))     results = results.filter(m => m.warranty);
+
+  if (sort === 'featured') results.sort((a,b) => b.featured - a.featured || b.rating - a.rating);
+  if (sort === 'rating')   results.sort((a,b) => b.rating - a.rating);
+  if (sort === 'reviews')  results.sort((a,b) => b.reviews - a.reviews);
+  if (sort === 'name')     results.sort((a,b) => a.name.localeCompare(b.name));
+  return results;
+}
+
+function starsStr(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+}
+
+function mechCardHTML(m) {
+  const svcTags = m.serviceLabels.map(s => `<span class="svc-tag">${s}</span>`).join('');
+  const extras = [
+    m.freeDiag    ? '<span class="svc-tag" style="background:rgba(26,122,58,.07);color:#1A7A3A;border-color:rgba(26,122,58,.2);">Free Diagnosis</span>' : '',
+    m.homeService ? '<span class="svc-tag" style="background:rgba(232,160,32,.08);color:#7A5500;border-color:rgba(232,160,32,.25);">Home Service</span>' : '',
+    m.warranty    ? '<span class="svc-tag" style="background:rgba(26,75,140,.07);color:#1A4B8C;border-color:rgba(26,75,140,.18);">Warranty</span>' : '',
+  ].filter(Boolean).join('');
+
+  return `
+  <div class="mech-card${m.featured?' featured':''}" id="mcard-${m.id}">
+    ${m.featured ? '<div class="featured-ribbon"><i class="bi bi-star-fill"></i> Featured</div>' : ''}
+    <div class="mech-img">
+      ${m.image ? `<img src="${m.image}" alt="${m.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=mech-img-placeholder><i class=bi bi-tools></i><span>${m.name.charAt(0)}</span></div>'" />`
+                : `<div class="mech-img-placeholder"><i class="bi bi-tools"></i><span>${m.name.charAt(0)}</span></div>`}
+      ${m.verified ? '<div class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</div>' : ''}
+      <div class="open-badge ${m.open?'open':'closed'}">${m.open?'Open':'Closed'}</div>
+    </div>
+    <div class="mech-body">
+      <div class="mech-name">${m.name}</div>
+      <div class="mech-location"><i class="bi bi-geo-alt-fill"></i>${m.city}</div>
+      <div class="mech-rating">
+        <span class="stars">${starsStr(m.rating)}</span>
+        <span class="rating-num">${m.rating.toFixed(1)}</span>
+        <span class="review-count">(${m.reviews} reviews)</span>
+      </div>
+      <div class="mech-services">${svcTags}${extras}</div>
+      <div class="mech-meta">
+        <div class="meta-item"><i class="bi bi-person-fill"></i><span>${m.owner}</span></div>
+        <div class="meta-item"><i class="bi bi-briefcase-fill"></i><strong>${m.yearsExp}</strong>&nbsp;yrs exp</div>
+        <div class="meta-item"><i class="bi bi-telephone-fill"></i><span>${m.phone}</span></div>
+      </div>
+    </div>
+    <div class="mech-actions">
+      <div class="mech-svc-prices">
+        <div class="svc-prices-label">Services &amp; Charges</div>
+        ${m.servicePricing.map(s => `
+          <div class="svc-price-row">
+            <span class="svc-price-name">${s.label}</span>
+            <span class="svc-price-val ${s.free?'free':s.negotiable?'negotiable':'fixed'}">
+              ${s.free ? 'Free' : 'GHS ' + s.price}
+              ${!s.free ? `<em>${s.negotiable?'Negotiable':'Fixed'}</em>` : ''}
+            </span>
+          </div>`).join('')}
+      </div>
+      <div class="action-btns">
+        <button class="btn-book" onclick="openModal(${m.id})"><i class="bi bi-calendar-plus"></i> Book Now</button>
+        <button class="btn-profile" onclick="viewProfile(${m.id})"><i class="bi bi-person-circle"></i> Profile</button>
+        <a href="tel:${m.phone}" class="btn-call"><i class="bi bi-telephone"></i> Call</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderMechanics() {
+  const filtered = getFiltered();
+  const total    = filtered.length;
+  const pages    = Math.ceil(total / PER_PAGE);
+  currentPage    = Math.min(currentPage, pages || 1);
+  const slice    = filtered.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
+
+  document.getElementById('results-count').innerHTML =
+    `Showing <strong>${slice.length} of ${total}</strong> mechanic${total!==1?'s':''}`;
+
+  const grid  = document.getElementById('mechanics-grid');
+  const empty = document.getElementById('empty-state');
+
+  if (slice.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; }
+  else { empty.style.display = 'none'; grid.innerHTML = slice.map(mechCardHTML).join(''); }
+  renderPagination(pages);
+}
+
+function renderPagination(pages) {
+  const el = document.getElementById('pagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+  let html = '';
+  if (currentPage > 1) html += `<button class="page-btn" onclick="goPage(${currentPage-1})"><i class="bi bi-chevron-left"></i></button>`;
+  for (let i=1; i<=pages; i++) html += `<button class="page-btn${i===currentPage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+  if (currentPage < pages) html += `<button class="page-btn" onclick="goPage(${currentPage+1})"><i class="bi bi-chevron-right"></i></button>`;
+  el.innerHTML = html;
+}
+
+function goPage(n) {
+  currentPage = n;
+  renderMechanics();
+  document.querySelector('.page-body').scrollIntoView({ behavior:'smooth' });
+}
+
+function toggleTag(el, key) {
+  el.classList.toggle('active');
+  activeTags.has(key) ? activeTags.delete(key) : activeTags.add(key);
+  currentPage = 1;
+  renderMechanics();
+}
+
+function clearFilters() {
+  document.getElementById('f-region').value = '';
+  document.getElementById('f-service').value = '';
+  document.querySelector('input[name="rating"]').checked = true;
+  activeTags.clear();
+  document.querySelectorAll('.service-tag').forEach(t => t.classList.remove('active'));
+  activeSearch = '';
+  currentPage  = 1;
+  renderMechanics();
+  showToast('Filters cleared');
+}
+
+function applySearch() {
+  activeSearch = document.getElementById('heroSearch').value.trim();
+  const region  = document.getElementById('heroRegion').value;
+  const service = document.getElementById('heroService').value;
+  if (region)  document.getElementById('f-region').value  = region;
+  if (service) document.getElementById('f-service').value = service;
+  currentPage = 1;
+  renderMechanics();
+  document.querySelector('.page-body').scrollIntoView({ behavior:'smooth' });
+}
+
+/* ════════════════════════════════════════════════════
+   PROFILE VIEW
+════════════════════════════════════════════════════ */
+let currentMech  = null;
+let galleryIndex = 0;
+
+function viewProfile(mechId) {
+  const m = MECHANICS.find(x => x.id === mechId);
+  if (!m) return;
+  currentMech = m;
+  renderProfile(m);
+  showView('profile');
+}
+
+function starsHTML(r) {
+  return '★'.repeat(Math.floor(r)) + (r%1>=0.5?'½':'') + '☆'.repeat(5-Math.floor(r)-(r%1>=0.5?1:0));
+}
+
+function buildGallery(images) {
+  const main   = document.getElementById('gallery-main');
+  const thumbs = document.getElementById('gallery-thumbs');
+  // Remove old slides
+  main.querySelectorAll('.slide').forEach(s => s.remove());
+  galleryIndex = 0;
+
+  images.forEach((src, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide' + (i===0?' active':'');
+    slide.innerHTML = `<img src="${src}" alt="Workshop photo ${i+1}" loading="${i===0?'eager':'lazy'}" />`;
+    main.appendChild(slide);
+  });
+
+  thumbs.innerHTML = images.slice(0,5).map((src, i) => {
+    const isLast = i===4 && images.length>5;
+    return `<div class="gallery-thumb${i===0?' active':''}" onclick="goSlide(${i})">
+      <img src="${src}" alt="Thumb ${i+1}" loading="lazy" />
+      ${isLast?`<div class="more-overlay">+${images.length-4}</div>`:''}
+    </div>`;
+  }).join('');
+
+  updateGalleryCounter();
+}
+
+function goSlide(n) {
+  const slides = document.querySelectorAll('#gallery-main .slide');
+  const thumbs = document.querySelectorAll('#gallery-thumbs .gallery-thumb');
+  if (!slides.length) return;
+  galleryIndex = ((n % slides.length) + slides.length) % slides.length;
+  slides.forEach((s,i) => s.classList.toggle('active', i===galleryIndex));
+  thumbs.forEach((t,i) => t.classList.toggle('active', i===galleryIndex));
+  updateGalleryCounter();
+}
+
+function galleryNav(dir) { goSlide(galleryIndex + dir); }
+
+function updateGalleryCounter() {
+  const total = document.querySelectorAll('#gallery-main .slide').length;
+  document.getElementById('gallery-counter').innerHTML = `<i class="bi bi-camera"></i> ${galleryIndex+1} / ${total}`;
+}
+
+function renderProfile(m) {
+  document.getElementById('bc-name').textContent = m.name;
+  const imgs = m.images && m.images.length ? m.images : ['https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=900&q=80'];
+  buildGallery(imgs);
+  document.getElementById('gallery-verified').style.display = m.verified ? 'flex' : 'none';
+
+  const initials = m.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('p-avatar').textContent = initials;
+  document.getElementById('p-name').textContent   = m.name;
+
+  document.getElementById('p-sub').innerHTML = [
+    `<span class="profile-sub-item"><i class="bi bi-geo-alt-fill"></i>${m.city}</span>`,
+    `<span class="profile-sub-item ${m.open?'open':'closed'}"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i>${m.open?'Open Now':'Closed'}</span>`,
+    `<span class="profile-sub-item"><i class="bi bi-briefcase-fill"></i>${m.yearsExp} yrs experience</span>`,
+    `<span class="profile-sub-item"><i class="bi bi-telephone-fill"></i>${m.phone}</span>`,
+  ].join('');
+
+  document.getElementById('p-rating').innerHTML =
+    `<span class="profile-stars">${starsHTML(m.rating)}</span>
+     <span class="profile-rating-num">${m.rating.toFixed(1)}</span>
+     <span class="profile-review-count">(${m.reviews} reviews)</span>`;
+
+  const badges = [];
+  if (m.verified)    badges.push('<span class="p-badge verified"><i class="bi bi-patch-check-fill"></i> Verified</span>');
+  if (m.featured)    badges.push('<span class="p-badge featured"><i class="bi bi-star-fill"></i> Featured</span>');
+  if (m.warranty)    badges.push('<span class="p-badge warranty"><i class="bi bi-shield-check"></i> Warranty</span>');
+  if (m.homeService) badges.push('<span class="p-badge home"><i class="bi bi-house-fill"></i> Home Service</span>');
+  document.getElementById('p-badges').innerHTML = badges.join('');
+
+  document.getElementById('p-bio').textContent = m.bio;
+  document.getElementById('p-stats').innerHTML = [
+    `<div class="about-stat"><div class="about-stat-num">${m.yearsExp}+</div><div class="about-stat-label">Years Exp</div></div>`,
+    `<div class="about-stat"><div class="about-stat-num">${m.jobsDone || m.reviews*2}</div><div class="about-stat-label">Jobs Done</div></div>`,
+    `<div class="about-stat"><div class="about-stat-num">${m.rating}</div><div class="about-stat-label">Avg Rating</div></div>`,
+  ].join('');
+
+  document.getElementById('svc-table-body').innerHTML = m.servicePricing.map(s => {
+    const cls   = s.free ? 'free' : s.negotiable ? 'negotiable' : 'fixed';
+    const pill  = s.free
+      ? '<span class="svc-pill pill-free">Free</span>'
+      : s.negotiable
+        ? '<span class="svc-pill pill-negotiable">Negotiable</span>'
+        : '<span class="svc-pill pill-fixed">Fixed</span>';
+    const price = s.free
+      ? '<span class="svc-price-cell free">FREE</span>'
+      : `<span class="svc-price-cell ${cls}">GHS ${s.price.toLocaleString()}</span>`;
+    return `<tr>
+      <td><div class="svc-name">${s.label}</div>${s.desc?`<div class="svc-desc">${s.desc}</div>`:''}</td>
+      <td>${price}</td>
+      <td>${pill}</td>
+      <td><button class="svc-book-btn" onclick="openModal(${m.id},'${s.key}')"><i class="bi bi-calendar-plus"></i> Book</button></td>
+    </tr>`;
+  }).join('');
+
+  const mechReviews = REVIEWS[m.id] || [];
+  document.getElementById('review-summary').textContent =
+    mechReviews.length ? `${mechReviews.length} review${mechReviews.length!==1?'s':''}` : 'No reviews yet';
+
+  if (!mechReviews.length) {
+    document.getElementById('reviews-list').innerHTML =
+      '<p style="font-size:.88rem;color:#8FA3BD;text-align:center;padding:20px 0;">No reviews yet for this mechanic.</p>';
+  } else {
+    document.getElementById('reviews-list').innerHTML = mechReviews.map(r => {
+      const av = r.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      return `<div class="review-item">
+        <div class="review-top">
+          <div class="reviewer">
+            <div class="reviewer-avatar">${av}</div>
+            <div><div class="reviewer-name">${r.name}</div><div class="reviewer-meta">${r.date}</div></div>
+          </div>
+          <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+        </div>
+        <p class="review-text">${r.text}</p>
+        <span class="review-service-tag"><i class="bi bi-wrench"></i> ${r.svc}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Sidebar
+  const lowestSvc = m.servicePricing.filter(s => !s.free).sort((a,b) => a.price-b.price)[0];
+  if (lowestSvc) {
+    document.getElementById('s-price').innerHTML = `GHS ${lowestSvc.price.toLocaleString()} <small>per service</small>`;
+    document.getElementById('s-price-note').textContent = lowestSvc.negotiable ? 'Negotiable' : 'Fixed rate';
+  } else {
+    document.getElementById('s-price').innerHTML = 'FREE <small>service</small>';
+    document.getElementById('s-price-note').textContent = 'Complimentary';
+  }
+
+  const callBtn = document.getElementById('s-call-btn');
+  callBtn.innerHTML = `<i class="bi bi-telephone-fill"></i> ${m.phone}`;
+  callBtn.href = `tel:${m.phone}`;
+
+  document.getElementById('s-avatar').textContent = initials;
+  document.getElementById('s-name').textContent   = m.owner;
+  document.getElementById('s-meta').innerHTML = `
+    <span><i class="bi bi-calendar3"></i> Member since ${m.memberSince || '2021'}</span>
+    <span><i class="bi bi-chat-dots"></i> Replies ${m.responseTime || 'within a day'}</span>`;
+  document.getElementById('s-stats').innerHTML = `
+    <div class="seller-stat"><div class="seller-stat-num">${m.jobsDone || m.reviews*2}</div><div class="seller-stat-label">Jobs Done</div></div>
+    <div class="seller-stat"><div class="seller-stat-num">${m.reviews}</div><div class="seller-stat-label">Reviews</div></div>`;
+}
+
+/* ════════════════════════════════════════════════════
+   BOOKING MODAL — shared between list + profile views
+════════════════════════════════════════════════════ */
+let activeMechId = null;
+
+function openModal(mechId, preSelectKey) {
+  // mechId can come from list card or profile sidebar
+  const id = mechId !== undefined ? mechId : (currentMech ? currentMech.id : null);
+  if (id === null) return;
+  const m = MECHANICS.find(x => x.id === id);
+  if (!m) return;
+  activeMechId = m.id;
+
+  const initials = m.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('modal-avatar').textContent    = initials;
+  document.getElementById('modal-mech-name').textContent = m.name;
+  document.getElementById('modal-mech-loc').textContent  = m.city;
+
+  const sel = document.getElementById('bk-service');
+  sel.innerHTML = '<option value="">Select a service</option>';
+  m.servicePricing.forEach(s => {
+    const pt  = s.free ? 'Free' : `GHS ${s.price} — ${s.negotiable?'Negotiable':'Fixed'}`;
+    const opt = document.createElement('option');
+    opt.value = s.key;
+    opt.textContent = `${s.label}  (${pt})`;
+    opt.dataset.price      = s.price;
+    opt.dataset.negotiable = s.negotiable;
+    opt.dataset.free       = s.free || false;
+    opt.dataset.label      = s.label;
+    sel.appendChild(opt);
+  });
+
+  if (preSelectKey) { sel.value = preSelectKey; updateServicePrice(); }
+  else { document.getElementById('price-estimate').style.display = 'none'; }
+
+  const tmr = new Date(); tmr.setDate(tmr.getDate()+1);
+  document.getElementById('bk-date').min   = tmr.toISOString().split('T')[0];
+  document.getElementById('bk-date').value = '';
+  ['bk-name','bk-phone','bk-vehicle','bk-notes'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('bk-time').value = '';
+  document.getElementById('booking-success').classList.remove('show');
+  document.getElementById('booking-form-wrap').style.display = 'block';
+  document.getElementById('booking-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateServicePrice() {
+  const sel   = document.getElementById('bk-service');
+  const opt   = sel.options[sel.selectedIndex];
+  const panel = document.getElementById('price-estimate');
+  if (!opt?.value) { panel.style.display = 'none'; return; }
+  const isFree = opt.dataset.free === 'true';
+  const isNeg  = opt.dataset.negotiable === 'true';
+  const price  = parseInt(opt.dataset.price, 10);
+  document.getElementById('pe-price').textContent = isFree ? 'FREE' : `GHS ${price.toLocaleString()}`;
+  document.getElementById('pe-note').textContent  = isFree
+    ? `${opt.dataset.label} is offered at no charge. Other fees may apply for parts.`
+    : isNeg
+    ? `Starting price for ${opt.dataset.label}. Final cost may vary depending on vehicle condition and parts needed. Price is negotiable.`
+    : `Fixed rate for ${opt.dataset.label}. This price is firm and covers standard labour. Parts are billed separately if required.`;
+  panel.className = 'price-estimate ' + (isFree?'free':isNeg?'negotiable':'fixed');
+  panel.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('booking-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  activeMechId = null;
+}
+
+function submitBooking() {
+  const name  = document.getElementById('bk-name').value.trim();
+  const phone = document.getElementById('bk-phone').value.trim();
+  const date  = document.getElementById('bk-date').value;
+  const time  = document.getElementById('bk-time').value;
+  const sel   = document.getElementById('bk-service');
+  const svc   = sel.value;
+  if (!name || !phone || !date || !time || !svc) { showToast('Please fill in all required fields', 'error'); return; }
+
+  const m    = MECHANICS.find(x => x.id === activeMechId);
+  const ref  = 'BK-' + Date.now().toString(36).toUpperCase();
+  const opt  = sel.options[sel.selectedIndex];
+  const isFree = opt.dataset.free === 'true';
+  const isNeg  = opt.dataset.negotiable === 'true';
+  const price  = parseInt(opt.dataset.price, 10);
+  const priceText = isFree ? 'Free of charge' : `GHS ${price.toLocaleString()} (${isNeg?'Negotiable':'Fixed'})`;
+
+  const booking = { ref, mechId:m.id, mechName:m.name, mechCity:m.city, mechPhone:m.phone,
+    customerName:name, phone, date, time, serviceKey:svc, serviceLabel:opt.dataset.label,
+    price:isFree?0:price, isFree, isNeg, priceText,
+    vehicle:document.getElementById('bk-vehicle').value.trim(),
+    notes:document.getElementById('bk-notes').value.trim(),
+    status:'pending', bookedAt:new Date().toISOString() };
+
+  try {
+    const existing = JSON.parse(localStorage.getItem('ta_bookings') || '[]');
+    existing.unshift(booking);
+    localStorage.setItem('ta_bookings', JSON.stringify(existing));
+  } catch(e) {}
+
+  document.getElementById('success-mech-name').textContent = m.name;
+  document.getElementById('booking-ref').textContent = ref;
+  document.getElementById('booking-form-wrap').style.display = 'none';
+  document.getElementById('booking-success').classList.add('show');
+  showToast('Booking confirmed! Ref: ' + ref);
+}
+
+/* ════════════════════════════════════════════════════
+   CHAT SYSTEM
+════════════════════════════════════════════════════ */
+const AUTO_REPLIES = [
+  "Hello! Thanks for reaching out. How can I help you today?",
+  "Sure, I can take a look at that. When would you like to bring it in?",
+  "That's a common issue with that model. I've fixed it many times before.",
+  "Our prices are competitive. I'll give you a proper quote after inspection.",
+  "Yes, we're available this week. What day works best for you?",
+  "I can do a free diagnostic first so we know exactly what the problem is.",
+  "No problem at all. We accept cash, MoMo and bank transfer.",
+  "Absolutely — all our work comes with a warranty. You're in safe hands.",
+  "Let me check my schedule. I'll confirm a time shortly.",
+  "Thank you! We look forward to seeing you and your vehicle.",
+];
+
+let chatMechId = null;
+let replyTimer = null;
+
+function openChat() {
+  const m = currentMech;
+  if (!m) return;
+  chatMechId = m.id;
+  const initials = m.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('chat-avatar').textContent        = initials;
+  document.getElementById('chat-mech-name').textContent     = m.name;
+  document.getElementById('chat-response-time').textContent = m.responseTime || 'replies quickly';
+  document.getElementById('chat-call-btn').href             = `tel:${m.phone}`;
+  updateWaLink('');
+  renderChatMessages();
+  document.getElementById('chat-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('chat-input').focus(), 200);
+}
+
+function closeChat() {
+  document.getElementById('chat-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  clearTimeout(replyTimer);
+}
+
+function getChatHistory() {
+  try { return JSON.parse(localStorage.getItem(`ta_chat_${chatMechId}`) || '[]'); } catch(e) { return []; }
+}
+function saveChatHistory(msgs) {
+  try { localStorage.setItem(`ta_chat_${chatMechId}`, JSON.stringify(msgs)); } catch(e) {}
+}
+function clearChatHistory() {
+  if (!confirm('Clear this conversation?')) return;
+  try { localStorage.removeItem(`ta_chat_${chatMechId}`); } catch(e) {}
+  renderChatMessages();
+  showToast('Conversation cleared');
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function renderChatMessages() {
+  const msgs = getChatHistory();
+  const box  = document.getElementById('chat-messages');
+  if (!msgs.length) {
+    box.innerHTML = `<div class="chat-empty"><i class="bi bi-chat-dots"></i>
+      <p>Start a conversation with <strong>${currentMech ? currentMech.name : 'the mechanic'}</strong>.<br>Ask about services, availability, or pricing.</p></div>`;
+    return;
+  }
+  let lastDate = '';
+  let html = '';
+  msgs.forEach(msg => {
+    const msgDate = new Date(msg.ts).toLocaleDateString('en-GH', { weekday:'long', day:'numeric', month:'short' });
+    if (msgDate !== lastDate) { html += `<div class="chat-date-divider">${msgDate}</div>`; lastDate = msgDate; }
+    const time = new Date(msg.ts).toLocaleTimeString('en-GH', { hour:'2-digit', minute:'2-digit' });
+    if (msg.type === 'sent') {
+      html += `<div class="msg sent"><div class="msg-bubble">${escapeHTML(msg.text)}</div>
+        <div class="msg-time">${time} <i class="bi bi-check2-all msg-tick read"></i></div></div>`;
+    } else {
+      html += `<div class="msg received">
+        <div class="msg-sender">${currentMech ? currentMech.name.split(' ')[0] : 'Mechanic'}</div>
+        <div class="msg-bubble">${escapeHTML(msg.text)}</div>
+        <div class="msg-time">${time}</div></div>`;
+    }
+  });
+  box.innerHTML = html;
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+  const msgs = getChatHistory();
+  msgs.push({ type:'sent', text, ts: new Date().toISOString() });
+  saveChatHistory(msgs);
+  input.value = '';
+  input.style.height = 'auto';
+  renderChatMessages();
+  updateWaLink(text);
+  clearTimeout(replyTimer);
+  showTypingIndicator();
+  replyTimer = setTimeout(() => {
+    removeTypingIndicator();
+    const reply = AUTO_REPLIES[msgs.length % AUTO_REPLIES.length];
+    const updated = getChatHistory();
+    updated.push({ type:'received', text: reply, ts: new Date().toISOString() });
+    saveChatHistory(updated);
+    renderChatMessages();
+  }, 1400 + Math.random() * 1200);
+}
+
+function showTypingIndicator() {
+  const box = document.getElementById('chat-messages');
+  const empty = box.querySelector('.chat-empty');
+  if (empty) empty.remove();
+  const el = document.createElement('div');
+  el.className = 'msg received typing-indicator'; el.id = 'typing-indicator';
+  el.innerHTML = `<div class="msg-sender">${currentMech ? currentMech.name.split(' ')[0] : 'Mechanic'}</div>
+    <div class="msg-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function updateWaLink(lastMsg) {
+  const m   = currentMech;
+  if (!m) return;
+  const num  = m.phone.replace(/\D/g,'');
+  const body = lastMsg
+    ? `Hi ${m.name.split(' ')[0]}, I found your workshop on Trust Automobile Ghana. ${lastMsg}`
+    : `Hi ${m.name.split(' ')[0]}, I found your workshop on Trust Automobile Ghana. I'd like to enquire about your services.`;
+  document.getElementById('wa-link').href = `https://wa.me/${num}?text=${encodeURIComponent(body)}`;
+}
+
+function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResizeInput(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
+
+/* ════════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════════ */
+function showToast(msg, type='success') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  const icon = toast.querySelector('i');
+  icon.className = type==='error' ? 'bi bi-exclamation-circle-fill' : type==='info' ? 'bi bi-info-circle-fill' : 'bi bi-check-circle-fill';
+  toast.style.background = type==='error' ? '#D63B3B' : '#0B1E3D';
+  toast.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+/* ════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Initial render
+  renderMechanics();
+
+  // Hero search on Enter
+  document.getElementById('heroSearch').addEventListener('keydown', e => { if (e.key === 'Enter') applySearch(); });
+
+  // Close booking modal on overlay click
+  document.getElementById('booking-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('booking-modal')) closeModal();
+  });
+
+  // Close chat on overlay click
+  document.getElementById('chat-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('chat-overlay')) closeChat();
+  });
+});
+</script>
+<script src="ta-live-sync.js"></script>
+</body>
+</html>

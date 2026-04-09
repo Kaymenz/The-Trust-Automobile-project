@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Car Renter Dashboard — Trust Automobile Ghana</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="portal-shared.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;color:#1C2B40;background:#F0F3F8;min-height:100vh;display:flex;flex-direction:column}
+.portal-shell{display:grid;grid-template-columns:240px 1fr;flex:1;min-height:0}
+.topbar{background:#0B1E3D;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lm{width:32px;height:32px;background:#E8A020;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#0B1E3D;flex-shrink:0}
+.lt{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#fff;letter-spacing:.06em;line-height:1.1}
+.lt small{display:block;font-size:.56rem;font-weight:400;color:#8FA3BD;letter-spacing:.14em}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-notif{position:relative;cursor:pointer}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#D63B3B;border:1.5px solid #0B1E3D}
+.topbar-user{display:flex;align-items:center;gap:9px}
+.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1A4B8C,#1A7A3A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#fff}
+.user-info{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.2}
+.user-info small{display:block;font-size:.62rem;color:rgba(255,255,255,.4);font-weight:400}
+.btn-topbar{background:rgba(214,59,59,.18);color:#ff8080;border:none;padding:7px 13px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.btn-topbar:hover{background:#D63B3B;color:#fff}
+.sidebar{background:#fff;border-right:1px solid #DDE4EF;display:flex;flex-direction:column;overflow-y:auto}
+.sb-profile{padding:20px 18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px}
+.sb-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1A4B8C,#1A7A3A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#fff;flex-shrink:0}
+.sb-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;line-height:1.2}
+.sb-role{font-size:.7rem;color:#1A4B8C;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.sb-section{padding:10px 18px 4px;font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8FA3BD;margin-top:6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.04em;color:#5E7490;cursor:pointer;transition:all .2s;border-left:3px solid transparent}
+.sb-item:hover{color:#0B1E3D;background:rgba(26,75,140,.04)}
+.sb-item.active{color:#1A4B8C;background:rgba(26,75,140,.05);border-left-color:#1A4B8C;font-weight:700}
+.sb-item i{font-size:.95rem;width:18px;text-align:center}
+.sb-badge{margin-left:auto;background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px}
+.sb-item.active .sb-badge{background:#1A4B8C;color:#fff}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid #EEF2F8}
+.sb-footer a{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#8FA3BD;text-decoration:none;padding:6px 0;transition:color .2s}
+.sb-footer a:hover{color:#0B1E3D}
+.main{padding:28px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.section{display:none}.section.active{display:block}
+.section-head{margin-bottom:22px}
+.section-head h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:.04em;color:#0B1E3D;margin-bottom:3px}
+.section-head p{font-size:.86rem;color:#5E7490;line-height:1.6}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:11px;border:1px solid #DDE4EF;padding:18px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.stat-card:hover{box-shadow:0 6px 20px rgba(11,30,61,.08);transform:translateY(-1px)}
+.stat-ic{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.stat-num{font-family:'Bebas Neue',cursive;font-size:2rem;color:#0B1E3D;letter-spacing:.04em;line-height:1}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-top:2px}
+.stat-delta{font-size:.72rem;margin-top:3px;display:flex;align-items:center;gap:3px}
+.stat-delta.up{color:#1A7A3A}.stat-delta.down{color:#D63B3B}
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+.card{background:#fff;border-radius:12px;border:1px solid #DDE4EF;overflow:hidden;margin-bottom:20px}
+.card-head{padding:15px 20px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-head h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D;display:flex;align-items:center;gap:7px}
+.card-head h3 i{color:#1A4B8C}
+.card-body{padding:18px}
+.chart-wrap{position:relative;height:240px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:#F4F7FB}
+th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#1C2B40;border-bottom:1px solid #EEF2F8;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBFD}
+.empty-td{text-align:center;color:#8FA3BD;padding:40px 14px;font-size:.86rem}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ba{background:rgba(26,122,58,.1);color:#1A7A3A}
+.bb{background:rgba(232,160,32,.12);color:#8A5A00}
+.bc{background:rgba(26,75,140,.1);color:#1A4B8C}
+.bd{background:rgba(214,59,59,.08);color:#D63B3B}
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;border:none}
+.btn-blue{background:#1A4B8C;color:#fff}.btn-blue:hover{background:#0B1E3D}
+.btn-gold{background:#E8A020;color:#0B1E3D}.btn-gold:hover{background:#F5C05A}
+.btn-ghost{background:transparent;color:#5E7490;border:1.5px solid #DDE4EF}.btn-ghost:hover{border-color:#0B1E3D;color:#0B1E3D}
+.btn-danger{background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2)}.btn-danger:hover{background:#D63B3B;color:#fff;border-color:#D63B3B}
+.btn-navy{background:#0B1E3D;color:#fff}.btn-navy:hover{background:#1A4B8C}
+.btn-sm{padding:5px 10px;font-size:.7rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490}
+.fg label .req{color:#D63B3B}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid #DDE4EF;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#1A4B8C;box-shadow:0 0 0 3px rgba(26,75,140,.08)}
+.fg textarea{resize:vertical;min-height:80px}
+.img-preview{width:100%;height:180px;object-fit:cover;border-radius:8px;margin-top:6px;display:none}
+/* FLEET CARDS */
+.fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.fleet-card{background:#fff;border:1px solid #DDE4EF;border-radius:12px;overflow:hidden;transition:all .2s}
+.fleet-card:hover{box-shadow:0 8px 24px rgba(11,30,61,.1);transform:translateY(-2px)}
+.fc-img{height:160px;background:#F4F7FB;overflow:hidden;position:relative}
+.fc-img img{width:100%;height:100%;object-fit:cover}
+.fc-avail{position:absolute;top:10px;right:10px;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:100px}
+.fc-rate{position:absolute;bottom:10px;left:10px;background:rgba(11,30,61,.85);color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.04em;padding:3px 10px;border-radius:100px}
+.fc-body{padding:13px 15px}
+.fc-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:#0B1E3D;margin-bottom:4px}
+.fc-specs{font-size:.76rem;color:#5E7490;margin-bottom:10px}
+.fc-actions{display:flex;gap:6px}
+/* CHAT */
+.chat-layout{display:grid;grid-template-columns:280px 1fr;height:560px;border:1px solid #DDE4EF;border-radius:12px;overflow:hidden;background:#fff}
+.chat-list{border-right:1px solid #DDE4EF;overflow-y:auto;background:#FAFBFD}
+.chat-list-head{padding:14px 16px;border-bottom:1px solid #EEF2F8;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D}
+.chat-item{padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #EEF2F8;transition:background .15s}
+.chat-item:hover,.chat-item.active{background:rgba(26,75,140,.05)}
+.chat-av{width:38px;height:38px;border-radius:50%;background:#1A4B8C;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#fff;flex-shrink:0}
+.chat-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;color:#0B1E3D}
+.chat-preview{font-size:.74rem;color:#8FA3BD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.chat-unread{background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:100px;margin-left:auto}
+.chat-window{display:flex;flex-direction:column}
+.chat-win-head{padding:13px 18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px;background:rgba(26,75,140,.03)}
+.chat-win-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;color:#0B1E3D}
+.chat-win-sub{font-size:.74rem;color:#5E7490}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#F0F3F8}
+.msg{max-width:72%;display:flex;flex-direction:column}
+.msg.sent{align-self:flex-end;align-items:flex-end}
+.msg.recv{align-self:flex-start;align-items:flex-start}
+.msg-bubble{padding:10px 14px;border-radius:14px;font-size:.86rem;line-height:1.5;word-break:break-word}
+.msg.sent .msg-bubble{background:#1A4B8C;color:#fff;border-bottom-right-radius:4px}
+.msg.recv .msg-bubble{background:#fff;color:#1C2B40;border:1px solid #DDE4EF;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(11,30,61,.06)}
+.msg-time{font-size:.66rem;color:#8FA3BD;margin-top:3px}
+.chat-input-area{padding:12px 14px;background:#fff;border-top:1px solid #DDE4EF;display:flex;gap:9px;align-items:flex-end}
+.chat-input{flex:1;padding:10px 14px;border:1.5px solid #DDE4EF;border-radius:22px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;outline:none;resize:none;min-height:42px;max-height:100px;transition:border-color .2s;background:#F4F7FB}
+.chat-input:focus{border-color:#1A4B8C;background:#fff}
+.chat-send{width:40px;height:40px;border-radius:50%;background:#1A4B8C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:.95rem;flex-shrink:0;transition:all .2s}
+.chat-send:hover{background:#0B1E3D;transform:scale(1.08)}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#8FA3BD;gap:10px}
+.chat-empty i{font-size:2.5rem}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.vid-card{background:#fff;border-radius:10px;border:1px solid #DDE4EF;overflow:hidden;transition:all .2s}
+.vid-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(11,30,61,.1)}
+.vid-thumb{position:relative;padding-top:56.25%;background:#0B1E3D;cursor:pointer}
+.vid-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,30,61,.4)}
+.vid-play-btn{width:42px;height:42px;border-radius:50%;background:rgba(26,75,140,.9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem}
+.vid-dur{position:absolute;bottom:7px;right:8px;background:rgba(11,30,61,.8);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:4px}
+.vid-body{padding:11px 13px}
+.vid-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid-meta{font-size:.72rem;color:#8FA3BD}
+.vid-actions{display:flex;gap:6px;margin-top:9px}
+.vid-url-hint{display:none;background:#F4F7FB;border:1px solid #DDE4EF;border-radius:7px;padding:9px 12px;margin-top:6px;font-size:.8rem;color:#5E7490;align-items:center;gap:10px}
+.vid-url-hint.show{display:flex}
+.vid-url-hint img{width:72px;height:45px;object-fit:cover;border-radius:4px;flex-shrink:0}
+#toast{position:fixed;bottom:24px;right:24px;background:#0B1E3D;color:#fff;padding:12px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;box-shadow:0 8px 28px rgba(11,30,61,.3);z-index:9999;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:9px;max-width:340px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.error{background:#D63B3B}
+#toast.success{background:#1A7A3A}
+@media(max-width:960px){.portal-shell{grid-template-columns:1fr}.sidebar{display:none}.stat-row{grid-template-columns:1fr 1fr}.chart-row{grid-template-columns:1fr}}
+@media(max-width:560px){.stat-row{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.chat-layout{grid-template-columns:1fr}.chat-list{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">
+    <div class="lm">TA</div>
+    <div class="lt">Trust Automobile<small>Car Renter Dashboard</small></div>
+  </a>
+  <div class="topbar-right">
+    <div class="topbar-notif"><i class="bi bi-bell-fill" style="color:rgba(255,255,255,.65);font-size:1.1rem"></i><div class="notif-dot"></div></div>
+    <div class="topbar-user">
+      <div class="user-av" id="top-av">–</div>
+      <div class="user-info"><span id="top-name">–</span><small>Car Renter</small></div>
+    </div>
+    <button class="btn-topbar" onclick="portalLogout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+  </div>
+</div>
+
+<div class="portal-shell">
+  <div class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av" id="sb-av">–</div>
+      <div><div class="sb-name" id="sb-name">–</div><div class="sb-role"><i class="bi bi-key-fill" style="margin-right:3px"></i>Verified Renter</div></div>
+    </div>
+    <div class="sb-section">Overview</div>
+    <div class="sb-item active" onclick="nav('overview')" data-s="overview"><i class="bi bi-speedometer2"></i> Dashboard</div>
+    <div class="sb-section">Fleet</div>
+    <div class="sb-item" onclick="nav('fleet')" data-s="fleet"><i class="bi bi-key-fill"></i> My Fleet <span class="sb-badge" id="badge-fleet">0</span></div>
+    <div class="sb-item" onclick="nav('add-car')" data-s="add-car"><i class="bi bi-plus-circle-fill"></i> Add Car</div>
+    <div class="sb-section">Rentals</div>
+    <div class="sb-item" onclick="nav('rentals')" data-s="rentals"><i class="bi bi-calendar-check-fill"></i> Active Rentals <span class="sb-badge" id="badge-rents">0</span></div>
+    <div class="sb-section">Communication</div>
+    <div class="sb-item" onclick="nav('chat')" data-s="chat"><i class="bi bi-chat-dots-fill"></i> Customer Chat <span class="sb-badge" id="badge-chat">0</span></div>
+    <div class="sb-section">Content</div>
+    <div class="sb-item" onclick="nav('videos')" data-s="videos"><i class="bi bi-play-circle-fill"></i> My Videos</div>
+    <div class="sb-item" onclick="nav('add-video')" data-s="add-video"><i class="bi bi-camera-video-fill"></i> Post Video</div>
+    <div class="sb-section">Account</div>
+    <div class="sb-item" onclick="nav('profile')" data-s="profile"><i class="bi bi-person-circle"></i> My Profile</div>
+    <div class="sb-item" onclick="nav('settings')" data-s="settings"><i class="bi bi-gear-fill"></i> Settings</div>
+    <div class="sb-footer">
+      <a href="cars-for-rent.html" target="_blank"><i class="bi bi-globe"></i> Public Fleet Page</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="s-overview">
+      <div class="section-head"><h2 id="greet-title">Good day! 👋</h2><p>Your fleet at a glance.</p></div>
+      <div class="stat-row" id="dash-stats"></div>
+      <div class="chart-row">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-head"><h3><i class="bi bi-graph-up-arrow"></i> Monthly Rental Income (GHS)</h3></div>
+          <div class="card-body"><div class="chart-wrap"><canvas id="chart-income"></canvas></div></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-head"><h3><i class="bi bi-pie-chart-fill"></i> Fleet Status</h3></div>
+          <div class="card-body"><div class="chart-wrap"><canvas id="chart-fleet"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-key-fill"></i> Fleet Overview</h3><button class="btn btn-gold btn-sm" onclick="nav('fleet')">Manage Fleet</button></div>
+        <div class="fleet-grid" id="overview-fleet" style="padding:16px"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-chat-dots-fill"></i> Recent Messages</h3><button class="btn btn-ghost btn-sm" onclick="nav('chat')">View All</button></div>
+        <div id="overview-msgs" style="padding:14px 18px;display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- FLEET TABLE -->
+    <div class="section" id="s-fleet">
+      <div class="section-head"><h2>My Fleet</h2><p>All rental cars visible on the public Cars for Rent page.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-key-fill"></i> Fleet Listing</h3><button class="btn btn-gold btn-sm" onclick="nav('add-car')"><i class="bi bi-plus-circle"></i> Add Car</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Photo</th><th>Vehicle</th><th>Rate/Day</th><th>Seats</th><th>Status</th><th>Bookings</th><th>Actions</th></tr></thead><tbody id="fleet-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT CAR -->
+    <div class="section" id="s-add-car">
+      <div class="section-head"><h2 id="car-form-h">Add Rental Car</h2><p>Car goes live on the public Cars for Rent page immediately.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-pencil-fill"></i> Car Details</h3></div>
+        <div class="card-body">
+          <input type="hidden" id="edit-car-id"/>
+          <div class="form-grid">
+            <div class="fg"><label>Make <span class="req">*</span></label><input id="c-make" placeholder="Toyota"/></div>
+            <div class="fg"><label>Model <span class="req">*</span></label><input id="c-model" placeholder="Land Cruiser"/></div>
+            <div class="fg"><label>Year <span class="req">*</span></label><input id="c-year" type="number" min="2000" max="2026" placeholder="2022"/></div>
+            <div class="fg"><label>Rate/Day (GHS) <span class="req">*</span></label><input id="c-rate" type="number" placeholder="350"/></div>
+            <div class="fg"><label>Seats</label><input id="c-seats" type="number" min="2" max="20" placeholder="5"/></div>
+            <div class="fg"><label>Transmission</label><select id="c-trans"><option value="">Select</option><option>Automatic</option><option>Manual</option></select></div>
+            <div class="fg"><label>Fuel Type</label><select id="c-fuel"><option value="">Select</option><option>Petrol</option><option>Diesel</option><option>Hybrid</option></select></div>
+            <div class="fg"><label>Region</label><select id="c-reg"><option value="">Select</option><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Eastern</option><option>Northern</option></select></div>
+            <div class="fg"><label>Min Rental Days</label><input id="c-min" type="number" min="1" placeholder="1"/></div>
+            <div class="fg"><label>Availability</label><select id="c-avail"><option value="available">Available Now</option><option value="booked">Currently Booked</option><option value="maintenance">Maintenance</option></select></div>
+          </div>
+          <div class="fg"><label>Image URL <span class="req">*</span></label><input id="c-img" placeholder="https://…" oninput="prevCarImg(this.value)"/></div>
+          <img id="c-img-prev" class="img-preview" onerror="this.style.display='none'"/>
+          <div class="fg"><label>Features (comma separated)</label><input id="c-feats" placeholder="AC, GPS, Bluetooth, Baby Seat"/></div>
+          <div class="fg"><label>Description</label><textarea id="c-desc" rows="3" placeholder="Rental terms, included mileage, deposit requirements…"></textarea></div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn btn-ghost" onclick="nav('fleet')"><i class="bi bi-arrow-left"></i> Cancel</button>
+            <button class="btn btn-gold" onclick="saveCar()"><i class="bi bi-check-circle"></i> <span id="car-save-lbl">Save Car</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE RENTALS -->
+    <div class="section" id="s-rentals">
+      <div class="section-head"><h2>Active Rentals</h2><p>Current and recent rental bookings for your fleet.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-calendar-check-fill"></i> Rental Bookings</h3></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Car</th><th>From</th><th>To</th><th>Days</th><th>Revenue</th><th>Status</th></tr></thead><tbody id="rentals-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="section" id="s-chat">
+      <div class="section-head"><h2>Customer Chat</h2><p>Messages from customers enquiring about your rental fleet.</p></div>
+      <div class="chat-layout">
+        <div class="chat-list">
+          <div class="chat-list-head">Conversations</div>
+          <div id="chat-list-body"></div>
+        </div>
+        <div class="chat-window">
+          <div class="chat-win-head">
+            <div class="chat-av" id="cw-av">–</div>
+            <div><div class="chat-win-name" id="cw-name">Select a conversation</div><div class="chat-win-sub" id="cw-sub"></div></div>
+          </div>
+          <div class="chat-messages" id="chat-msgs"><div class="chat-empty"><i class="bi bi-chat-dots"></i><p>Select a conversation to start messaging</p></div></div>
+          <div class="chat-input-area" id="chat-input-area" style="display:none">
+            <textarea class="chat-input" id="chat-msg-input" placeholder="Type a message…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+            <button class="chat-send" onclick="sendMsg()"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="section" id="s-videos">
+      <div class="section-head"><h2>My Videos</h2><p>Fleet tours, testimonials, and rental tips on the Learning Hub.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-play-circle-fill"></i> Posted Videos</h3><button class="btn btn-gold btn-sm" onclick="nav('add-video')"><i class="bi bi-plus-circle"></i> Post Video</button></div>
+        <div class="card-body"><div class="vid-grid" id="vids-grid"><p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No videos yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- POST VIDEO -->
+    <div class="section" id="s-add-video">
+      <div class="section-head"><h2>Post a Video</h2><p>Show off your fleet — car tours, customer testimonials, rental tips.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-camera-video-fill"></i> Video Details</h3></div>
+        <div class="card-body">
+          <div class="fg"><label>Video URL <span class="req">*</span> (YouTube or Vimeo)</label>
+            <input id="v-url" placeholder="https://www.youtube.com/watch?v=…" oninput="prevVid(this.value)"/>
+            <div class="vid-url-hint" id="v-preview"><img id="v-thumb" src=""/><div><div id="v-plat" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#0B1E3D"></div><div style="font-size:.72rem;color:#8FA3BD">Detected — fill details below</div></div></div>
+          </div>
+          <div class="form-grid">
+            <div class="fg"><label>Title <span class="req">*</span></label><input id="v-title" placeholder="e.g. 2023 Toyota Prado — Full Fleet Tour"/></div>
+            <div class="fg"><label>Duration (e.g. 5:30)</label><input id="v-dur" placeholder="MM:SS"/></div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="v-desc" rows="2"></textarea></div>
+          <div class="fg"><label>Category</label><select id="v-cat"><option value="community">Fleet Tour</option><option value="buying">Rental Tips</option><option value="community">General</option></select></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost" onclick="nav('videos')"><i class="bi bi-arrow-left"></i> Cancel</button>
+            <button class="btn btn-gold" onclick="saveVideo()"><i class="bi bi-send"></i> Publish Video</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section" id="s-profile">
+      <div class="section-head"><h2>My Profile</h2><p>Your public fleet operator profile.</p></div>
+      <div id="profile-body"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="s-settings">
+      <div class="section-head"><h2>Settings</h2></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-bell-fill"></i> Notifications</h3></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;border-bottom:1px solid #EEF2F8"><div><div style="font-weight:600;font-size:.9rem">New Rental Enquiries</div><div style="font-size:.78rem;color:#5E7490">Get notified when a customer enquires about a car</div></div><input type="checkbox" checked style="accent-color:#1A4B8C;width:18px;height:18px"/></label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;border-bottom:1px solid #EEF2F8"><div><div style="font-weight:600;font-size:.9rem">New Messages</div><div style="font-size:.78rem;color:#5E7490">Notifications for customer chat messages</div></div><input type="checkbox" checked style="accent-color:#1A4B8C;width:18px;height:18px"/></label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0"><div><div style="font-weight:600;font-size:.9rem">Weekly Summary</div><div style="font-size:.78rem;color:#5E7490">Email summary of your fleet performance</div></div><input type="checkbox" style="accent-color:#1A4B8C;width:18px;height:18px"/></label>
+          </div>
+          <button class="btn btn-navy" style="margin-top:16px" onclick="showToast('Settings saved!','success')"><i class="bi bi-check-circle"></i> Save Settings</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-head"><h3><i class="bi bi-person-fill"></i> Account Details</h3></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>First Name</label><input id="set-fname"/></div>
+            <div class="fg"><label>Last Name</label><input id="set-lname"/></div>
+            <div class="fg"><label>Business / Fleet Name</label><input id="set-biz"/></div>
+            <div class="fg"><label>Phone</label><input id="set-phone"/></div>
+          </div>
+          <button class="btn btn-gold" onclick="saveProfile()"><i class="bi bi-check-circle"></i> Save Profile</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"><i class="bi bi-check-circle-fill" style="color:#E8A020;flex-shrink:0"></i><span id="toast-msg"></span></div>
+
+<script>
+const SESSION_KEY='ta_session';
+let S=null;
+try{S=JSON.parse(localStorage.getItem(SESSION_KEY));}catch(e){S=null;}
+if(!S){window.location.href='login.html';throw new Error('No session');}
+if(S.role!=='renter'){window.location.href='index.html';throw new Error('Wrong role');}
+
+const renterDisplay=S.businessName&&S.businessName.trim()?S.businessName:(S.firstName+' '+S.lastName).trim()||'Renter';
+const renterFirst=S.firstName||'';
+const renterLast=S.lastName||'';
+const renterInit=(renterFirst.charAt(0)+renterLast.charAt(0)).toUpperCase()||'RF';
+
+const FKEY='ta_fleet_'+S.id,RKEY='ta_rent_'+S.id,VKEY='ta_vid_r_'+S.id,CKEY='ta_chat_r_'+S.id;
+let activeChatId=null;
+
+const DB={
+  get(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch{return[];}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v));},
+  add(k,item){const a=this.get(k);a.unshift(item);this.set(k,a);},
+  upd(k,item){this.set(k,this.get(k).map(x=>x.id===item.id?item:x));},
+  del(k,id){this.set(k,this.get(k).filter(x=>x.id!==id));},
+  find(k,id){return this.get(k).find(x=>x.id===id)||null;},
+  uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+};
+const VID={
+  ytId(u){const m=(u||'').match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;},
+  vmId(u){const m=(u||'').match(/vimeo\.com\/(\d+)/);return m?m[1]:null;},
+  isValid(u){return!!(VID.ytId(u)||VID.vmId(u));},
+  thumb(u){const y=VID.ytId(u);if(y)return`https://img.youtube.com/vi/${y}/hqdefault.jpg`;const v=VID.vmId(u);if(v)return`https://vumbnail.com/${v}.jpg`;return'';},
+  platform(u){if(VID.ytId(u))return'YouTube';if(VID.vmId(u))return'Vimeo';return'';},
+  embedUrl(u){const y=VID.ytId(u);if(y)return`https://www.youtube.com/embed/${y}?autoplay=1`;const v=VID.vmId(u);if(v)return`https://player.vimeo.com/video/${v}?autoplay=1`;return'';}
+};
+
+function init(){
+  const hr=new Date().getHours();
+  document.getElementById('greet-title').textContent=(hr<12?'Good morning':hr<17?'Good afternoon':'Good evening')+', '+(S.businessName||S.firstName)+'! 👋';
+  document.getElementById('top-av').textContent=renterInit;
+  document.getElementById('top-name').textContent=renterDisplay;
+  document.getElementById('sb-av').textContent=renterInit;
+  document.getElementById('sb-name').textContent=renterDisplay;
+  document.getElementById('set-fname').value=renterFirst;
+  document.getElementById('set-lname').value=renterLast;
+  document.getElementById('set-biz').value=S.businessName||'';
+  document.getElementById('set-phone').value=S.phone||'';
+  seedDemo();renderStats();buildCharts();renderFleet();renderRentals();renderChatList();renderVideos();renderProfile();
+}
+
+function seedDemo(){
+  if(DB.get(FKEY).length)return;
+  const imgs=['https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600&q=70','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=70','https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=70'];
+  [{id:DB.uid(),make:'Toyota',model:'Land Cruiser',year:'2022',rate:'500',seats:'7',trans:'Automatic',fuel:'Diesel',region:'Greater Accra',image:imgs[0],features:'AC, GPS, Leather Seats, Baby Seat',availability:'booked',minDays:'1',desc:'Premium 4WD for any terrain.',bookings:12},
+   {id:DB.uid(),make:'Toyota',model:'Corolla',     year:'2021',rate:'250',seats:'5',trans:'Automatic',fuel:'Petrol',region:'Greater Accra',image:imgs[1],features:'AC, Bluetooth, USB Charging',     availability:'available',minDays:'1',desc:'Economical and reliable daily hire.',bookings:28},
+   {id:DB.uid(),make:'Hyundai',model:'Tucson',     year:'2023',rate:'380',seats:'5',trans:'Automatic',fuel:'Petrol',region:'Ashanti',      image:imgs[2],features:'AC, GPS, Rear Camera, Sunroof', availability:'available',minDays:'2',desc:'Stylish SUV for business and leisure.',bookings:8}
+  ].forEach(c=>{DB.add(FKEY,c);const g=DB.get('ta_cars_rent').filter(x=>x.id!==c.id);g.unshift({...c,renterId:S.id,renterName:renterDisplay});DB.set('ta_cars_rent',g);});
+  [{id:DB.uid(),cust:'Kofi Mensah',  custInit:'KM',car:'Toyota Land Cruiser 2022',from:'2026-03-15',to:'2026-03-18',days:3,rate:500,status:'completed'},
+   {id:DB.uid(),cust:'Ama Boateng',  custInit:'AB',car:'Toyota Corolla 2021',     from:'2026-03-20',to:'2026-03-22',days:2,rate:250,status:'active'},
+   {id:DB.uid(),cust:'Kweku Asante', custInit:'KA',car:'Hyundai Tucson 2023',     from:'2026-03-26',to:'2026-03-30',days:4,rate:380,status:'upcoming'}
+  ].forEach(r=>DB.add(RKEY,r));
+  DB.set(CKEY,[
+    {id:'cr1',custName:'Ama Boateng',  custInit:'AB',carTitle:'Corolla 2021',  unread:2,msgs:[
+      {type:'recv',text:'Hi, I have rented the Corolla. Can I drop it off at Kotoka Airport?',ts:new Date(Date.now()-7200000).toISOString()},
+      {type:'sent',text:'Yes of course! Let me know your arrival time and we will meet you there.',ts:new Date(Date.now()-5400000).toISOString()},
+      {type:'recv',text:'Great! Will be there at 6pm.',ts:new Date(Date.now()-3600000).toISOString()}
+    ]},
+    {id:'cr2',custName:'Kweku Asante',custInit:'KA',carTitle:'Tucson 2023',   unread:0,msgs:[
+      {type:'recv',text:'Is the Tucson available for 4 days from the 26th?',ts:new Date(Date.now()-18000000).toISOString()},
+      {type:'sent',text:'Yes! Booked. I will send you the confirmation shortly.',ts:new Date(Date.now()-14400000).toISOString()}
+    ]}
+  ]);
+}
+
+function renderStats(){
+  const fleet=DB.get(FKEY),rents=DB.get(RKEY),vids=DB.get(VKEY);
+  const avail=fleet.filter(c=>c.availability==='available').length;
+  const active=rents.filter(r=>r.status==='active').length;
+  const revenue=rents.filter(r=>r.status==='completed').reduce((s,r)=>s+(r.days*r.rate),0);
+  const chatU=DB.get(CKEY).reduce((s,c)=>s+(c.unread||0),0);
+  document.getElementById('badge-fleet').textContent=fleet.length;
+  document.getElementById('badge-rents').textContent=active||'';
+  document.getElementById('badge-chat').textContent=chatU||'';
+  document.getElementById('dash-stats').innerHTML=[
+    {label:'Total Fleet',    num:fleet.length,              delta:'vehicles listed',  up:true, icon:'bi-key-fill',           bg:'rgba(26,75,140,.1)',   ic:'#1A4B8C'},
+    {label:'Available Now',  num:avail,                     delta:'ready to rent',    up:true, icon:'bi-check-circle-fill',  bg:'rgba(26,122,58,.1)',   ic:'#1A7A3A'},
+    {label:'Active Rentals', num:active,                    delta:'currently out',    up:true, icon:'bi-calendar-check-fill',bg:'rgba(232,160,32,.12)', ic:'#E8A020'},
+    {label:'Revenue (GHS)',  num:revenue.toLocaleString(),  delta:'completed rentals',up:true, icon:'bi-graph-up-arrow',    bg:'rgba(11,30,61,.08)',   ic:'#0B1E3D'},
+    {label:'Videos',         num:vids.length,               delta:'on Learning Hub',  up:true, icon:'bi-play-circle-fill',  bg:'rgba(26,75,140,.06)',  ic:'#1A4B8C'}
+  ].map(c=>`<div class="stat-card"><div class="stat-ic" style="background:${c.bg}"><i class="bi ${c.icon}" style="color:${c.ic}"></i></div>
+    <div><div class="stat-num">${c.num}</div><div class="stat-lbl">${c.label}</div><div class="stat-delta ${c.up?'up':'down'}"><i class="bi bi-arrow-${c.up?'up':'down'}-right"></i>${c.delta}</div></div></div>`).join('');
+
+  const AVBG={available:'background:rgba(26,122,58,.12);color:#1A7A3A;border:1px solid rgba(26,122,58,.3)',booked:'background:rgba(214,59,59,.08);color:#D63B3B;border:1px solid rgba(214,59,59,.2)',maintenance:'background:rgba(232,160,32,.1);color:#8A5A00;border:1px solid rgba(232,160,32,.25)'};
+  document.getElementById('overview-fleet').innerHTML=DB.get(FKEY).map(c=>`<div class="fleet-card">
+    <div class="fc-img">${c.image?`<img src="${c.image}" loading="lazy" onerror="this.style.display='none'"/>`:''}
+      <div class="fc-avail" style="${AVBG[c.availability]||''}">${c.availability}</div>
+      <div class="fc-rate">GHS ${Number(c.rate).toLocaleString()}<span style="font-size:.62rem;opacity:.7">/day</span></div>
+    </div>
+    <div class="fc-body"><div class="fc-name">${c.year} ${c.make} ${c.model}</div>
+    <div class="fc-specs">${[c.seats?c.seats+' seats':'',c.trans,c.fuel,c.region].filter(Boolean).join(' · ')}</div>
+    <div class="fc-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editCar('${c.id}')"><i class="bi bi-pencil"></i> Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="delCar('${c.id}')"><i class="bi bi-trash3"></i></button>
+    </div></div></div>`).join('')||'<p style="color:#8FA3BD;font-size:.84rem;grid-column:1/-1">No fleet yet.</p>';
+
+  document.getElementById('overview-msgs').innerHTML=DB.get(CKEY).slice(0,2).map(c=>{const last=c.msgs[c.msgs.length-1];return`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF2F8;cursor:pointer" onclick="openChat('${c.id}');nav('chat')">
+    <div class="chat-av">${c.custInit}</div>
+    <div style="flex:1;min-width:0"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${c.custName} <span style="font-size:.72rem;color:#8FA3BD">re: ${c.carTitle}</span></div>
+    <div style="font-size:.78rem;color:#5E7490;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last?.text||''}</div></div>
+    ${c.unread?`<span class="sb-badge">${c.unread}</span>`:''}
+  </div>`;}).join('')||'<p style="font-size:.84rem;color:#8FA3BD;text-align:center;padding:14px">No messages.</p>';
+}
+
+let incChart,fleetChart;
+function buildCharts(){
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  incChart=new Chart(document.getElementById('chart-income'),{type:'bar',data:{labels:months,datasets:[{label:'Monthly Income (GHS)',data:months.map(()=>Math.floor(Math.random()*8000)+2000),backgroundColor:'rgba(26,75,140,.75)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(11,30,61,.05)'}},x:{grid:{display:false}}}}});
+  const fleet=DB.get(FKEY);
+  fleetChart=new Chart(document.getElementById('chart-fleet'),{type:'doughnut',data:{labels:['Available','Booked','Maintenance'],datasets:[{data:[fleet.filter(c=>c.availability==='available').length||2,fleet.filter(c=>c.availability==='booked').length||1,fleet.filter(c=>c.availability==='maintenance').length||0],backgroundColor:['#1A7A3A','#1A4B8C','#E8A020'],borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{family:'Barlow Condensed',size:12}}}}}});
+}
+
+function renderFleet(){
+  const AVBG={available:'<span class="badge ba">Available</span>',booked:'<span class="badge bd">Booked</span>',maintenance:'<span class="badge bb">Maintenance</span>'};
+  document.getElementById('fleet-tbody').innerHTML=DB.get(FKEY).map(c=>`<tr>
+    <td>${c.image?`<img src="${c.image}" style="width:54px;height:36px;object-fit:cover;border-radius:5px" onerror="this.style.display='none'"/>`:''}</td>
+    <td style="font-weight:600">${c.year} ${c.make} ${c.model}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(c.rate).toLocaleString()}</td>
+    <td>${c.seats||'–'}</td><td>${AVBG[c.availability]||''}</td>
+    <td style="color:#1A4B8C;font-weight:600">${c.bookings||0}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="btn btn-ghost btn-sm" onclick="editCar('${c.id}')"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="delCar('${c.id}')"><i class="bi bi-trash3"></i></button>
+    </div></td>
+  </tr>`).join('')||'<tr><td colspan="7" class="empty-td">No cars yet. Add your first rental vehicle!</td></tr>';
+}
+
+function saveCar(){
+  const id=document.getElementById('edit-car-id').value;
+  const make=document.getElementById('c-make').value.trim(),model=document.getElementById('c-model').value.trim(),year=document.getElementById('c-year').value,rate=document.getElementById('c-rate').value,img=document.getElementById('c-img').value.trim();
+  if(!make||!model||!year||!rate||!img){showToast('Fill all required fields.','error');return;}
+  const car={id:id||DB.uid(),renterId:S.id,renterName:renterDisplay,make,model,year,rate,image:img,seats:document.getElementById('c-seats').value,trans:document.getElementById('c-trans').value,fuel:document.getElementById('c-fuel').value,region:document.getElementById('c-reg').value,minDays:document.getElementById('c-min').value,availability:document.getElementById('c-avail').value,features:document.getElementById('c-feats').value,desc:document.getElementById('c-desc').value,bookings:id?DB.find(FKEY,id)?.bookings||0:0,createdAt:id?DB.find(FKEY,id)?.createdAt:new Date().toISOString()};
+  if(id){DB.upd(FKEY,car);showToast('Car updated!','success');}else{DB.add(FKEY,car);showToast('Car added — now live!','success');}
+  const g=DB.get('ta_cars_rent').filter(c=>c.id!==car.id);g.unshift(car);DB.set('ta_cars_rent',g);
+  clearCarForm();renderFleet();renderStats();nav('fleet');
+}
+function editCar(id){const c=DB.find(FKEY,id);if(!c)return;document.getElementById('edit-car-id').value=id;document.getElementById('c-make').value=c.make||'';document.getElementById('c-model').value=c.model||'';document.getElementById('c-year').value=c.year||'';document.getElementById('c-rate').value=c.rate||'';document.getElementById('c-seats').value=c.seats||'';document.getElementById('c-trans').value=c.trans||'';document.getElementById('c-fuel').value=c.fuel||'';document.getElementById('c-reg').value=c.region||'';document.getElementById('c-min').value=c.minDays||'';document.getElementById('c-avail').value=c.availability||'available';document.getElementById('c-img').value=c.image||'';document.getElementById('c-feats').value=c.features||'';document.getElementById('c-desc').value=c.desc||'';prevCarImg(c.image);document.getElementById('car-form-h').textContent='Edit Car';document.getElementById('car-save-lbl').textContent='Update Car';nav('add-car');}
+function delCar(id){if(!confirm('Remove this car from the fleet?'))return;DB.del(FKEY,id);DB.set('ta_cars_rent',DB.get('ta_cars_rent').filter(c=>c.id!==id));renderFleet();renderStats();showToast('Car removed.');}
+function clearCarForm(){['edit-car-id','c-make','c-model','c-year','c-rate','c-seats','c-img','c-feats','c-desc','c-min'].forEach(x=>document.getElementById(x).value='');['c-trans','c-fuel','c-reg'].forEach(x=>document.getElementById(x).value='');document.getElementById('c-avail').value='available';document.getElementById('c-img-prev').style.display='none';document.getElementById('car-form-h').textContent='Add Rental Car';document.getElementById('car-save-lbl').textContent='Save Car';}
+function prevCarImg(src){const el=document.getElementById('c-img-prev');if(src){el.src=src;el.style.display='block';}else el.style.display='none';}
+
+function renderRentals(){
+  const SB={active:'<span class="badge ba">Active</span>',completed:'<span class="badge bc">Completed</span>',upcoming:'<span class="badge bb">Upcoming</span>',cancelled:'<span class="badge bd">Cancelled</span>'};
+  document.getElementById('rentals-tbody').innerHTML=DB.get(RKEY).map(r=>`<tr>
+    <td style="font-weight:600">${r.cust}</td>
+    <td style="font-size:.82rem">${r.car}</td>
+    <td style="font-size:.8rem">${r.from}</td><td style="font-size:.8rem">${r.to}</td>
+    <td style="text-align:center">${r.days}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${(r.days*r.rate).toLocaleString()}</td>
+    <td>${SB[r.status]||''}</td>
+  </tr>`).join('')||'<tr><td colspan="7" class="empty-td">No rentals yet.</td></tr>';
+}
+
+function renderChatList(){
+  document.getElementById('chat-list-body').innerHTML=DB.get(CKEY).map(c=>{const last=c.msgs[c.msgs.length-1];return`<div class="chat-item${c.id===activeChatId?' active':''}" onclick="openChat('${c.id}')">
+    <div class="chat-av">${c.custInit}</div>
+    <div style="flex:1;min-width:0"><div class="chat-name">${c.custName}</div><div class="chat-preview">${last?.text||''}</div><div style="font-size:.68rem;color:#8FA3BD">${c.carTitle}</div></div>
+    ${c.unread>0?`<span class="chat-unread">${c.unread}</span>`:''}
+  </div>`;}).join('')||'<div style="padding:20px;text-align:center;color:#8FA3BD;font-size:.84rem">No conversations yet.</div>';
+}
+
+function openChat(id){
+  activeChatId=id;const chats=DB.get(CKEY);const c=chats.find(x=>x.id===id);if(!c)return;
+  c.unread=0;DB.set(CKEY,chats);
+  document.getElementById('cw-av').textContent=c.custInit;
+  document.getElementById('cw-name').textContent=c.custName;
+  document.getElementById('cw-sub').textContent='Re: '+c.carTitle;
+  document.getElementById('chat-input-area').style.display='flex';
+  const box=document.getElementById('chat-msgs');
+  box.innerHTML=c.msgs.map(m=>`<div class="msg ${m.type}"><div class="msg-bubble">${m.text}</div><div class="msg-time">${new Date(m.ts).toLocaleTimeString('en-GH',{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
+  box.scrollTop=box.scrollHeight;renderChatList();
+  const replies=['Is the car clean?','Can I extend the rental by one day?','Where exactly can I collect the car?','Is full insurance included?','Thank you for the help!'];
+  setTimeout(()=>{const r=replies[Math.floor(Math.random()*replies.length)];const cn=DB.get(CKEY);const cv=cn.find(x=>x.id===id);if(cv&&activeChatId===id){cv.msgs.push({type:'recv',text:r,ts:new Date().toISOString()});DB.set(CKEY,cn);box.innerHTML+=`<div class="msg recv"><div class="msg-bubble">${r}</div><div class="msg-time">Just now</div></div>`;box.scrollTop=box.scrollHeight;}},3000+Math.random()*4000);
+}
+
+function sendMsg(){
+  if(!activeChatId)return;
+  const inp=document.getElementById('chat-msg-input'),text=inp.value.trim();if(!text)return;
+  const chats=DB.get(CKEY),c=chats.find(x=>x.id===activeChatId);if(!c)return;
+  c.msgs.push({type:'sent',text,ts:new Date().toISOString()});DB.set(CKEY,chats);inp.value='';
+  const box=document.getElementById('chat-msgs');
+  box.innerHTML+=`<div class="msg sent"><div class="msg-bubble">${text}</div><div class="msg-time">Just now</div></div>`;
+  box.scrollTop=box.scrollHeight;renderChatList();
+}
+
+function renderVideos(){
+  const vids=DB.get(VKEY),grid=document.getElementById('vids-grid');
+  if(!vids.length){grid.innerHTML='<p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No videos yet.</p>';return;}
+  grid.innerHTML=vids.map(v=>{const th=VID.thumb(v.url);return`<div class="vid-card">
+    <div class="vid-thumb" onclick="playVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')">
+      ${th?`<img src="${th}" loading="lazy"/>`:''}
+      <div class="vid-play"><div class="vid-play-btn"><i class="bi bi-play-fill"></i></div></div>
+      ${v.duration?`<span class="vid-dur">${v.duration}</span>`:''}
+    </div>
+    <div class="vid-body"><div class="vid-title" title="${v.title}">${v.title||'Untitled'}</div><div class="vid-meta">${v.desc||''}</div>
+    <div class="vid-actions">
+      <button class="btn btn-ghost btn-sm" onclick="playVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')"><i class="bi bi-play-circle"></i> Watch</button>
+      <button class="btn btn-danger btn-sm" onclick="delVideo('${v.id}')"><i class="bi bi-trash3"></i></button>
+    </div></div></div>`;}).join('');
+}
+function saveVideo(){
+  const url=document.getElementById('v-url').value.trim(),title=document.getElementById('v-title').value.trim();
+  if(!url||!title){showToast('URL and title are required.','error');return;}
+  if(!VID.isValid(url)){showToast('Enter a valid YouTube or Vimeo URL.','error');return;}
+  const v={id:'rv-'+DB.uid(),url,title,desc:document.getElementById('v-desc').value.trim(),category:document.getElementById('v-cat').value,duration:document.getElementById('v-dur').value.trim(),thumbnail:VID.thumb(url),poster:renterDisplay,role:'renter',views:0,postedAt:new Date().toISOString(),new:true,featured:false,renterId:S.id};
+  DB.add(VKEY,v);const g=DB.get('ta_videos');g.unshift(v);DB.set('ta_videos',g);
+  ['v-url','v-title','v-desc','v-dur'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('v-preview').classList.remove('show');
+  renderVideos();renderStats();showToast('Video published on Learning Hub!','success');nav('videos');
+}
+function delVideo(id){if(!confirm('Delete this video?'))return;DB.del(VKEY,id);DB.set('ta_videos',DB.get('ta_videos').filter(v=>v.id!==id));renderVideos();renderStats();showToast('Video deleted.');}
+function playVideo(url,title){
+  const embed=VID.embedUrl(url);if(!embed){showToast('Cannot play this URL.','error');return;}
+  let lb=document.getElementById('vid-lb');
+  if(!lb){lb=document.createElement('div');lb.id='vid-lb';lb.style.cssText='position:fixed;inset:0;background:rgba(6,15,30,.93);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';lb.innerHTML=`<div style="width:100%;max-width:900px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span id="vlbt" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span><button onclick="document.getElementById('vid-lb').style.display='none';document.getElementById('vlbi').src='';document.body.style.overflow=''" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="bi bi-x-lg"></i></button></div><div style="position:relative;padding-top:56.25%;background:#000;border-radius:12px;overflow:hidden"><iframe id="vlbi" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay;fullscreen"></iframe></div></div>`;lb.addEventListener('click',e=>{if(e.target===lb){lb.style.display='none';document.getElementById('vlbi').src='';document.body.style.overflow='';}});document.body.appendChild(lb);}
+  document.getElementById('vlbt').textContent=title||'';document.getElementById('vlbi').src=embed;lb.style.display='flex';document.body.style.overflow='hidden';
+}
+function prevVid(url){const p=document.getElementById('v-preview');if(!VID.isValid(url)){p.classList.remove('show');return;}document.getElementById('v-thumb').src=VID.thumb(url);document.getElementById('v-plat').textContent=VID.platform(url)+' video detected';p.classList.add('show');}
+
+function renderProfile(){
+  const fleet=DB.get(FKEY),rents=DB.get(RKEY),vids=DB.get(VKEY);
+  const revenue=rents.filter(r=>r.status==='completed').reduce((s,r)=>s+(r.days*r.rate),0);
+  document.getElementById('profile-body').innerHTML=`
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-body" style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1A4B8C,#1A7A3A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:#fff;flex-shrink:0">${renterInit}</div>
+      <div style="flex:1">
+        <div style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:.04em;color:#0B1E3D">${renterFirst} ${renterLast}</div>
+        ${S.businessName?`<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#1A4B8C;margin-bottom:4px">${S.businessName}</div>`:''}
+        <div style="font-size:.82rem;color:#5E7490;margin-bottom:6px">${S.email||''} · ${S.phone||''}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px"><i class="bi bi-geo-alt-fill" style="color:#1A4B8C"></i>${S.region||'Ghana'}</span>
+          <span style="font-size:.78rem;color:#1A7A3A;font-weight:600;display:flex;align-items:center;gap:4px"><i class="bi bi-patch-check-fill"></i> Verified Fleet Operator</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;min-width:240px">
+        ${[['Fleet',fleet.length,'#1A4B8C'],['Rentals',rents.length,'#1A7A3A'],['Revenue','GHS '+revenue.toLocaleString(),'#E8A020']].map(([l,n,c])=>`<div style="text-align:center;background:#F4F7FB;border-radius:9px;padding:14px"><div style="font-family:'Bebas Neue',cursive;font-size:1.6rem;color:${c};line-height:1">${n}</div><div style="font-size:.68rem;color:#5E7490;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase">${l}</div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3><i class="bi bi-key-fill"></i> Active Fleet</h3></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:18px">
+      ${fleet.map(c=>`<div style="border:1px solid #DDE4EF;border-radius:9px;overflow:hidden;cursor:pointer" onclick="editCar('${c.id}')">
+        <div style="height:120px;background:#F4F7FB;overflow:hidden"><img src="${c.image||''}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/></div>
+        <div style="padding:10px 12px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${c.year} ${c.make} ${c.model}</div>
+        <div style="font-family:'Bebas Neue',cursive;font-size:1rem;color:#1A4B8C">GHS ${Number(c.rate).toLocaleString()}/day</div></div>
+      </div>`).join('')||'<p style="color:#8FA3BD;font-size:.84rem;grid-column:1/-1">No fleet yet.</p>'}
+    </div>
+  </div>`;
+}
+
+function saveProfile(){
+  S.firstName=document.getElementById('set-fname').value.trim()||renterFirst;
+  S.lastName=document.getElementById('set-lname').value.trim()||renterLast;
+  S.businessName=document.getElementById('set-biz').value.trim()||S.businessName;
+  S.phone=document.getElementById('set-phone').value.trim()||S.phone;
+  localStorage.setItem(SESSION_KEY,JSON.stringify(S));
+  const newIni=(S.firstName.charAt(0)+S.lastName.charAt(0)).toUpperCase();
+  const newDisplay=S.businessName&&S.businessName.trim()?S.businessName:(S.firstName+' '+S.lastName).trim();
+  document.getElementById('top-av').textContent=newIni;document.getElementById('top-name').textContent=newDisplay;
+  document.getElementById('sb-av').textContent=newIni;document.getElementById('sb-name').textContent=newDisplay;
+  renderProfile();showToast('Profile updated!','success');
+}
+
+function nav(key){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+key)?.classList.add('active');
+  document.querySelector(`.sb-item[data-s="${key}"]`)?.classList.add('active');
+  if(key==='add-car')clearCarForm();
+  document.querySelector('.main').scrollTo(0,0);
+}
+function portalLogout(){if(confirm('Log out of the Renter Dashboard?')){showToast('Logged out successfully.','success');localStorage.removeItem(SESSION_KEY);setTimeout(()=>{window.location.href='login.html';},1200);}}
+function showToast(msg,type='info'){const t=document.getElementById('toast'),s=document.getElementById('toast-msg');s.textContent=msg;t.className='show '+(type==='error'?'error':type==='success'?'success':'');clearTimeout(window._tT);window._tT=setTimeout(()=>{t.className='';},3200);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const lb=document.getElementById('vid-lb');if(lb){lb.style.display='none';const f=document.getElementById('vlbi');if(f)f.src='';document.body.style.overflow='';}}});
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Multi-Role Dashboard — Trust Automobile Ghana</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="portal-shared.js"></script>
+<style id="ps"></style>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;color:#1C2B40;background:#F0F3F8;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ══ TOPBAR ══ */
+.topbar{background:#0B1E3D;height:58px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.tl{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.lm{width:32px;height:32px;background:#E8A020;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#0B1E3D;}
+.lt{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#fff;letter-spacing:.06em;line-height:1.1;}
+.lt small{display:block;font-size:.56rem;font-weight:400;color:#8FA3BD;letter-spacing:.14em;}
+.tr{display:flex;align-items:center;gap:14px;}
+.t-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#1A4B8C);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#fff;}
+.t-info{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.2;}
+.t-info small{display:block;font-size:.6rem;color:rgba(255,255,255,.4);}
+.btn-lo{background:rgba(214,59,59,.18);color:#ff8080;border:none;padding:7px 13px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.btn-lo:hover{background:#D63B3B;color:#fff;}
+
+/* ══ ROLE SWITCHER BAR ══ */
+.role-bar{background:#FFFFFF;border-bottom:1px solid #DDE4EF;padding:0 24px;display:flex;align-items:center;gap:0;overflow-x:auto;}
+.role-tab{display:flex;align-items:center;gap:8px;padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:#5E7490;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;}
+.role-tab:hover{color:#0B1E3D;background:#F4F7FB;}
+.role-tab.active{color:#0B1E3D;border-bottom-color:#E8A020;}
+.role-tab i{font-size:1rem;}
+.role-tab .rbadge{background:#E8A020;color:#0B1E3D;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:3px;}
+.role-bar-overview{display:flex;align-items:center;gap:8px;padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:#5E7490;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;}
+.role-bar-overview:hover{color:#0B1E3D;}
+.role-bar-overview.active{color:#0B1E3D;border-bottom-color:#E8A020;}
+
+/* ══ SHELL ══ */
+.shell{display:grid;grid-template-columns:240px 1fr;flex:1;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{background:#fff;border-right:1px solid #DDE4EF;display:flex;flex-direction:column;overflow-y:auto;transition:all .3s;}
+.sb-prof{padding:18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px;}
+.sb-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#1A4B8C);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#fff;flex-shrink:0;}
+.sb-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D;line-height:1.2;}
+.sb-role-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.sb-role-pill{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:100px;}
+.pill-seller{background:rgba(26,122,58,.1);color:#1A7A3A;}
+.pill-renter{background:rgba(26,75,140,.1);color:#1A4B8C;}
+.pill-mechanic{background:rgba(232,160,32,.12);color:#8A5A00;}
+.pill-parts{background:rgba(122,58,0,.1);color:#7A3A00;}
+.sb-sec{padding:10px 18px 4px;font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8FA3BD;margin-top:4px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.04em;color:#5E7490;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+.sb-item:hover{color:#0B1E3D;background:#F4F7FB;}
+.sb-item.active{color:#0B1E3D;background:#F4F7FB;border-left-color:#E8A020;font-weight:700;}
+.sb-item i{font-size:.95rem;width:18px;text-align:center;}
+.sb-badge{margin-left:auto;background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sb-divider{height:1px;background:#EEF2F8;margin:6px 18px;}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid #EEF2F8;}
+.sb-footer a{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#8FA3BD;text-decoration:none;padding:5px 0;transition:color .2s;}
+.sb-footer a:hover{color:#0B1E3D;}
+
+/* ══ MAIN ══ */
+.main{padding:28px;overflow-y:auto;}
+.sec{display:none;}.sec.active{display:block;}
+.pg-head{margin-bottom:22px;}
+.pg-head h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:.04em;color:#0B1E3D;margin-bottom:3px;}
+.pg-head p{font-size:.86rem;color:#5E7490;line-height:1.6;}
+
+/* ══ STATS ══ */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:11px;border:1px solid #DDE4EF;padding:18px;display:flex;align-items:center;gap:14px;transition:all .2s;cursor:pointer;}
+.stat-card:hover{box-shadow:0 6px 20px rgba(11,30,61,.08);transform:translateY(-1px);}
+.sic{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+.snum{font-family:'Bebas Neue',cursive;font-size:2rem;color:#0B1E3D;letter-spacing:.04em;line-height:1;}
+.slbl{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-top:2px;}
+.sdelta{font-size:.72rem;margin-top:3px;display:flex;align-items:center;gap:3px;}
+.up{color:#1A7A3A;}.dn{color:#D63B3B;}
+
+/* ══ CARDS ══ */
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px;}
+.card{background:#fff;border-radius:12px;border:1px solid #DDE4EF;overflow:hidden;margin-bottom:20px;}
+.ch{padding:15px 20px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ch h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D;display:flex;align-items:center;gap:7px;}
+.ch h3 i{color:#E8A020;}
+.cb{padding:18px;}
+.cw{position:relative;height:240px;}
+
+/* ══ TABLE ══ */
+.tbl{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:#F4F7FB;}
+th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;padding:10px 14px;text-align:left;white-space:nowrap;}
+td{padding:11px 14px;font-size:.85rem;color:#1C2B40;border-bottom:1px solid #EEF2F8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FAFBFD;}
+.etd{text-align:center;color:#8FA3BD;padding:40px;font-size:.86rem;}
+
+/* ══ BADGES ══ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.ba{background:rgba(26,122,58,.1);color:#1A7A3A;}
+.bb{background:rgba(232,160,32,.12);color:#8A5A00;}
+.bc{background:rgba(26,75,140,.1);color:#1A4B8C;}
+.bd{background:rgba(214,59,59,.08);color:#D63B3B;}
+
+/* ══ BUTTONS ══ */
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;border:none;}
+.bgold{background:#E8A020;color:#0B1E3D;}.bgold:hover{background:#F5C05A;}
+.bnavy{background:#0B1E3D;color:#fff;}.bnavy:hover{background:#1A4B8C;}
+.bgh{background:transparent;color:#5E7490;border:1.5px solid #DDE4EF;}.bgh:hover{border-color:#0B1E3D;color:#0B1E3D;}
+.bsm{padding:5px 10px;font-size:.7rem;}
+
+/* ══ ROLE OVERVIEW CARDS (on combined dashboard) ══ */
+.role-overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:24px;}
+.role-overview-card{background:#fff;border-radius:12px;border:1px solid #DDE4EF;overflow:hidden;cursor:pointer;transition:all .25s;}
+.role-overview-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(11,30,61,.12);}
+.roc-header{padding:18px 20px;display:flex;align-items:center;gap:14px;}
+.roc-icon{width:52px;height:52px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.roc-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:.04em;color:#0B1E3D;line-height:1;}
+.roc-sub{font-size:.76rem;color:#5E7490;margin-top:3px;}
+.roc-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #EEF2F8;}
+.roc-stat{padding:12px 16px;text-align:center;border-right:1px solid #EEF2F8;}
+.roc-stat:last-child{border-right:none;}
+.roc-stat-num{font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#0B1E3D;line-height:1;}
+.roc-stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8FA3BD;margin-top:2px;}
+.roc-action{padding:12px 20px;border-top:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;}
+.roc-action span{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.78rem;color:#5E7490;}
+
+/* ══ QUICK ACTIONS ══ */
+.quick-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.qa-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fff;border:1.5px solid #DDE4EF;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#0B1E3D;cursor:pointer;transition:all .2s;text-decoration:none;}
+.qa-btn:hover{background:#0B1E3D;color:#fff;border-color:#0B1E3D;}
+.qa-btn:hover i{color:#E8A020;}
+.qa-btn i{color:#5E7490;font-size:.95rem;transition:color .2s;}
+
+/* ══ FORM ══ */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;}
+.fg label .req{color:#D63B3B;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid #DDE4EF;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#E8A020;box-shadow:0 0 0 3px rgba(232,160,32,.1);}
+.fg textarea{resize:vertical;min-height:80px;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* ══ VIDEO GRID ══ */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.vid-card{background:#fff;border-radius:10px;border:1px solid #DDE4EF;overflow:hidden;transition:all .2s;}
+.vid-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(11,30,61,.1);}
+.vt{position:relative;padding-top:56.25%;background:#0B1E3D;cursor:pointer;}
+.vt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);}
+.vpb{width:38px;height:38px;border-radius:50%;background:rgba(232,160,32,.9);display:flex;align-items:center;justify-content:center;color:#0B1E3D;}
+.vdur{position:absolute;bottom:6px;right:7px;background:rgba(11,30,61,.8);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:.63rem;font-weight:700;padding:2px 6px;border-radius:3px;}
+.vb{padding:10px 12px;}
+.vtitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;color:#0B1E3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.vmeta{font-size:.7rem;color:#8FA3BD;margin-bottom:7px;}
+.va{display:flex;gap:5px;}
+.vh{display:none;background:#F4F7FB;border:1px solid #DDE4EF;border-radius:7px;padding:8px 12px;margin-top:6px;font-size:.8rem;color:#5E7490;align-items:center;gap:8px;}
+.vh.show{display:flex;}
+.vh img{width:68px;height:42px;object-fit:cover;border-radius:3px;flex-shrink:0;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){.shell{grid-template-columns:1fr;}.sidebar{display:none;}.stat-row{grid-template-columns:1fr 1fr;}.chart-row{grid-template-columns:1fr;}}
+@media(max-width:560px){.stat-row{grid-template-columns:1fr;}.f2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="tl">
+    <div class="lm">TA</div>
+    <div class="lt">Trust Automobile<small id="topbar-sub">Multi-Role Dashboard</small></div>
+  </a>
+  <div class="tr">
+    <div style="position:relative;cursor:pointer;"><i class="bi bi-bell-fill" style="color:rgba(255,255,255,.65);font-size:1.1rem;"></i><div style="position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#D63B3B;border:1.5px solid #0B1E3D;"></div></div>
+    <div style="display:flex;align-items:center;gap:9px;">
+      <div class="t-av" id="top-av">–</div>
+      <div class="t-info"><span id="top-name">–</span><small id="top-roles">–</small></div>
+    </div>
+    <button class="btn-lo" onclick="portalLogout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+  </div>
+</div>
+
+<!-- ROLE SWITCHER BAR -->
+<div class="role-bar" id="role-bar">
+  <button class="role-bar-overview active" id="tab-overview" onclick="switchRole('overview')">
+    <i class="bi bi-grid-fill"></i> All Roles
+  </button>
+  <!-- Role tabs injected by JS -->
+</div>
+
+<!-- MAIN SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-prof">
+      <div class="sb-av" id="sb-av">–</div>
+      <div>
+        <div class="sb-name" id="sb-name">–</div>
+        <div class="sb-role-pills" id="sb-pills"></div>
+      </div>
+    </div>
+    <div id="sidebar-nav"></div>
+    <div class="sb-footer">
+      <a href="index.html"><i class="bi bi-globe"></i> Public Site</a>
+      <a href="admin.html" target="_blank"><i class="bi bi-shield-check"></i> Contact Admin</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main" id="main-content">
+
+    <!-- ══ COMBINED OVERVIEW ══ -->
+    <div class="sec active" id="s-overview">
+      <div class="pg-head">
+        <h2 id="greet">Good day!</h2>
+        <p id="greet-sub">You have multiple roles on Trust Automobile. Switch between them above or manage everything here.</p>
+      </div>
+
+      <!-- Combined stats across all roles -->
+      <div class="stat-row" id="combined-stats"></div>
+
+      <!-- Role overview cards -->
+      <div class="pg-head"><h2 style="font-size:1.2rem;">Your Roles</h2></div>
+      <div class="role-overview-grid" id="role-overview-grid"></div>
+
+      <!-- Quick actions -->
+      <div class="pg-head"><h2 style="font-size:1.2rem;">Quick Actions</h2></div>
+      <div class="quick-actions" id="quick-actions"></div>
+
+      <!-- Combined recent activity -->
+      <div class="card">
+        <div class="ch"><h3><i class="bi bi-activity"></i> Recent Activity (All Roles)</h3></div>
+        <div class="tbl">
+          <table><thead><tr><th>Role</th><th>Activity</th><th>Item</th><th>When</th></tr></thead>
+          <tbody id="activity-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SELLER SECTIONS ══ -->
+    <div class="sec" id="s-seller-listings">
+      <div class="pg-head"><h2>My Car Listings</h2><p>Cars you have listed for sale. Live on the public Cars for Sale page.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-car-front-fill"></i> Listings</h3><button class="btn bgold bsm" onclick="nav('seller-add-listing')"><i class="bi bi-plus-circle"></i> Add Listing</button></div>
+        <div class="tbl"><table><thead><tr><th>Photo</th><th>Vehicle</th><th>Price</th><th>Condition</th><th>Status</th><th>Actions</th></tr></thead><tbody id="sl-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="sec" id="s-seller-add-listing">
+      <div class="pg-head"><h2 id="sl-form-h">Add Car Listing</h2></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-pencil-fill"></i> Vehicle Details</h3></div><div class="cb">
+        <input type="hidden" id="sl-edit-id"/>
+        <div class="f2">
+          <div class="fg"><label>Make <span class="req">*</span></label><input id="sl-make" placeholder="Toyota"/></div>
+          <div class="fg"><label>Model <span class="req">*</span></label><input id="sl-model" placeholder="Corolla"/></div>
+          <div class="fg"><label>Year <span class="req">*</span></label><input id="sl-year" type="number" min="1990" max="2026" placeholder="2021"/></div>
+          <div class="fg"><label>Price (GHS) <span class="req">*</span></label><input id="sl-price" type="number" placeholder="45000"/></div>
+          <div class="fg"><label>Condition <span class="req">*</span></label><select id="sl-cond"><option value="">Select</option><option>Brand New</option><option>Foreign Used</option><option>Local Used</option></select></div>
+          <div class="fg"><label>Price Type</label><select id="sl-ptype"><option value="fixed">Fixed</option><option value="negotiable">Negotiable</option></select></div>
+          <div class="fg"><label>Region</label><select id="sl-region"><option value="">Select</option><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Eastern</option><option>Northern</option></select></div>
+          <div class="fg"><label>Status</label><select id="sl-status"><option value="active">Active</option><option value="draft">Draft</option><option value="sold">Sold</option></select></div>
+        </div>
+        <div class="fg"><label>Vehicle Photo <span class="req">*</span></label><input type="hidden" id="sl-img"/><div id="sl-img-uploader"></div></div>
+        <div class="fg"><label>Description</label><textarea id="sl-desc" rows="3" placeholder="Condition, service history, extras…"></textarea></div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button class="btn bgh" onclick="nav('seller-listings')"><i class="bi bi-arrow-left"></i> Cancel</button>
+          <button class="btn bgold" onclick="saveListing()"><i class="bi bi-check-circle"></i> <span id="sl-save-lbl">Save Listing</span></button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ══ MECHANIC SECTIONS ══ -->
+    <div class="sec" id="s-mechanic-services">
+      <div class="pg-head"><h2>My Services</h2><p>Services listed on your public mechanic profile.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-tools"></i> Services</h3><button class="btn bgold bsm" onclick="nav('mechanic-add-service')"><i class="bi bi-plus-circle"></i> Add Service</button></div>
+        <div class="tbl"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Type</th><th>Duration</th><th>Actions</th></tr></thead><tbody id="ms-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="sec" id="s-mechanic-add-service">
+      <div class="pg-head"><h2 id="ms-form-h">Add Service</h2></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-pencil-fill"></i> Service Details</h3></div><div class="cb">
+        <input type="hidden" id="ms-edit-id"/>
+        <div class="fg"><label>Service Name <span class="req">*</span></label><input id="ms-name" placeholder="e.g. Full Engine Oil Change"/></div>
+        <div class="fg"><label>Description</label><textarea id="ms-desc" rows="2" placeholder="What does this service include?"></textarea></div>
+        <div class="f2">
+          <div class="fg"><label>Category <span class="req">*</span></label>
+            <select id="ms-cat"><option value="">Select</option><option value="general">General Repairs</option><option value="electrical">Auto Electrical</option><option value="bodywork">Bodywork & Paint</option><option value="aircon">Air Conditioning</option><option value="diagnostic">Diagnostics</option><option value="tyres">Tyres & Alignment</option></select>
+          </div>
+          <div class="fg"><label>Price Type <span class="req">*</span></label>
+            <select id="ms-ptype"><option value="fixed">Fixed</option><option value="negotiable">Negotiable</option><option value="free">Free</option></select>
+          </div>
+          <div class="fg"><label>Price (GHS)</label><input id="ms-price" type="number" min="0" placeholder="150"/></div>
+          <div class="fg"><label>Estimated Duration</label><input id="ms-dur" placeholder="e.g. 1–2 hours"/></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn bgh" onclick="nav('mechanic-services')"><i class="bi bi-arrow-left"></i> Cancel</button>
+          <button class="btn bgold" onclick="saveService()"><i class="bi bi-check-circle"></i> <span id="ms-save-lbl">Save Service</span></button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ══ FLEET SECTIONS (renter) ══ -->
+    <div class="sec" id="s-renter-fleet">
+      <div class="pg-head"><h2>My Rental Fleet</h2><p>Cars available for hire. Live on the public Cars for Rent page.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-key-fill"></i> Fleet</h3><button class="btn bgold bsm" onclick="nav('renter-add-car')"><i class="bi bi-plus-circle"></i> Add Car</button></div>
+        <div class="tbl"><table><thead><tr><th>Photo</th><th>Vehicle</th><th>Rate/Day</th><th>Availability</th><th>Actions</th></tr></thead><tbody id="rf-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="sec" id="s-renter-add-car">
+      <div class="pg-head"><h2 id="rf-form-h">Add Rental Car</h2></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-pencil-fill"></i> Car Details</h3></div><div class="cb">
+        <input type="hidden" id="rf-edit-id"/>
+        <div class="f2">
+          <div class="fg"><label>Make <span class="req">*</span></label><input id="rf-make" placeholder="Toyota"/></div>
+          <div class="fg"><label>Model <span class="req">*</span></label><input id="rf-model" placeholder="Land Cruiser"/></div>
+          <div class="fg"><label>Year <span class="req">*</span></label><input id="rf-year" type="number" placeholder="2022"/></div>
+          <div class="fg"><label>Rate/Day (GHS) <span class="req">*</span></label><input id="rf-rate" type="number" placeholder="350"/></div>
+          <div class="fg"><label>Availability</label><select id="rf-avail"><option value="available">Available</option><option value="booked">Booked</option><option value="maintenance">Maintenance</option></select></div>
+          <div class="fg"><label>Region</label><select id="rf-region"><option value="">Select</option><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Eastern</option></select></div>
+        </div>
+        <div class="fg"><label>Vehicle Photo <span class="req">*</span></label><input type="hidden" id="rf-img"/><div id="rf-img-uploader"></div></div>
+        <div class="fg"><label>Features</label><input id="rf-feats" placeholder="AC, GPS, Bluetooth…"/></div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button class="btn bgh" onclick="nav('renter-fleet')"><i class="bi bi-arrow-left"></i> Cancel</button>
+          <button class="btn bgold" onclick="saveFleetCar()"><i class="bi bi-check-circle"></i> <span id="rf-save-lbl">Save Car</span></button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ══ PARTS SECTION ══ -->
+    <div class="sec" id="s-parts-inventory">
+      <div class="pg-head"><h2>Parts Inventory</h2><p>All parts live on the public Spare Parts page.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-box-seam-fill"></i> Inventory</h3><button class="btn bgold bsm" onclick="nav('parts-add-part')"><i class="bi bi-plus-circle"></i> Add Part</button></div>
+        <div class="tbl"><table><thead><tr><th>Name</th><th>Compatible</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="pi-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="sec" id="s-parts-add-part">
+      <div class="pg-head"><h2 id="pi-form-h">Add Part</h2></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-pencil-fill"></i> Part Details</h3></div><div class="cb">
+        <input type="hidden" id="pi-edit-id"/>
+        <div class="f2">
+          <div class="fg"><label>Part Name <span class="req">*</span></label><input id="pi-name" placeholder="Air Filter — Toyota Corolla"/></div>
+          <div class="fg"><label>Category <span class="req">*</span></label>
+            <select id="pi-cat"><option value="">Select</option><option value="engine">Engine</option><option value="brakes">Brakes</option><option value="electrical">Electrical</option><option value="body">Body</option><option value="suspension">Suspension</option><option value="filters">Filters & Fluids</option></select>
+          </div>
+          <div class="fg"><label>Price (GHS) <span class="req">*</span></label><input id="pi-price" type="number" placeholder="120"/></div>
+          <div class="fg"><label>Stock Qty <span class="req">*</span></label><input id="pi-stock" type="number" placeholder="25"/></div>
+          <div class="fg"><label>Brand</label><input id="pi-brand" placeholder="Bosch"/></div>
+          <div class="fg"><label>Condition</label><select id="pi-cond"><option value="new">New</option><option value="used">Used</option><option value="refurb">Refurbished</option></select></div>
+        </div>
+        <div class="fg"><label>Compatible Vehicles <span class="req">*</span></label><input id="pi-compat" placeholder="Toyota Corolla 2015–2020…"/></div>
+        <div class="fg"><label>Part Photo</label><input type="hidden" id="pi-img"/><div id="pi-img-uploader"></div></div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button class="btn bgh" onclick="nav('parts-inventory')"><i class="bi bi-arrow-left"></i> Cancel</button>
+          <button class="btn bgold" onclick="savePart()"><i class="bi bi-check-circle"></i> <span id="pi-save-lbl">Save Part</span></button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ══ SHARED VIDEOS ══ -->
+    <div class="sec" id="s-videos">
+      <div class="pg-head"><h2>My Videos</h2><p>Videos posted to the Learning Hub. Visible on all your public profiles.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-play-circle-fill"></i> Posted Videos</h3><button class="btn bgold bsm" onclick="nav('add-video')"><i class="bi bi-plus-circle"></i> Post Video</button></div>
+        <div class="cb"><div class="vid-grid" id="vid-grid"><p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1;">No videos yet.</p></div></div>
+      </div>
+    </div>
+
+    <div class="sec" id="s-add-video">
+      <div class="pg-head"><h2>Post a Video</h2><p>Paste a YouTube or Vimeo link. Appears on all your role profiles.</p></div>
+      <div class="card"><div class="ch"><h3><i class="bi bi-camera-video-fill"></i> Video Details</h3></div><div class="cb">
+        <div class="fg"><label>Video URL <span class="req">*</span></label>
+          <input id="v-url" placeholder="https://www.youtube.com/watch?v=…" oninput="prevVid(this.value)"/>
+          <div class="vh" id="v-hint"><img id="v-thumb" src=""/><div><div id="v-plat" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#0B1E3D;"></div><div style="font-size:.72rem;color:#8FA3BD;">Detected</div></div></div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>Title <span class="req">*</span></label><input id="v-title" placeholder="e.g. Car Walkround — Toyota Corolla 2022"/></div>
+          <div class="fg"><label>Duration</label><input id="v-dur" placeholder="MM:SS"/></div>
+        </div>
+        <div class="fg"><label>Description</label><textarea id="v-desc" rows="2"></textarea></div>
+        <div class="fg"><label>Category</label>
+          <select id="v-cat"><option value="community">General / Review</option><option value="maintenance">Maintenance</option><option value="electrical">Electrical</option><option value="buying">Buying Tips</option><option value="diagnostics">Diagnostics</option></select>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn bgh" onclick="nav('videos')"><i class="bi bi-arrow-left"></i> Cancel</button>
+          <button class="btn bgold" onclick="saveVideo()"><i class="bi bi-send"></i> Publish Video</button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ══ PROFILE ══ -->
+    <div class="sec" id="s-profile">
+      <div class="pg-head"><h2>My Profile</h2><p>Your combined profile across all roles.</p></div>
+      <div id="profile-body"></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ════════════════════════════════════════════
+   MULTI-ROLE PORTAL — Trust Automobile Ghana
+   Requires: portal-shared.js (PS, DB, VID, etc.)
+   Session must have: roles[] array
+   OR admin can set roles by updating the user
+   object in ta_users localStorage.
+════════════════════════════════════════════ */
+
+/* ── ROLE CONFIG ─────────────────────────── */
+const ROLE_CONFIG = {
+  seller:   { label:'Car Seller',     icon:'bi-car-front-fill',   colour:'#1A7A3A', bg:'rgba(26,122,58,.1)',   pill:'pill-seller',   link:'cars-for-sale.html' },
+  mechanic: { label:'Mechanic',       icon:'bi-tools',            colour:'#E8A020', bg:'rgba(232,160,32,.12)', pill:'pill-mechanic', link:'mechanic-services.html' },
+  renter:   { label:'Car Renter',     icon:'bi-key-fill',         colour:'#1A4B8C', bg:'rgba(26,75,140,.1)',   pill:'pill-renter',   link:'cars-for-rent.html' },
+  parts:    { label:'Parts Dealer',   icon:'bi-box-seam-fill',    colour:'#7A3A00', bg:'rgba(122,58,0,.1)',    pill:'pill-parts',    link:'spare-parts-public.html' },
+};
+
+/* ── NAV CONFIG PER ROLE ──────────────────── */
+const ROLE_NAV = {
+  seller: [
+    { icon:'bi-car-front-fill',   label:'My Listings',    key:'seller-listings'     },
+    { icon:'bi-plus-circle-fill', label:'Add Listing',    key:'seller-add-listing'  },
+  ],
+  mechanic: [
+    { icon:'bi-tools',            label:'My Services',    key:'mechanic-services'   },
+    { icon:'bi-plus-circle-fill', label:'Add Service',    key:'mechanic-add-service'},
+  ],
+  renter: [
+    { icon:'bi-key-fill',         label:'My Fleet',       key:'renter-fleet'        },
+    { icon:'bi-plus-circle-fill', label:'Add Car',        key:'renter-add-car'      },
+  ],
+  parts: [
+    { icon:'bi-box-seam-fill',    label:'Inventory',      key:'parts-inventory'     },
+    { icon:'bi-plus-circle-fill', label:'Add Part',       key:'parts-add-part'      },
+  ],
+};
+
+/* ── INIT ─────────────────────────────────── */
+/* 
+  Multi-role users are identified by having a 'roles' array in their session.
+  Example session: { id:'X', roles:['seller','mechanic'], status:'active', ... }
+  The admin sets this via admin.html → edit user → assign roles.
+  For demo: if session has single role but ?demo=multi, we inject demo roles.
+*/
+
+let S, userRoles, activeRole = 'overview';
+const VKEY_MULTI = null; // set after S is loaded
+
+document.addEventListener('DOMContentLoaded', init);
+
+function init() {
+  document.getElementById('ps').textContent = PORTAL_CSS;
+
+  // Get session
+  S = PS.getSession();
+  if (!S) { window.location.href = 'login.html'; return; }
+  if (S.status === 'pending') { window.location.href = 'login.html?status=pending'; return; }
+  if (S.status === 'blocked') { window.location.href = 'login.html?status=blocked'; return; }
+
+  // Determine roles — support both array (multi) and single string
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('demo') === 'multi') {
+    // Demo mode: show all 4 roles
+    userRoles = ['seller','mechanic','renter','parts'];
+  } else if (Array.isArray(S.roles) && S.roles.length > 0) {
+    userRoles = S.roles;
+  } else if (S.role && ROLE_CONFIG[S.role]) {
+    // Single role user who was redirected here — just show their one role
+    userRoles = [S.role];
+  } else {
+    // Fallback
+    userRoles = ['seller'];
+  }
+
+  // Set up UI
+  setupHeader();
+  setupRoleBar();
+  setupSidebar();
+  renderOverview();
+  renderAllSections();
+  mountImageUploaders();
+}
+
+/* ── HEADER ───────────────────────────────── */
+function setupHeader() {
+  const ini = ((S.firstName||'?')[0]+(S.lastName||'?')[0]).toUpperCase();
+  document.getElementById('top-av').textContent  = ini;
+  document.getElementById('top-name').textContent = S.firstName+' '+S.lastName;
+  document.getElementById('top-roles').textContent = userRoles.map(r => ROLE_CONFIG[r]?.label||r).join(' · ');
+  document.getElementById('sb-av').textContent   = ini;
+  document.getElementById('sb-name').textContent  = S.businessName || S.firstName+' '+S.lastName;
+  // Pills
+  document.getElementById('sb-pills').innerHTML = userRoles.map(r =>
+    `<span class="sb-role-pill ${ROLE_CONFIG[r]?.pill||''}">${ROLE_CONFIG[r]?.label||r}</span>`
+  ).join('');
+  // Greeting
+  const hr = new Date().getHours();
+  const greet = hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  document.getElementById('greet').textContent = `${greet}, ${S.firstName||'Partner'}! 👋`;
+  document.getElementById('greet-sub').textContent = `You have ${userRoles.length} active role${userRoles.length>1?'s':''} on Trust Automobile. Manage them all here.`;
+}
+
+/* ── ROLE BAR (tab switcher) ─────────────── */
+function setupRoleBar() {
+  const bar = document.getElementById('role-bar');
+  userRoles.forEach(role => {
+    const cfg = ROLE_CONFIG[role];
+    const btn = document.createElement('button');
+    btn.className = 'role-tab';
+    btn.id = 'tab-' + role;
+    btn.onclick = () => switchRole(role);
+    btn.innerHTML = `<i class="bi ${cfg.icon}" style="color:${cfg.colour}"></i> ${cfg.label} <span class="rbadge" id="rbadge-${role}">–</span>`;
+    bar.appendChild(btn);
+  });
+  updateRoleBadges();
+}
+
+function switchRole(role) {
+  activeRole = role;
+  // Update tab active states
+  document.querySelectorAll('.role-tab, .role-bar-overview').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + (role==='overview'?'overview':role))?.classList.add('active');
+  // Update sidebar
+  setupSidebar();
+  // Show first section of role or overview
+  if (role === 'overview') {
+    nav('overview');
+  } else {
+    const firstSection = ROLE_NAV[role]?.[0]?.key;
+    if (firstSection) nav(firstSection);
+  }
+}
+
+/* ── SIDEBAR ──────────────────────────────── */
+function setupSidebar() {
+  const sb = document.getElementById('sidebar-nav');
+  let html = '';
+  if (activeRole === 'overview') {
+    html += `<div class="sb-sec">All Roles</div>`;
+    html += `<div class="sb-item active" onclick="nav('overview')" data-s="overview"><i class="bi bi-grid-fill"></i> Dashboard</div>`;
+    html += `<div class="sb-sec">Content</div>`;
+    html += `<div class="sb-item" onclick="nav('videos')" data-s="videos"><i class="bi bi-play-circle-fill"></i> My Videos</div>`;
+    html += `<div class="sb-item" onclick="nav('add-video')" data-s="add-video"><i class="bi bi-camera-video-fill"></i> Post Video</div>`;
+    html += `<div class="sb-sec">Account</div>`;
+    html += `<div class="sb-item" onclick="nav('profile')" data-s="profile"><i class="bi bi-person-circle"></i> My Profile</div>`;
+  } else {
+    const cfg = ROLE_CONFIG[activeRole];
+    const navItems = ROLE_NAV[activeRole] || [];
+    html += `<div class="sb-sec" style="color:${cfg.colour}"><i class="bi ${cfg.icon}"></i> ${cfg.label}</div>`;
+    navItems.forEach(item => {
+      html += `<div class="sb-item" onclick="nav('${item.key}')" data-s="${item.key}"><i class="bi ${item.icon}"></i> ${item.label}</div>`;
+    });
+    html += `<div class="sb-divider"></div>`;
+    html += `<div class="sb-sec">All Roles</div>`;
+    userRoles.forEach(r => {
+      const rc = ROLE_CONFIG[r];
+      html += `<div class="sb-item${r===activeRole?' active':''}" onclick="switchRole('${r}')"><i class="bi ${rc.icon}" style="color:${rc.colour}"></i> ${rc.label}</div>`;
+    });
+    html += `<div class="sb-divider"></div>`;
+    html += `<div class="sb-sec">Content</div>`;
+    html += `<div class="sb-item" onclick="nav('videos')" data-s="videos"><i class="bi bi-play-circle-fill"></i> My Videos</div>`;
+    html += `<div class="sb-item" onclick="nav('add-video')" data-s="add-video"><i class="bi bi-camera-video-fill"></i> Post Video</div>`;
+    html += `<div class="sb-sec">Account</div>`;
+    html += `<div class="sb-item" onclick="nav('profile')" data-s="profile"><i class="bi bi-person-circle"></i> My Profile</div>`;
+  }
+  sb.innerHTML = html;
+}
+
+/* ── OVERVIEW DASHBOARD ───────────────────── */
+function renderOverview() {
+  // Combined stats
+  let totalListings=0, totalRevenue=0, totalViews=0, pendingOrders=0;
+  if (userRoles.includes('seller')) {
+    const ls = DB.get('ta_listing_'+S.id);
+    totalListings += ls.length;
+    totalViews    += ls.reduce((s,l)=>s+(l.views||0),0);
+  }
+  if (userRoles.includes('renter')) {
+    const fl = DB.get('ta_fleet_'+S.id);
+    totalListings += fl.length;
+    const rents = DB.get('ta_rent_'+S.id)||[];
+    totalRevenue += rents.filter(r=>r.status==='completed').reduce((s,r)=>s+(r.days*r.rate),0);
+  }
+  if (userRoles.includes('mechanic')) {
+    const bks = DB.get('ta_bk_m_'+S.id)||[];
+    totalRevenue += bks.filter(b=>b.status==='completed').reduce((s,b)=>s+Number(b.price||0),0);
+    pendingOrders += bks.filter(b=>b.status==='pending').length;
+  }
+  if (userRoles.includes('parts')) {
+    const ords = DB.get('ta_orders_'+S.id)||[];
+    totalRevenue += ords.filter(o=>o.status==='fulfilled').reduce((s,o)=>s+(o.qty*o.price),0);
+    pendingOrders += ords.filter(o=>o.status==='pending').length;
+  }
+  const videos = DB.get('ta_vid_multi_'+S.id)||[];
+
+  document.getElementById('combined-stats').innerHTML = [
+    {label:'Active Listings', num:totalListings, icon:'bi-collection-fill',     bg:'rgba(26,75,140,.1)',   ic:'#1A4B8C', delta:'across all roles'},
+    {label:'Total Views',     num:totalViews,    icon:'bi-eye-fill',             bg:'rgba(232,160,32,.12)', ic:'#E8A020', delta:'public pages'},
+    {label:'Combined Revenue',num:'GHS '+totalRevenue.toLocaleString(),icon:'bi-graph-up-arrow',bg:'rgba(26,122,58,.1)',ic:'#1A7A3A',delta:'from all roles'},
+    {label:'Pending Action',  num:pendingOrders, icon:'bi-bell-fill',            bg:'rgba(214,59,59,.1)',   ic:'#D63B3B', delta:'require response'},
+  ].map(c=>`<div class="stat-card" onclick="switchRole('${userRoles[0]}')">
+    <div class="sic" style="background:${c.bg}"><i class="bi ${c.icon}" style="color:${c.ic}"></i></div>
+    <div><div class="snum">${c.num}</div><div class="slbl">${c.label}</div><div class="sdelta up"><i class="bi bi-arrow-up-right"></i>${c.delta}</div></div>
+  </div>`).join('');
+
+  // Role overview cards
+  document.getElementById('role-overview-grid').innerHTML = userRoles.map(role => {
+    const cfg = ROLE_CONFIG[role];
+    let stat1={l:'Items',v:0}, stat2={l:'Revenue',v:'GHS 0'}, stat3={l:'Videos',v:0};
+    if (role==='seller') {
+      const ls=DB.get('ta_listing_'+S.id);
+      stat1={l:'Listings',v:ls.length};
+      stat2={l:'Views',v:ls.reduce((s,l)=>s+(l.views||0),0)};
+      stat3={l:'Sold',v:ls.filter(l=>l.status==='sold').length};
+    }
+    if (role==='mechanic') {
+      const sv=DB.get('ta_svc_'+S.id)||[];
+      const bk=DB.get('ta_bk_m_'+S.id)||[];
+      stat1={l:'Services',v:sv.length};
+      stat2={l:'Bookings',v:bk.length};
+      stat3={l:'Completed',v:bk.filter(b=>b.status==='completed').length};
+    }
+    if (role==='renter') {
+      const fl=DB.get('ta_fleet_'+S.id)||[];
+      stat1={l:'Fleet',v:fl.length};
+      stat2={l:'Available',v:fl.filter(c=>c.availability==='available').length};
+      stat3={l:'Rentals',v:(DB.get('ta_rent_'+S.id)||[]).length};
+    }
+    if (role==='parts') {
+      const pt=DB.get('ta_parts_'+S.id)||[];
+      stat1={l:'Parts',v:pt.length};
+      stat2={l:'Low Stock',v:pt.filter(p=>Number(p.stock)<=Number(p.lowStock||5)).length};
+      stat3={l:'Orders',v:(DB.get('ta_orders_'+S.id)||[]).length};
+    }
+    return `<div class="role-overview-card" onclick="switchRole('${role}')">
+      <div class="roc-header">
+        <div class="roc-icon" style="background:${cfg.bg}"><i class="bi ${cfg.icon}" style="color:${cfg.colour}"></i></div>
+        <div><div class="roc-title">${cfg.label}</div><div class="roc-sub">Click to manage this role</div></div>
+      </div>
+      <div class="roc-stats">
+        <div class="roc-stat"><div class="roc-stat-num" style="color:${cfg.colour}">${stat1.v}</div><div class="roc-stat-lbl">${stat1.l}</div></div>
+        <div class="roc-stat"><div class="roc-stat-num" style="color:${cfg.colour}">${stat2.v}</div><div class="roc-stat-lbl">${stat2.l}</div></div>
+        <div class="roc-stat"><div class="roc-stat-num" style="color:${cfg.colour}">${stat3.v}</div><div class="roc-stat-lbl">${stat3.l}</div></div>
+      </div>
+      <div class="roc-action">
+        <span>Manage ${cfg.label}</span>
+        <i class="bi bi-arrow-right-circle-fill" style="color:${cfg.colour};font-size:1.1rem;"></i>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Quick actions
+  const actions = [];
+  if (userRoles.includes('seller'))   actions.push({icon:'bi-plus-circle',    label:'Add Car Listing',   fn:"switchRole('seller');nav('seller-add-listing')"});
+  if (userRoles.includes('mechanic')) actions.push({icon:'bi-tools',          label:'Add Service',       fn:"switchRole('mechanic');nav('mechanic-add-service')"});
+  if (userRoles.includes('renter'))   actions.push({icon:'bi-key-fill',       label:'Add Rental Car',    fn:"switchRole('renter');nav('renter-add-car')"});
+  if (userRoles.includes('parts'))    actions.push({icon:'bi-box-seam-fill',  label:'Add Spare Part',    fn:"switchRole('parts');nav('parts-add-part')"});
+  actions.push({icon:'bi-camera-video-fill', label:'Post a Video', fn:"nav('add-video')"});
+  document.getElementById('quick-actions').innerHTML = actions.map(a =>
+    `<button class="qa-btn" onclick="${a.fn}"><i class="bi ${a.icon}"></i> ${a.label}</button>`
+  ).join('');
+
+  // Activity feed
+  const activity = [];
+  if (userRoles.includes('seller')) {
+    DB.get('ta_listing_'+S.id).slice(0,3).forEach(l => activity.push({role:'seller',icon:'bi-car-front-fill',colour:'#1A7A3A',act:'Listed',item:`${l.year} ${l.make} ${l.model}`,when:l.createdAt}));
+  }
+  if (userRoles.includes('mechanic')) {
+    DB.get('ta_svc_'+S.id).slice(0,2).forEach(s => activity.push({role:'mechanic',icon:'bi-tools',colour:'#E8A020',act:'Added service',item:s.name,when:s.createdAt||new Date().toISOString()}));
+  }
+  if (userRoles.includes('parts')) {
+    DB.get('ta_parts_'+S.id).slice(0,2).forEach(p => activity.push({role:'parts',icon:'bi-box-seam-fill',colour:'#7A3A00',act:'Added part',item:p.name,when:p.createdAt||new Date().toISOString()}));
+  }
+  (DB.get('ta_vid_multi_'+S.id)||[]).slice(0,2).forEach(v => activity.push({role:'video',icon:'bi-play-circle-fill',colour:'#1A4B8C',act:'Posted video',item:v.title,when:v.postedAt}));
+  activity.sort((a,b)=>new Date(b.when)-new Date(a.when));
+  document.getElementById('activity-tbody').innerHTML = activity.length
+    ? activity.slice(0,8).map(a=>`<tr>
+        <td><span style="display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;"><i class="bi ${a.icon}" style="color:${a.colour}"></i>${ROLE_CONFIG[a.role]?.label||a.role}</span></td>
+        <td style="font-size:.82rem">${a.act}</td>
+        <td style="font-size:.82rem;color:#5E7490">${a.item}</td>
+        <td style="font-size:.76rem;color:#8FA3BD">${timeAgo(a.when)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="etd">No activity yet.</td></tr>';
+}
+
+/* ── RENDER ALL ROLE SECTIONS ─────────────── */
+function renderAllSections() {
+  renderListings(); renderServices(); renderFleet(); renderInventory(); renderVideos(); renderProfile();
+  updateRoleBadges();
+}
+
+function updateRoleBadges() {
+  if (userRoles.includes('seller'))   document.getElementById('rbadge-seller')?.textContent   = DB.get('ta_listing_'+S.id).filter(l=>l.status==='active').length;
+  if (userRoles.includes('mechanic')) document.getElementById('rbadge-mechanic')?.textContent = DB.get('ta_svc_'+S.id).length;
+  if (userRoles.includes('renter'))   document.getElementById('rbadge-renter')?.textContent   = DB.get('ta_fleet_'+S.id).length;
+  if (userRoles.includes('parts'))    document.getElementById('rbadge-parts')?.textContent    = DB.get('ta_parts_'+S.id).length;
+}
+
+/* ── SELLER LISTINGS ──────────────────────── */
+const LKEY = () => 'ta_listing_'+S.id;
+function renderListings() {
+  const rows = DB.get(LKEY());
+  const SB = {active:'<span class="badge ba">Active</span>',sold:'<span class="badge bc">Sold</span>',draft:'<span class="badge" style="background:#F4F7FB;color:#8FA3BD;">Draft</span>'};
+  document.getElementById('sl-tbody').innerHTML = rows.length
+    ? rows.map(l=>`<tr><td>${l.image?`<img src="${l.image}" style="width:50px;height:34px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"/>`:''}</td><td style="font-weight:600">${l.year||''} ${l.make} ${l.model}</td><td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(l.price||0).toLocaleString()}</td><td>${l.condition||'–'}</td><td>${SB[l.status]||''}</td><td><div style="display:flex;gap:5px"><button class="btn bgh bsm" onclick="editListing('${l.id}')"><i class="bi bi-pencil"></i></button><button class="btn" style="background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);" class="bsm" onclick="delListing('${l.id}')"><i class="bi bi-trash3"></i></button></div></td></tr>`).join('')
+    : '<tr><td colspan="6" class="etd">No listings yet.</td></tr>';
+}
+function saveListing() {
+  const id=document.getElementById('sl-edit-id').value, make=document.getElementById('sl-make').value.trim(), model=document.getElementById('sl-model').value.trim(), year=document.getElementById('sl-year').value, price=document.getElementById('sl-price').value, cond=document.getElementById('sl-cond').value, img=iuwGetValue('sl-img');
+  if(!make||!model||!year||!price||!cond||!img){showToast('Fill all required fields.','error');return;}
+  const l={id:id||DB.uid(),sellerId:S.id,sellerName:S.businessName||S.firstName+' '+S.lastName,make,model,year,price,condition:cond,priceType:document.getElementById('sl-ptype').value,region:document.getElementById('sl-region').value,status:document.getElementById('sl-status').value,image:img,desc:document.getElementById('sl-desc').value,views:0,createdAt:id?DB.find(LKEY(),id)?.createdAt:new Date().toISOString()};
+  if(id){DB.upd(LKEY(),l);showToast('Listing updated!');}else{DB.add(LKEY(),l);showToast('Listing added — live!');}
+  const g=DB.get('ta_cars_sale').filter(c=>c.id!==l.id);if(l.status==='active')g.unshift(l);DB.set('ta_cars_sale',g);
+  clearListingForm();renderListings();renderOverview();updateRoleBadges();nav('seller-listings');
+}
+function editListing(id){const l=DB.find(LKEY(),id);if(!l)return;document.getElementById('sl-edit-id').value=id;['sl-make','sl-model','sl-year','sl-price','sl-desc'].forEach(x=>{const k=x.split('-')[1];document.getElementById(x).value=l[k]||l[k.charAt(0).toUpperCase()+k.slice(1)]||l.make||'';});document.getElementById('sl-make').value=l.make||'';document.getElementById('sl-model').value=l.model||'';document.getElementById('sl-year').value=l.year||'';document.getElementById('sl-price').value=l.price||'';document.getElementById('sl-cond').value=l.condition||'';document.getElementById('sl-ptype').value=l.priceType||'fixed';document.getElementById('sl-region').value=l.region||'';document.getElementById('sl-status').value=l.status||'active';document.getElementById('sl-desc').value=l.desc||'';if(l.image)iuwShowPreview('sl-img-uploader',l.image,'vehicle image');document.getElementById('sl-form-h').textContent='Edit Listing';document.getElementById('sl-save-lbl').textContent='Update';switchRole('seller');nav('seller-add-listing');}
+function delListing(id){if(!confirm('Delete this listing?'))return;DB.del(LKEY(),id);DB.set('ta_cars_sale',DB.get('ta_cars_sale').filter(c=>c.id!==id));renderListings();renderOverview();updateRoleBadges();showToast('Listing deleted.');}
+function clearListingForm(){['sl-edit-id','sl-make','sl-model','sl-year','sl-price','sl-desc'].forEach(x=>document.getElementById(x).value='');['sl-cond','sl-region'].forEach(x=>document.getElementById(x).value='');document.getElementById('sl-ptype').value='fixed';document.getElementById('sl-status').value='active';iuwClear('sl-img-uploader','sl-img');document.getElementById('sl-form-h').textContent='Add Car Listing';document.getElementById('sl-save-lbl').textContent='Save Listing';}
+
+/* ── MECHANIC SERVICES ────────────────────── */
+const SKEY = () => 'ta_svc_'+S.id;
+function renderServices() {
+  const rows=DB.get(SKEY());const PT={fixed:'<span class="badge bc">Fixed</span>',negotiable:'<span class="badge bb">Neg.</span>',free:'<span class="badge ba">Free</span>'};
+  document.getElementById('ms-tbody').innerHTML=rows.length
+    ?rows.map(s=>`<tr><td style="font-weight:600">${s.name}</td><td style="font-size:.78rem;text-transform:capitalize">${s.cat||'–'}</td><td style="font-family:'Bebas Neue',cursive;font-size:1rem">${s.ptype==='free'?'FREE':'GHS '+Number(s.price||0).toLocaleString()}</td><td>${PT[s.ptype]||''}</td><td>${s.dur||'–'}</td><td><div style="display:flex;gap:5px"><button class="btn bgh bsm" onclick="editService('${s.id}')"><i class="bi bi-pencil"></i></button><button class="btn bsm" style="background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);" onclick="delService('${s.id}')"><i class="bi bi-trash3"></i></button></div></td></tr>`).join('')
+    :'<tr><td colspan="6" class="etd">No services yet.</td></tr>';
+}
+function saveService(){const id=document.getElementById('ms-edit-id').value,name=document.getElementById('ms-name').value.trim(),cat=document.getElementById('ms-cat').value;if(!name||!cat){showToast('Name and category required.','error');return;}const s={id:id||DB.uid(),name,cat,ptype:document.getElementById('ms-ptype').value,price:document.getElementById('ms-price').value,dur:document.getElementById('ms-dur').value.trim(),desc:document.getElementById('ms-desc').value.trim()};if(id){DB.upd(SKEY(),s);showToast('Service updated!');}else{DB.add(SKEY(),s);showToast('Service added!');}const all=DB.get('ta_mechanic_services').filter(x=>x.mechanicId!==S.id);DB.get(SKEY()).forEach(sv=>all.push({...sv,mechanicId:S.id,mechanicName:S.businessName||S.firstName+' '+S.lastName,region:S.region||''}));DB.set('ta_mechanic_services',all);clearSvcForm();renderServices();updateRoleBadges();nav('mechanic-services');}
+function editService(id){const s=DB.find(SKEY(),id);if(!s)return;document.getElementById('ms-edit-id').value=id;document.getElementById('ms-name').value=s.name||'';document.getElementById('ms-cat').value=s.cat||'';document.getElementById('ms-ptype').value=s.ptype||'fixed';document.getElementById('ms-price').value=s.price||'';document.getElementById('ms-dur').value=s.dur||'';document.getElementById('ms-desc').value=s.desc||'';document.getElementById('ms-form-h').textContent='Edit Service';document.getElementById('ms-save-lbl').textContent='Update';switchRole('mechanic');nav('mechanic-add-service');}
+function delService(id){if(!confirm('Delete this service?'))return;DB.del(SKEY(),id);const all=DB.get('ta_mechanic_services').filter(s=>s.mechanicId!==S.id);DB.get(SKEY()).forEach(sv=>all.push({...sv,mechanicId:S.id}));DB.set('ta_mechanic_services',all);renderServices();updateRoleBadges();showToast('Deleted.');}
+function clearSvcForm(){['ms-edit-id','ms-name','ms-price','ms-dur','ms-desc'].forEach(x=>document.getElementById(x).value='');document.getElementById('ms-cat').value='';document.getElementById('ms-ptype').value='fixed';document.getElementById('ms-form-h').textContent='Add Service';document.getElementById('ms-save-lbl').textContent='Save Service';}
+
+/* ── RENTER FLEET ─────────────────────────── */
+const FKEY = () => 'ta_fleet_'+S.id;
+function renderFleet(){const rows=DB.get(FKEY());const AB={available:'<span class="badge ba">Available</span>',booked:'<span class="badge bb">Booked</span>',maintenance:'<span class="badge bd">Maintenance</span>'};document.getElementById('rf-tbody').innerHTML=rows.length?rows.map(c=>`<tr><td>${c.image?`<img src="${c.image}" style="width:50px;height:34px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"/>`:''}</td><td style="font-weight:600">${c.year} ${c.make} ${c.model}</td><td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(c.rate).toLocaleString()}</td><td>${AB[c.availability]||''}</td><td><div style="display:flex;gap:5px"><button class="btn bgh bsm" onclick="editFleetCar('${c.id}')"><i class="bi bi-pencil"></i></button><button class="btn bsm" style="background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);" onclick="delFleetCar('${c.id}')"><i class="bi bi-trash3"></i></button></div></td></tr>`).join(''):'<tr><td colspan="5" class="etd">No cars yet.</td></tr>';}
+function saveFleetCar(){const id=document.getElementById('rf-edit-id').value,make=document.getElementById('rf-make').value.trim(),model=document.getElementById('rf-model').value.trim(),year=document.getElementById('rf-year').value,rate=document.getElementById('rf-rate').value,img=iuwGetValue('rf-img');if(!make||!model||!year||!rate||!img){showToast('Fill all required fields.','error');return;}const c={id:id||DB.uid(),renterId:S.id,renterName:S.businessName||S.firstName+' '+S.lastName,make,model,year,rate,image:img,availability:document.getElementById('rf-avail').value,region:document.getElementById('rf-region').value,features:document.getElementById('rf-feats').value,createdAt:id?DB.find(FKEY(),id)?.createdAt:new Date().toISOString()};if(id){DB.upd(FKEY(),c);showToast('Car updated!');}else{DB.add(FKEY(),c);showToast('Car added!');}const g=DB.get('ta_cars_rent').filter(x=>x.id!==c.id);g.unshift(c);DB.set('ta_cars_rent',g);clearFleetForm();renderFleet();updateRoleBadges();nav('renter-fleet');}
+function editFleetCar(id){const c=DB.find(FKEY(),id);if(!c)return;document.getElementById('rf-edit-id').value=id;document.getElementById('rf-make').value=c.make||'';document.getElementById('rf-model').value=c.model||'';document.getElementById('rf-year').value=c.year||'';document.getElementById('rf-rate').value=c.rate||'';document.getElementById('rf-avail').value=c.availability||'available';document.getElementById('rf-region').value=c.region||'';document.getElementById('rf-feats').value=c.features||'';if(c.image)iuwShowPreview('rf-img-uploader',c.image,'car image');document.getElementById('rf-form-h').textContent='Edit Car';document.getElementById('rf-save-lbl').textContent='Update';switchRole('renter');nav('renter-add-car');}
+function delFleetCar(id){if(!confirm('Remove?'))return;DB.del(FKEY(),id);DB.set('ta_cars_rent',DB.get('ta_cars_rent').filter(c=>c.id!==id));renderFleet();updateRoleBadges();showToast('Removed.');}
+function clearFleetForm(){['rf-edit-id','rf-make','rf-model','rf-year','rf-rate','rf-feats'].forEach(x=>document.getElementById(x).value='');['rf-region'].forEach(x=>document.getElementById(x).value='');document.getElementById('rf-avail').value='available';iuwClear('rf-img-uploader','rf-img');document.getElementById('rf-form-h').textContent='Add Rental Car';document.getElementById('rf-save-lbl').textContent='Save Car';}
+
+/* ── PARTS INVENTORY ──────────────────────── */
+const PKEY = () => 'ta_parts_'+S.id;
+function renderInventory(){const rows=DB.get(PKEY());const stBadge=stk=>{const n=Number(stk);return n===0?'<span class="badge bd">Out</span>':n<=5?'<span class="badge bb">Low</span>':'<span class="badge ba">OK</span>';};document.getElementById('pi-tbody').innerHTML=rows.length?rows.map(p=>`<tr><td style="font-weight:600">${p.name}</td><td style="font-size:.78rem;color:#5E7490;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.compat||'–'}</td><td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(p.price||0).toLocaleString()}</td><td style="font-weight:700;color:${Number(p.stock)===0?'#D63B3B':Number(p.stock)<=5?'#B07A10':'#1A7A3A'}">${p.stock}</td><td>${stBadge(p.stock)}</td><td><div style="display:flex;gap:5px"><button class="btn bgh bsm" onclick="editPart('${p.id}')"><i class="bi bi-pencil"></i></button><button class="btn bsm" style="background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);" onclick="delPart('${p.id}')"><i class="bi bi-trash3"></i></button></div></td></tr>`).join(''):'<tr><td colspan="6" class="etd">No parts yet.</td></tr>';}
+function savePart(){const id=document.getElementById('pi-edit-id').value,name=document.getElementById('pi-name').value.trim(),cat=document.getElementById('pi-cat').value,price=document.getElementById('pi-price').value,stock=document.getElementById('pi-stock').value,compat=document.getElementById('pi-compat').value.trim(),img=iuwGetValue('pi-img');if(!name||!cat||!price||!stock||!compat){showToast('Fill required fields.','error');return;}const p={id:id||DB.uid(),dealerId:S.id,dealerName:S.businessName||S.firstName+' '+S.lastName,region:S.region||'',name,cat,price,stock,compat,brand:document.getElementById('pi-brand').value.trim(),cond:document.getElementById('pi-cond').value,image:img,createdAt:id?DB.find(PKEY(),id)?.createdAt:new Date().toISOString()};if(id){DB.upd(PKEY(),p);showToast('Part updated!');}else{DB.add(PKEY(),p);showToast('Part added!');}const g=DB.get('ta_spare_parts').filter(x=>x.id!==p.id);g.unshift(p);DB.set('ta_spare_parts',g);clearPartForm();renderInventory();updateRoleBadges();nav('parts-inventory');}
+function editPart(id){const p=DB.find(PKEY(),id);if(!p)return;document.getElementById('pi-edit-id').value=id;document.getElementById('pi-name').value=p.name||'';document.getElementById('pi-cat').value=p.cat||'';document.getElementById('pi-price').value=p.price||'';document.getElementById('pi-stock').value=p.stock||'';document.getElementById('pi-compat').value=p.compat||'';document.getElementById('pi-brand').value=p.brand||'';document.getElementById('pi-cond').value=p.cond||'new';if(p.image)iuwShowPreview('pi-img-uploader',p.image,'part image');document.getElementById('pi-form-h').textContent='Edit Part';document.getElementById('pi-save-lbl').textContent='Update';switchRole('parts');nav('parts-add-part');}
+function delPart(id){if(!confirm('Delete?'))return;DB.del(PKEY(),id);DB.set('ta_spare_parts',DB.get('ta_spare_parts').filter(p=>p.id!==id));renderInventory();updateRoleBadges();showToast('Deleted.');}
+function clearPartForm(){['pi-edit-id','pi-name','pi-price','pi-stock','pi-compat','pi-brand'].forEach(x=>document.getElementById(x).value='');['pi-cat'].forEach(x=>document.getElementById(x).value='');document.getElementById('pi-cond').value='new';iuwClear('pi-img-uploader','pi-img');document.getElementById('pi-form-h').textContent='Add Part';document.getElementById('pi-save-lbl').textContent='Save Part';}
+
+/* ── SHARED VIDEOS ────────────────────────── */
+const MVKEY = () => 'ta_vid_multi_'+S.id;
+function renderVideos(){const vids=DB.get(MVKEY());const grid=document.getElementById('vid-grid');if(!vids.length){grid.innerHTML='<p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1;">No videos yet.</p>';return;}grid.innerHTML=vids.map(v=>{const th=VID.thumb(v.url);return `<div class="vid-card"><div class="vt" onclick="playPortalVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')"> ${th?`<img src="${th}" loading="lazy"/>`:''}  <div class="vplay"><div class="vpb"><i class="bi bi-play-fill"></i></div></div>${v.duration?`<span class="vdur">${v.duration}</span>`:''}</div><div class="vb"><div class="vtitle">${v.title||'Untitled'}</div><div class="vmeta">${v.desc||''}</div><div class="va"><button class="btn bgh bsm" onclick="playPortalVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')"><i class="bi bi-play-circle"></i> Watch</button><button class="btn bsm" style="background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);" onclick="delVideo('${v.id}')"><i class="bi bi-trash3"></i></button></div></div></div>`;}).join('');}
+function saveVideo(){const url=document.getElementById('v-url').value.trim(),title=document.getElementById('v-title').value.trim();if(!url||!title){showToast('URL and title required.','error');return;}if(!VID.isValid(url)){showToast('Invalid YouTube or Vimeo URL.','error');return;}const v={id:'uv-'+DB.uid(),url,title,desc:document.getElementById('v-desc').value.trim(),category:document.getElementById('v-cat').value,duration:document.getElementById('v-dur').value.trim(),thumbnail:VID.thumb(url),poster:S.businessName||S.firstName+' '+S.lastName,role:userRoles[0]||'seller',views:0,postedAt:new Date().toISOString(),new:true,featured:false,ownerId:S.id};DB.add(MVKEY(),v);const g=DB.get('ta_videos');g.unshift(v);DB.set('ta_videos',g);['v-url','v-title','v-desc','v-dur'].forEach(x=>document.getElementById(x).value='');document.getElementById('v-hint').classList.remove('show');renderVideos();renderOverview();showToast('Video published!');nav('videos');}
+function delVideo(id){if(!confirm('Delete?'))return;DB.del(MVKEY(),id);DB.set('ta_videos',DB.get('ta_videos').filter(v=>v.id!==id));renderVideos();renderOverview();showToast('Deleted.');}
+function prevVid(url){const p=document.getElementById('v-hint');if(!VID.isValid(url)){p.classList.remove('show');return;}document.getElementById('v-thumb').src=VID.thumb(url);document.getElementById('v-plat').textContent=VID.platform(url)+' detected';p.classList.add('show');}
+
+/* ── PROFILE ──────────────────────────────── */
+function renderProfile(){
+  document.getElementById('profile-body').innerHTML=`
+    <div class="card">
+      <div class="cb" style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#1A4B8C);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:#fff;flex-shrink:0;">${(S.firstName||'?')[0]}${(S.lastName||'?')[0]}</div>
+        <div style="flex:1;">
+          <div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:.04em;color:#0B1E3D;">${S.firstName||''} ${S.lastName||''}</div>
+          ${S.businessName?`<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#E8A020;">${S.businessName}</div>`:''}
+          <div style="font-size:.82rem;color:#5E7490;margin-top:3px;">${S.email||''} · ${S.phone||''} · ${S.region||'Ghana'}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${userRoles.map(r=>{const c=ROLE_CONFIG[r];return `<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;background:${c.bg};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:${c.colour};"><i class="bi ${c.icon}"></i>${c.label}</span>`;}).join('')}</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:0;">
+      ${userRoles.map(role=>{const cfg=ROLE_CONFIG[role];let items=[];if(role==='seller')items=DB.get('ta_listing_'+S.id).filter(l=>l.status==='active').slice(0,2);if(role==='renter')items=DB.get('ta_fleet_'+S.id).slice(0,2);if(role==='mechanic')items=DB.get('ta_svc_'+S.id).slice(0,2);if(role==='parts')items=DB.get('ta_parts_'+S.id).slice(0,2);return `<div class="card" style="margin-bottom:0;">
+        <div class="ch"><h3><i class="bi ${cfg.icon}" style="color:${cfg.colour}"></i> ${cfg.label}</h3><a href="${cfg.link}" target="_blank" class="btn bgh bsm"><i class="bi bi-globe"></i> Public Page</a></div>
+        <div style="padding:12px 16px;font-size:.84rem;color:#5E7490;">${items.length?items.map(i=>`<div style="padding:6px 0;border-bottom:1px solid #EEF2F8;">${i.name||i.make+' '+i.model||i.title||'–'}</div>`).join('')+'<div style="padding:6px 0;color:#8FA3BD;font-size:.76rem;">+ more</div>':'<span style="color:#8FA3BD;">No items yet.</span>'}</div>
+      </div>`;}).join('')}
+    </div>`;
+}
+
+/* ── IMAGE UPLOADERS ──────────────────────── */
+function mountImageUploaders() {
+  if (userRoles.includes('seller'))   mountImgUploader('sl-img-uploader','sl-img');
+  if (userRoles.includes('renter'))   mountImgUploader('rf-img-uploader','rf-img');
+  if (userRoles.includes('parts'))    mountImgUploader('pi-img-uploader','pi-img');
+}
+
+/* ── NAVIGATION ───────────────────────────── */
+function nav(key) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+key)?.classList.add('active');
+  document.querySelector(`.sb-item[data-s="${key}"]`)?.classList.add('active');
+  document.querySelector('.main').scrollTo(0,0);
+}
+
+/* ── UTILS ────────────────────────────────── */
+function showToast(msg, type) {
+  let t = document.getElementById('ps-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'ps-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0B1E3D;color:#fff;padding:12px 18px;border-radius:8px;font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:.86rem;box-shadow:0 8px 28px rgba(11,30,61,.3);z-index:9999;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:9px;max-width:340px;';
+    t.innerHTML = '<i class="bi bi-check-circle-fill" style="color:#E8A020;flex-shrink:0;"></i><span></span>';
+    document.body.appendChild(t);
+  }
+  t.querySelector('span').textContent = msg;
+  t.style.background = type==='error'?'#D63B3B':'#0B1E3D';
+  t.style.transform='translateY(0)';t.style.opacity='1';
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>{t.style.transform='translateY(80px)';t.style.opacity='0';},3200);
+}
+function timeAgo(iso){if(!iso)return'–';const d=Math.floor((Date.now()-new Date(iso).getTime())/86400000);const h=Math.floor((Date.now()-new Date(iso).getTime())/3600000);const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);return d>0?d+'d ago':h>0?h+'h ago':m>0?m+'m ago':'Just now';}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-wrap'))e.target.classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-wrap.open').forEach(m=>m.classList.remove('open'));});
+</script>
+</body>
+</html>

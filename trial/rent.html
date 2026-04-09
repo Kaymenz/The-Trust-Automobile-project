@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Rentals — Trust Automobile | Ghana's Verified Rental Fleet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="rent.css" />
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="ta-nav" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="ta-logo">
+        <div class="ta-logo-mark">TA</div>
+        <div class="ta-logo-text">
+          Trust Automobile
+          <small>Verified Rentals</small>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#fleet" class="active">Browse Fleet</a></li>
+        <li><a href="#deals">Deals</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="listings.html">Buy a Car</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="tel:+233000000000" class="btn-nav btn-outline">
+          <i class="bi bi-telephone-fill"></i> Call Us
+        </a>
+        <a href="#fleet" class="btn-nav btn-solid">Book Now</a>
+      </div>
+
+      <button class="hamburger" id="hamburgerBtn">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" id="closeMenu"><i class="bi bi-x"></i></button>
+    <a href="#fleet" onclick="closeMobileMenu()">Browse Fleet</a>
+    <a href="#deals" onclick="closeMobileMenu()">Deals</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+    <a href="listings.html">Buy a Car</a>
+    <a href="about.html">About</a>
+    <a href="#fleet" class="mobile-cta-link" onclick="closeMobileMenu()">Book Now</a>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles" id="particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="bi bi-key-fill"></i>
+        Verified Rental Fleet — All Operators Inspected
+      </div>
+      <h1 class="display-hero">
+        Rent With<br /><span>Confidence.</span><br />Drive With Trust.
+      </h1>
+      <p class="hero-sub">
+        Browse verified rental vehicles from licensed operators across Ghana.
+        No hidden fees, no fake listings — every car inspected and insured.
+      </p>
+      <div class="hero-cta">
+        <a href="#fleet" class="btn-primary-hero">
+          <i class="bi bi-search"></i> Browse Fleet
+        </a>
+        <a href="tel:+233000000000" class="btn-secondary-hero">
+          <i class="bi bi-telephone"></i> Call Us Now
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="60">0</div>
+          <div class="hero-stat-label">Rental Vehicles</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="12">0</div>
+          <div class="hero-stat-label">Operators</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="8">0</div>
+          <div class="hero-stat-label">Regions Covered</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="24">0</div>
+          <div class="hero-stat-label">Support Hours</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SEARCH ── -->
+  <div class="search-section" id="search">
+    <div class="search-card reveal">
+      <div class="search-card-title">
+        <i class="bi bi-calendar3-range"></i> Find Your Rental
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Pickup Location</label>
+          <select id="pickupLocation">
+            <option value="">All Regions</option>
+            <option>Accra</option>
+            <option>Kumasi</option>
+            <option>Takoradi</option>
+            <option>Tamale</option>
+            <option>Cape Coast</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Pickup Date</label>
+          <input type="date" id="pickupDate" />
+        </div>
+        <div class="search-field">
+          <label>Return Date</label>
+          <input type="date" id="returnDate" />
+        </div>
+        <div class="search-field">
+          <label>Car Type</label>
+          <select id="carTypeFilter">
+            <option value="">All Types</option>
+            <option value="economy">Economy</option>
+            <option value="compact">Compact</option>
+            <option value="suv">SUV</option>
+            <option value="luxury">Luxury</option>
+            <option value="minivan">Minivan</option>
+            <option value="electric">Electric</option>
+          </select>
+        </div>
+        <button class="btn-search" id="searchBtn">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="all">All Cars</button>
+        <button class="filter-chip" data-filter="economy">Economy</button>
+        <button class="filter-chip" data-filter="suv">SUV</button>
+        <button class="filter-chip" data-filter="luxury">Luxury</button>
+        <button class="filter-chip" data-filter="electric">Electric</button>
+        <button class="filter-chip" data-filter="minivan">Minivan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRUST BAR ── -->
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <div class="trust-item"><i class="bi bi-patch-check-fill"></i><span>All operators verified</span></div>
+      <div class="trust-item"><i class="bi bi-shield-lock-fill"></i><span>Fully insured vehicles</span></div>
+      <div class="trust-item"><i class="bi bi-geo-alt-fill"></i><span>Airport &amp; city pickup</span></div>
+      <div class="trust-item"><i class="bi bi-headset"></i><span>24/7 customer support</span></div>
+    </div>
+  </div>
+
+  <!-- ── FLEET ── -->
+  <section class="fleet-section" id="fleet">
+    <div class="container-ta">
+      <div class="section-header reveal">
+        <p class="section-label">Available Now</p>
+        <h2 class="section-title">Popular Categories</h2>
+        <p class="section-desc">Every vehicle from a licensed, verified operator. All cars regularly inspected — no surprises when you arrive.</p>
+      </div>
+
+      <!-- Mobile category chips -->
+      <div class="category-chips" id="categoryChips">
+        <button class="cat-chip active" data-filter="all">All Cars</button>
+        <button class="cat-chip" data-filter="electric">Electric</button>
+        <button class="cat-chip" data-filter="suv">SUV</button>
+        <button class="cat-chip" data-filter="luxury">Luxury</button>
+        <button class="cat-chip" data-filter="economy">Economy</button>
+        <button class="cat-chip" data-filter="minivan">Minivan</button>
+      </div>
+
+      <div class="fleet-grid" id="fleetGrid"></div>
+
+      <div class="no-cars" id="noResults">
+        <i class="bi bi-car-front"></i>
+        <h3>No Vehicles Found</h3>
+        <p>Try adjusting your search filters or browse all available cars.</p>
+      </div>
+
+      <div class="load-more-wrap reveal" id="loadMoreWrap">
+        <button class="btn-outline-navy" id="loadMoreBtn">Load More Vehicles</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container-ta">
+      <div class="section-header reveal">
+        <p class="section-label accent">How It Works</p>
+        <h2 class="section-title light">Rent a Car in 4 Easy Steps</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-number">01</div>
+          <div class="step-icon"><i class="bi bi-search"></i></div>
+          <h4>Search &amp; Filter</h4>
+          <p>Choose your location, dates, and vehicle type to see available cars from verified operators.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">02</div>
+          <div class="step-icon"><i class="bi bi-calendar-check"></i></div>
+          <h4>Book Instantly</h4>
+          <p>Fill in your details, select insurance coverage, and confirm your booking in minutes.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">03</div>
+          <div class="step-icon"><i class="bi bi-patch-check"></i></div>
+          <h4>Vehicle Inspection</h4>
+          <p>On pickup, inspect the vehicle with the operator and confirm its condition before driving away.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">04</div>
+          <div class="step-icon"><i class="bi bi-key"></i></div>
+          <h4>Drive &amp; Return</h4>
+          <p>Enjoy your rental. Return to the agreed location and we'll handle the rest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEALS ── -->
+  <section class="deals-section" id="deals">
+    <div class="container-ta">
+      <div class="section-header reveal">
+        <p class="section-label">Special Offers</p>
+        <h2 class="section-title">Exclusive Rental Deals</h2>
+      </div>
+      <div class="deals-grid">
+        <div class="deal-card reveal">
+          <div class="deal-badge">Weekend Special</div>
+          <div class="deal-title">Weekend Getaway</div>
+          <div class="deal-price">GHS 499 <small>/day</small></div>
+          <p class="deal-desc">Friday to Sunday rentals — perfect for short trips around Ghana.</p>
+          <ul class="deal-features">
+            <li><i class="bi bi-check-circle-fill"></i> Free cancellation (24hrs notice)</li>
+            <li><i class="bi bi-check-circle-fill"></i> Unlimited mileage</li>
+            <li><i class="bi bi-check-circle-fill"></i> Basic insurance included</li>
+          </ul>
+          <button class="btn-deal" onclick="scrollToFleet()">Browse Weekend Cars</button>
+        </div>
+        <div class="deal-card featured reveal">
+          <div class="deal-badge">Most Popular</div>
+          <div class="deal-title">Monthly Rental</div>
+          <div class="deal-price">GHS 9,999 <small>/month</small></div>
+          <p class="deal-desc">Best value for 30+ day rentals. Ideal for business or relocation.</p>
+          <ul class="deal-features">
+            <li><i class="bi bi-check-circle-fill"></i> 30+ days rental</li>
+            <li><i class="bi bi-check-circle-fill"></i> Free routine maintenance</li>
+            <li><i class="bi bi-check-circle-fill"></i> Roadside assistance included</li>
+          </ul>
+          <button class="btn-deal" onclick="scrollToFleet()">View Monthly Options</button>
+        </div>
+        <div class="deal-card reveal">
+          <div class="deal-badge">Business</div>
+          <div class="deal-title">Business Travel</div>
+          <div class="deal-price">GHS 379 <small>/day</small></div>
+          <p class="deal-desc">Corporate rates for professionals. Priority service, clean vehicles.</p>
+          <ul class="deal-features">
+            <li><i class="bi bi-check-circle-fill"></i> Priority booking</li>
+            <li><i class="bi bi-check-circle-fill"></i> Airport delivery available</li>
+            <li><i class="bi bi-check-circle-fill"></i> Business insurance</li>
+          </ul>
+          <button class="btn-deal" onclick="scrollToFleet()">Book Business Car</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BENEFITS ── -->
+  <section class="benefits-section">
+    <div class="container-ta">
+      <div class="section-header reveal">
+        <p class="section-label">Why Choose Us</p>
+        <h2 class="section-title">Renting Done Right</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="benefit-icon"><i class="bi bi-shield-check"></i></div>
+          <h4>Full Insurance Cover</h4>
+          <p>Choose from basic to comprehensive coverage. Drive without worrying about unexpected costs.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon"><i class="bi bi-arrow-counterclockwise"></i></div>
+          <h4>Free Cancellation</h4>
+          <p>Plans change. Cancel up to 24 hours before your pickup with no penalties.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon"><i class="bi bi-lightning-charge"></i></div>
+          <h4>Instant Confirmation</h4>
+          <p>Receive your booking confirmation within minutes. No waiting, no back-and-forth.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon"><i class="bi bi-headset"></i></div>
+          <h4>24/7 Support</h4>
+          <p>Our team is always reachable. Breakdown, questions, changes — we've got you covered.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <p class="section-label accent centered">Ready to Rent?</p>
+      <h2>Your Journey Starts Here.<br />Book Your Car Today.</h2>
+      <p>Verified operators. Inspected vehicles. Transparent pricing.<br />That's the Trust Automobile difference.</p>
+      <div class="cta-buttons">
+        <a href="#fleet" class="btn-cta-primary">Browse Fleet</a>
+        <a href="tel:+233000000000" class="btn-cta-secondary">
+          <i class="bi bi-telephone"></i> Call Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="ta-logo">
+            <div class="ta-logo-mark">TA</div>
+            <div class="ta-logo-text">
+              Trust Automobile
+              <small>Verified Marketplace</small>
+            </div>
+          </a>
+          <p>Ghana's only verified automotive marketplace. Connecting buyers, sellers, mechanics, and parts dealers in one trusted platform.</p>
+          <div class="footer-social">
+            <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-btn"><i class="bi bi-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h5>Rentals</h5>
+          <ul>
+            <li><a href="#fleet">Browse Fleet</a></li>
+            <li><a href="#deals">Current Deals</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#">Monthly Rentals</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Marketplace</h5>
+          <ul>
+            <li><a href="listings.html">Browse Cars</a></li>
+            <li><a href="mechanics.html">Find a Mechanic</a></li>
+            <li><a href="spareparts/spare.html">Spare Parts</a></li>
+            <li><a href="education.html">Learn</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About TA</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Trust Automobile. All rights reserved.</p>
+        <p>Built for the Ghanaian automotive market.</p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop"><i class="bi bi-chevron-up"></i></button>
+
+  <!-- ── BOOKING MODAL ── -->
+  <div class="modal-backdrop" id="bookingBackdrop">
+    <div class="booking-modal" id="bookingModal">
+      <div class="modal-head">
+        <h2><i class="bi bi-calendar-check-fill"></i> Book Your Rental</h2>
+        <button class="modal-close" id="modalCloseBtn"><i class="bi bi-x"></i></button>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step active" id="step1tab">1. Details</div>
+        <div class="modal-step" id="step2tab">2. Insurance</div>
+        <div class="modal-step" id="step3tab">3. Review</div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="rent.js"></script>
+  <script src="ta-live-sync.js"></script>
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Dashboard — Trust Automobile</title>
+    <link rel="stylesheet" href="shared.css" />
+    <style>
+      .dash-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: calc(100vh - 68px);
+      }
+      /* Sidebar */
+      .dash-sidebar {
+        background: #0b1e3d;
+        padding: 32px 0;
+      }
+      .dash-user {
+        padding: 0 24px 28px;
+        border-bottom: 1px solid rgba(143, 163, 189, 0.15);
+        margin-bottom: 16px;
+      }
+      .dash-avatar {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #1a4b8c, #e8a020);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 12px;
+      }
+      .dash-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .dash-role {
+        font-size: 12px;
+        color: #8fa3bd;
+        margin-top: 2px;
+      }
+      .dash-nav {
+        padding: 0 12px;
+      }
+      .dash-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        color: #8fa3bd;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 4px;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+      }
+      .dash-nav-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+      }
+      .dash-nav-item.active {
+        background: rgba(26, 75, 140, 0.5);
+        color: #fff;
+      }
+      .dash-nav-item svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+        flex-shrink: 0;
+      }
+      .dash-nav-divider {
+        height: 1px;
+        background: rgba(143, 163, 189, 0.15);
+        margin: 12px 12px;
+      }
+      /* Main content */
+      .dash-main {
+        padding: 32px 36px;
+        background: #f4f7fb;
+      }
+      .dash-panel {
+        display: none;
+      }
+      .dash-panel.active {
+        display: block;
+      }
+      .dash-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+      }
+      .dash-title {
+        font-family: "Playfair Display", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #0b1e3d;
+      }
+      /* Stats */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e8edf5;
+      }
+      .stat-card-num {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: #0b1e3d;
+      }
+      .stat-card-label {
+        font-size: 13px;
+        color: #8fa3bd;
+        margin-top: 4px;
+      }
+      .stat-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+      .stat-card-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .icon-gold {
+        background: rgba(232, 160, 32, 0.15);
+      }
+      .icon-gold svg {
+        fill: #e8a020;
+      }
+      .icon-blue {
+        background: rgba(26, 75, 140, 0.1);
+      }
+      .icon-blue svg {
+        fill: #1a4b8c;
+      }
+      .icon-green {
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .icon-green svg {
+        fill: #15803d;
+      }
+      .icon-red {
+        background: rgba(220, 53, 69, 0.1);
+      }
+      .icon-red svg {
+        fill: #dc3545;
+      }
+      /* Listings table */
+      .listings-table {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #e8edf5;
+        overflow: hidden;
+      }
+      .table-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 100px;
+        padding: 14px 20px;
+        background: #f4f7fb;
+        border-bottom: 1px solid #e8edf5;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #8fa3bd;
+      }
+      .table-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 100px;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f4f9;
+        align-items: center;
+        transition: background 0.15s;
+      }
+      .table-row:last-child {
+        border-bottom: none;
+      }
+      .table-row:hover {
+        background: #fafbfd;
+      }
+      .car-thumb {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .car-thumb-img {
+        width: 52px;
+        height: 40px;
+        background: linear-gradient(135deg, #e8edf5, #d0daea);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .car-thumb-img svg {
+        width: 24px;
+        height: 24px;
+        fill: #8fa3bd;
+      }
+      .car-thumb-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0b1e3d;
+      }
+      .car-thumb-year {
+        font-size: 12px;
+        color: #8fa3bd;
+      }
+      .table-cell {
+        font-size: 14px;
+        color: #0b1e3d;
+      }
+      .table-actions {
+        display: flex;
+        gap: 6px;
+      }
+      .action-btn {
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+      }
+      .action-edit {
+        background: rgba(26, 75, 140, 0.1);
+        color: #1a4b8c;
+      }
+      .action-edit:hover {
+        background: #1a4b8c;
+        color: #fff;
+      }
+      .action-del {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+      }
+      .action-del:hover {
+        background: #dc3545;
+        color: #fff;
+      }
+      /* Saved cars */
+      .saved-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      /* Profile form */
+      .profile-card {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #e8edf5;
+        padding: 28px;
+        max-width: 600px;
+      }
+      .profile-card h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0b1e3d;
+        margin-bottom: 24px;
+      }
+      .form-2col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 900px) {
+        .dash-layout {
+          grid-template-columns: 1fr;
+        }
+        .dash-sidebar {
+          display: none;
+        }
+        .dash-main {
+          padding: 20px;
+        }
+        .stats-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .saved-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .table-header,
+        .table-row {
+          grid-template-columns: 2fr 1fr 80px;
+        }
+        .table-header > *:nth-child(2),
+        .table-row > *:nth-child(2),
+        .table-header > *:nth-child(3),
+        .table-row > *:nth-child(3) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav-root"></div>
+    <div class="dash-layout">
+      <aside class="dash-sidebar">
+        <div class="dash-user">
+          <div class="dash-avatar" id="d-avatar">U</div>
+          <div class="dash-name" id="d-name">User</div>
+          <div class="dash-role" id="d-role">Member</div>
+        </div>
+        <nav class="dash-nav">
+          <button class="dash-nav-item active" onclick="showPanel('overview')">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            Overview
+          </button>
+          <button class="dash-nav-item" onclick="showPanel('listings')">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"
+              />
+            </svg>
+            My Listings
+          </button>
+          <button class="dash-nav-item" onclick="showPanel('saved')">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+            Saved Cars
+          </button>
+          <button class="dash-nav-item" onclick="showPanel('profile')">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8 9.79 12 12 12M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+              />
+            </svg>
+            My Profile
+          </button>
+          <div class="dash-nav-divider"></div>
+          <a href="post-ad.html" class="dash-nav-item">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+            </svg>
+            Post New Ad
+          </a>
+          <button
+            class="dash-nav-item"
+            onclick="TA.logout()"
+            style="color: #8fa3bd"
+          >
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"
+              />
+            </svg>
+            Sign Out
+          </button>
+        </nav>
+      </aside>
+
+      <main class="dash-main">
+        <!-- OVERVIEW PANEL -->
+        <div class="dash-panel active" id="panel-overview">
+          <div class="dash-header">
+            <div class="dash-title">Overview</div>
+            <a href="post-ad.html" class="btn-primary">+ Post an Ad</a>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card-icon icon-gold">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-card-num" id="st-listings">0</div>
+              <div class="stat-card-label">My Listings</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon icon-blue">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-card-num">142</div>
+              <div class="stat-card-label">Ad Views</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon icon-green">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-card-num">8</div>
+              <div class="stat-card-label">Inquiries</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon icon-red">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-card-num" id="st-saved">0</div>
+              <div class="stat-card-label">Saved Cars</div>
+            </div>
+          </div>
+          <div class="listings-table">
+            <div class="table-header">
+              <span>Car</span><span>Price</span><span>Status</span
+              ><span>Views</span><span>Actions</span>
+            </div>
+            <div id="overview-listings"></div>
+          </div>
+        </div>
+
+        <!-- LISTINGS PANEL -->
+        <div class="dash-panel" id="panel-listings">
+          <div class="dash-header">
+            <div class="dash-title">My Listings</div>
+            <a href="post-ad.html" class="btn-primary">+ Post New Ad</a>
+          </div>
+          <div class="listings-table">
+            <div class="table-header">
+              <span>Car</span><span>Price</span><span>Status</span
+              ><span>Views</span><span>Actions</span>
+            </div>
+            <div id="my-listings-table"></div>
+          </div>
+        </div>
+
+        <!-- SAVED PANEL -->
+        <div class="dash-panel" id="panel-saved">
+          <div class="dash-header">
+            <div class="dash-title">Saved Cars</div>
+          </div>
+          <div class="saved-grid" id="saved-grid"></div>
+          <div
+            id="no-saved"
+            style="
+              display: none;
+              text-align: center;
+              padding: 60px;
+              color: #8fa3bd;
+            "
+          >
+            <svg
+              viewBox="0 0 24 24"
+              style="
+                width: 48px;
+                height: 48px;
+                fill: #d0daea;
+                margin-bottom: 12px;
+              "
+            >
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+            <p
+              style="
+                font-size: 16px;
+                color: #0b1e3d;
+                font-weight: 600;
+                margin-bottom: 6px;
+              "
+            >
+              No saved cars yet
+            </p>
+            <p>Browse listings and tap the heart icon to save cars you like.</p>
+            <a
+              href="search.html"
+              class="btn-primary"
+              style="margin-top: 16px; display: inline-block"
+              >Browse Cars</a
+            >
+          </div>
+        </div>
+
+        <!-- PROFILE PANEL -->
+        <div class="dash-panel" id="panel-profile">
+          <div class="dash-header">
+            <div class="dash-title">My Profile</div>
+          </div>
+          <div class="profile-card">
+            <h3>Account Details</h3>
+            <div class="form-2col" style="margin-bottom: 16px">
+              <div class="form-group">
+                <label>Full Name</label><input type="text" id="prof-name" />
+              </div>
+              <div class="form-group">
+                <label>Email</label
+                ><input
+                  type="email"
+                  id="prof-email"
+                  readonly
+                  style="background: #f4f7fb; color: #8fa3bd"
+                />
+              </div>
+            </div>
+            <div class="form-2col" style="margin-bottom: 16px">
+              <div class="form-group">
+                <label>Phone Number</label
+                ><input
+                  type="tel"
+                  id="prof-phone"
+                  placeholder="+233 XX XXX XXXX"
+                />
+              </div>
+              <div class="form-group">
+                <label>Location</label
+                ><input
+                  type="text"
+                  id="prof-location"
+                  placeholder="Accra, Ghana"
+                />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px">
+              <label>Account Type</label
+              ><input
+                type="text"
+                id="prof-role"
+                readonly
+                style="background: #f4f7fb; color: #8fa3bd"
+              />
+            </div>
+            <button class="btn-primary" onclick="saveProfile()">
+              Save Changes
+            </button>
+          </div>
+          <div class="profile-card" style="margin-top: 24px">
+            <h3>Change Password</h3>
+            <div class="form-group" style="margin-bottom: 16px">
+              <label>Current Password</label
+              ><input type="password" id="pass-old" placeholder="••••••••" />
+            </div>
+            <div class="form-2col">
+              <div class="form-group">
+                <label>New Password</label
+                ><input type="password" id="pass-new" placeholder="••••••••" />
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label
+                ><input type="password" id="pass-conf" placeholder="••••••••" />
+              </div>
+            </div>
+            <button
+              class="btn-secondary"
+              style="margin-top: 16px"
+              onclick="changePassword()"
+            >
+              Update Password
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="footer-root"></div>
+    <script src="shared.js"></script>
+    <script>
+      document.getElementById("nav-root").innerHTML = renderNav("");
+      document.getElementById("footer-root").innerHTML = renderFooter();
+
+      if (!TA.isLoggedIn()) {
+        window.location.href = "login.html";
+      }
+
+      const user = TA.user || {};
+      document.getElementById("d-avatar").textContent = (user.name ||
+        "U")[0].toUpperCase();
+      document.getElementById("d-name").textContent = user.name || "User";
+      document.getElementById("d-role").textContent =
+        user.role === "seller"
+          ? "Verified Seller"
+          : user.role === "admin"
+          ? "Administrator"
+          : "Member";
+
+      // Fake user listings (2 cars they "posted")
+      const myListings = CARS.slice(0, 3).map((c) => ({
+        ...c,
+        views: Math.floor(Math.random() * 150) + 10,
+        status: Math.random() > 0.3 ? "Active" : "Pending",
+      }));
+      document.getElementById("st-listings").textContent = myListings.length;
+      document.getElementById("st-saved").textContent = TA.getSaved().length;
+
+      function renderListingsTable(containerId) {
+        const container = document.getElementById(containerId);
+        if (myListings.length === 0) {
+          container.innerHTML = `<div style="text-align:center;padding:48px;color:#8FA3BD">No listings yet. <a href="post-ad.html" style="color:#1A4B8C;font-weight:600">Post your first car →</a></div>`;
+          return;
+        }
+        container.innerHTML = myListings
+          .map(
+            (c) => `
+        <div class="table-row">
+          <div class="car-thumb">
+            <div class="car-thumb-img"><svg viewBox="0 0 24 24"><path d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"/></svg></div>
+            <div><div class="car-thumb-name">${c.make} ${
+              c.model
+            }</div><div class="car-thumb-year">${c.year}</div></div>
+          </div>
+          <div class="table-cell">GHS ${c.price.toLocaleString()}</div>
+          <div><span class="badge ${
+            c.status === "Active" ? "badge-green" : "badge-gold"
+          }">${c.status}</span></div>
+          <div class="table-cell">${c.views}</div>
+          <div class="table-actions">
+            <button class="action-btn action-edit" onclick="window.location.href='post-ad.html'">Edit</button>
+            <button class="action-btn action-del" onclick="deleteListing(${
+              c.id
+            })">Del</button>
+          </div>
+        </div>`
+          )
+          .join("");
+      }
+
+      renderListingsTable("overview-listings");
+      renderListingsTable("my-listings-table");
+
+      // Saved cars
+      const savedIds = TA.getSaved();
+      const savedCars = CARS.filter((c) => savedIds.includes(c.id));
+      if (savedCars.length === 0) {
+        document.getElementById("no-saved").style.display = "block";
+      } else {
+        document.getElementById("saved-grid").innerHTML = savedCars
+          .map((c, i) => renderCard(c, i * 0.06))
+          .join("");
+      }
+
+      // Profile
+      document.getElementById("prof-name").value = user.name || "";
+      document.getElementById("prof-email").value = user.email || "";
+      document.getElementById("prof-phone").value = user.phone || "";
+      document.getElementById("prof-role").value =
+        user.role === "seller"
+          ? "Seller"
+          : user.role === "admin"
+          ? "Admin"
+          : "Buyer";
+
+      function showPanel(name) {
+        document
+          .querySelectorAll(".dash-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("panel-" + name).classList.add("active");
+        document
+          .querySelectorAll(".dash-nav-item")
+          .forEach((b) => b.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+      }
+
+      function deleteListing(id) {
+        if (confirm("Are you sure you want to delete this listing?")) {
+          alert("Listing deleted.");
+        }
+      }
+
+      function saveProfile() {
+        const name = document.getElementById("prof-name").value.trim();
+        if (!name) {
+          alert("Name cannot be empty.");
+          return;
+        }
+        TA.user.name = name;
+        TA.user.phone = document.getElementById("prof-phone").value;
+        TA.user.location = document.getElementById("prof-location").value;
+        localStorage.setItem("ta_user", JSON.stringify(TA.user));
+        alert("Profile updated successfully!");
+      }
+
+      function changePassword() {
+        const oldP = document.getElementById("pass-old").value;
+        const newP = document.getElementById("pass-new").value;
+        const confP = document.getElementById("pass-conf").value;
+        if (!oldP || !newP || !confP) {
+          alert("Please fill in all password fields.");
+          return;
+        }
+        if (newP !== confP) {
+          alert("New passwords do not match.");
+          return;
+        }
+        if (newP.length < 6) {
+          alert("Password must be at least 6 characters.");
+          return;
+        }
+        alert("Password updated successfully!");
+      }
+
+      setTimeout(initScrollAnim, 100);
+    </script>
+  </body>
+</html>

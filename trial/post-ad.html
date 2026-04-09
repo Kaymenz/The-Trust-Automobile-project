@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post an Ad — Trust Automobile</title>
+  <link rel="stylesheet" href="shared.css"/>
+  <style>
+    .post-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; padding: 32px 48px; max-width: 1200px; margin: 0 auto; }
+    .form-card { background: #fff; border-radius: 14px; border: 1px solid #e8edf5; padding: 32px; margin-bottom: 24px; }
+    .form-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #0B1E3D; margin-bottom: 6px; }
+    .form-card .card-sub { font-size: 13px; color: #8FA3BD; margin-bottom: 24px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .upload-zone { border: 2px dashed #d0daea; border-radius: 12px; padding: 40px 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: #F4F7FB; }
+    .upload-zone:hover { border-color: #1A4B8C; background: rgba(26,75,140,0.03); }
+    .upload-zone svg { width: 48px; height: 48px; fill: #8FA3BD; margin-bottom: 12px; }
+    .upload-zone h4 { font-size: 15px; font-weight: 600; color: #0B1E3D; margin-bottom: 4px; }
+    .upload-zone p { font-size: 13px; color: #8FA3BD; }
+    .upload-zone input { display: none; }
+    .img-previews { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 16px; }
+    .img-preview { aspect-ratio: 4/3; background: linear-gradient(135deg,#e8edf5,#d0daea); border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px solid #e8edf5; }
+    .img-preview svg { width: 28px; height: 28px; fill: #8FA3BD; }
+    .img-preview .remove-img { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(220,53,69,0.9); border-radius: 50%; border: none; color: #fff; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    /* Sidebar */
+    .sidebar-tip { background: #fff; border-radius: 14px; border: 1px solid #e8edf5; padding: 24px; margin-bottom: 20px; position: sticky; top: 84px; }
+    .sidebar-tip h4 { font-size: 15px; font-weight: 600; color: #0B1E3D; margin-bottom: 14px; }
+    .tip-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .tip-num { width: 22px; height: 22px; background: rgba(232,160,32,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #B87A10; flex-shrink: 0; }
+    .tip-text { font-size: 13px; color: #8FA3BD; line-height: 1.5; }
+    .preview-card { background: #fff; border-radius: 14px; border: 1px solid #e8edf5; padding: 20px; margin-bottom: 20px; }
+    .preview-card h4 { font-size: 14px; font-weight: 600; color: #0B1E3D; margin-bottom: 12px; }
+    .preview-mini { background: #F4F7FB; border-radius: 10px; padding: 14px; }
+    .preview-mini-title { font-size: 14px; font-weight: 600; color: #0B1E3D; }
+    .preview-mini-price { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #0B1E3D; margin-top: 6px; }
+    .preview-mini-meta { font-size: 12px; color: #8FA3BD; margin-top: 4px; }
+    .submit-area { display: flex; gap: 12px; align-items: center; }
+    .progress-bar { background: #f0f4f9; border-radius: 10px; height: 6px; margin-bottom: 24px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #1A4B8C, #E8A020); border-radius: 10px; transition: width 0.4s ease; }
+    .step-indicator { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+    .step { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #8FA3BD; }
+    .step.done { color: #1A4B8C; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; }
+    .step.done .step-dot { background: #1A4B8C; }
+    @media (max-width: 900px) {
+      .post-layout { grid-template-columns: 1fr; padding: 20px; }
+      .sidebar-tip { position: static; }
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .form-grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Post an Ad</span>
+      </div>
+      <h1>Post Your Car Ad</h1>
+      <p>Reach thousands of buyers across Ghana — it's free</p>
+    </div>
+  </div>
+
+  <div class="post-layout">
+    <div>
+      <!-- Progress -->
+      <div class="progress-bar"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+
+      <!-- SECTION 1: Car Details -->
+      <div class="form-card">
+        <h3>Car Details</h3>
+        <p class="card-sub">Tell buyers about your car</p>
+        <div class="form-grid-2" style="margin-bottom:16px">
+          <div class="form-group">
+            <label>Make *</label>
+            <select id="p-make" onchange="updatePModels(); updatePreview()">
+              <option value="">Select Make</option>
+              <option>Toyota</option><option>Honda</option><option>Ford</option>
+              <option>Mercedes-Benz</option><option>BMW</option><option>Hyundai</option>
+              <option>Kia</option><option>Nissan</option><option>Volkswagen</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Model *</label>
+            <select id="p-model" onchange="updatePreview()">
+              <option value="">Select Model</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-3" style="margin-bottom:16px">
+          <div class="form-group">
+            <label>Year *</label>
+            <select id="p-year" onchange="updatePreview()">
+              <option value="">Year</option>
+              <script>for(let y=2026;y>=1990;y--) document.write(`<option>${y}</option>`)</script>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Condition *</label>
+            <select id="p-cond" onchange="updatePreview()">
+              <option value="">Select</option>
+              <option>New</option><option>Used</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mileage (km)</label>
+            <input type="number" id="p-mileage" placeholder="e.g. 45000" oninput="updatePreview()"/>
+          </div>
+        </div>
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label>Fuel Type *</label>
+            <select id="p-fuel">
+              <option value="">Select</option>
+              <option>Petrol</option><option>Diesel</option><option>Electric</option><option>Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Transmission *</label>
+            <select id="p-trans">
+              <option value="">Select</option>
+              <option>Automatic</option><option>Manual</option><option>CVT</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Body Type</label>
+            <select id="p-body">
+              <option value="">Select</option>
+              <option>Sedan</option><option>SUV</option><option>Hatchback</option>
+              <option>Pickup</option><option>Van</option><option>Coupe</option><option>Wagon</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Pricing & Location -->
+      <div class="form-card">
+        <h3>Price & Location</h3>
+        <p class="card-sub">Set your asking price and pickup location</p>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Asking Price (GHS) *</label>
+            <input type="number" id="p-price" placeholder="e.g. 65000" oninput="updatePreview()"/>
+            <span class="form-hint">Enter 0 for "Price on Request"</span>
+          </div>
+          <div class="form-group">
+            <label>Negotiable?</label>
+            <select id="p-neg">
+              <option value="yes">Yes — I'm open to offers</option>
+              <option value="no">No — Fixed price</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-2" style="margin-top:16px">
+          <div class="form-group">
+            <label>Region *</label>
+            <select id="p-region">
+              <option value="">Select Region</option>
+              <option>Greater Accra</option><option>Ashanti</option><option>Northern</option>
+              <option>Western</option><option>Central</option><option>Eastern</option>
+              <option>Volta</option><option>Brong Ahafo</option><option>Upper East</option><option>Upper West</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>City / Town *</label>
+            <input type="text" id="p-city" placeholder="e.g. Accra, Kumasi, Tamale" oninput="updatePreview()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Description -->
+      <div class="form-card">
+        <h3>Description</h3>
+        <p class="card-sub">Describe your car honestly and in detail — better descriptions get more inquiries</p>
+        <div class="form-group">
+          <label>Ad Title *</label>
+          <input type="text" id="p-title" placeholder="e.g. Clean Toyota Corolla 2020 — Full Options" maxlength="100" oninput="updatePreview()"/>
+          <span class="form-hint"><span id="title-count">0</span>/100 characters</span>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>Description *</label>
+          <textarea id="p-desc" placeholder="Tell buyers about the condition, features, service history, reason for selling, etc." rows="5" maxlength="1000" oninput="updateCharCount()"></textarea>
+          <span class="form-hint"><span id="desc-count">0</span>/1000 characters</span>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>Features (optional)</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px" id="features-list">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="AC"> Air Conditioning</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="Sunroof"> Sunroof</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="Leather Seats"> Leather Seats</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="Reverse Camera"> Reverse Camera</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="CarPlay"> Apple CarPlay</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="4WD"> 4WD / AWD</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="Bluetooth"> Bluetooth</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="Alloy Wheels"> Alloy Wheels</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Photos -->
+      <div class="form-card">
+        <h3>Photos</h3>
+        <p class="card-sub">Add up to 10 photos. The first photo will be your cover image.</p>
+        <div class="upload-zone" onclick="document.getElementById('photo-input').click()">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+          <h4>Click to upload photos</h4>
+          <p>JPG, PNG — max 5MB each</p>
+          <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotos(this)"/>
+        </div>
+        <div class="img-previews" id="img-previews"></div>
+      </div>
+
+      <!-- SECTION 5: Contact -->
+      <div class="form-card">
+        <h3>Contact Information</h3>
+        <p class="card-sub">How should buyers reach you?</p>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="p-phone" placeholder="+233 XX XXX XXXX"/>
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="p-whatsapp" placeholder="Same as phone? Leave blank"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400">
+            <input type="checkbox" id="p-hidephone" style="width:16px;height:16px;accent-color:#1A4B8C">
+            Hide my phone number — only show contact form
+          </label>
+        </div>
+      </div>
+
+      <div class="submit-area">
+        <button class="btn-primary" style="flex:1;text-align:center;padding:14px" onclick="submitAd()">Publish Ad</button>
+        <button class="btn-secondary" onclick="saveDraft()">Save Draft</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="preview-card">
+        <h4>Live Preview</h4>
+        <div class="preview-mini">
+          <div style="font-size:11px;color:#1A4B8C;font-weight:600;letter-spacing:1px;text-transform:uppercase" id="prev-make">Make / Model</div>
+          <div class="preview-mini-title" id="prev-title">Your car title</div>
+          <div class="preview-mini-price" id="prev-price">GHS —</div>
+          <div class="preview-mini-meta" id="prev-meta">— km · — · —</div>
+        </div>
+      </div>
+
+      <div class="sidebar-tip">
+        <h4>📸 Tips for a Great Ad</h4>
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-text">Add at least 5 clear photos including exterior, interior, and engine.</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-text">Be honest about the condition — buyers appreciate transparency.</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-text">Set a fair price — check similar listings on TA first.</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-text">Mention service history, recent repairs, or any known issues.</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-text">Include your WhatsApp number for faster responses.</div></div>
+      </div>
+
+      <div class="sidebar-tip" style="background:rgba(232,160,32,0.06);border-color:rgba(232,160,32,0.2)">
+        <h4>🆓 Free Listing</h4>
+        <p style="font-size:13px;color:#8FA3BD;line-height:1.6">Your ad is completely free. It will be reviewed by our team and go live within 2 hours.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-root"></div>
+  <script src="shared.js"></script>
+  <script>
+    document.getElementById('nav-root').innerHTML = renderNav('post');
+    document.getElementById('footer-root').innerHTML = renderFooter();
+
+    // Redirect to login if not logged in
+    if (!TA.isLoggedIn()) {
+      alert('Please sign in to post an ad.');
+      window.location.href = 'login.html';
+    }
+
+    const PMODELS = {
+      Toyota:['Corolla','Camry','RAV4','Land Cruiser','Land Cruiser Prado','Hilux','Fortuner'],
+      Honda:['Civic','Accord','CR-V','HR-V','Pilot','Jazz'],
+      Ford:['Focus','Escape','Explorer','F-150','Ranger','Edge'],
+      'Mercedes-Benz':['C200','C300','E200','E300','GLE','GLC','A200'],
+      BMW:['316i','320i','325i','520i','X3','X5','X6'],
+      Hyundai:['Elantra','Tucson','Santa Fe','Sonata','i10','i20','i30'],
+      Kia:['Picanto','Rio','Sportage','Sorento','Stinger','Soul'],
+      Nissan:['Almera','Juke','X-Trail','Pathfinder','Navara','Micra'],
+      Volkswagen:['Golf','Polo','Passat','Tiguan','Touareg','Jetta'],
+    };
+
+    function updatePModels() {
+      const make = document.getElementById('p-make').value;
+      const sel = document.getElementById('p-model');
+      sel.innerHTML = '<option value="">Select Model</option>';
+      (PMODELS[make]||[]).forEach(m => { const o = document.createElement('option'); o.value = o.textContent = m; sel.appendChild(o); });
+    }
+
+    function updatePreview() {
+      const make = document.getElementById('p-make').value;
+      const model = document.getElementById('p-model').value;
+      const year = document.getElementById('p-year').value;
+      const price = document.getElementById('p-price').value;
+      const mileage = document.getElementById('p-mileage').value;
+      const city = document.getElementById('p-city').value;
+      const title = document.getElementById('p-title').value;
+      document.getElementById('prev-make').textContent = make || 'Make / Model';
+      document.getElementById('prev-title').textContent = title || (make && model ? `${make} ${model} ${year}` : 'Your car title');
+      document.getElementById('prev-price').textContent = price ? `GHS ${(+price).toLocaleString()}` : 'GHS —';
+      document.getElementById('prev-meta').textContent = `${mileage ? (+mileage).toLocaleString()+' km' : '— km'} · ${year||'—'} · ${city||'—'}`;
+      // Progress
+      const fields = [make,model,year,price,city];
+      const filled = fields.filter(Boolean).length;
+      document.getElementById('progress').style.width = (20 + (filled/fields.length)*60) + '%';
+    }
+
+    function updateCharCount() {
+      const title = document.getElementById('p-title').value;
+      const desc = document.getElementById('p-desc').value;
+      document.getElementById('title-count').textContent = title.length;
+      document.getElementById('desc-count').textContent = desc.length;
+    }
+
+    document.getElementById('p-title').addEventListener('input', updateCharCount);
+
+    let uploadedPhotos = [];
+    function handlePhotos(input) {
+      const files = Array.from(input.files).slice(0, 10 - uploadedPhotos.length);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          uploadedPhotos.push(e.target.result);
+          renderPreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+      document.getElementById('progress').style.width = Math.min(90, parseInt(document.getElementById('progress').style.width) + 10) + '%';
+    }
+
+    function renderPreviews() {
+      const container = document.getElementById('img-previews');
+      container.innerHTML = uploadedPhotos.map((src,i) => `
+        <div class="img-preview">
+          <img src="${src}" style="width:100%;height:100%;object-fit:cover" alt=""/>
+          <button class="remove-img" onclick="removePhoto(${i})">×</button>
+          ${i===0?`<span style="position:absolute;bottom:4px;left:4px;background:#E8A020;color:#0B1E3D;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px">COVER</span>`:''}
+        </div>`).join('');
+    }
+
+    function removePhoto(i) { uploadedPhotos.splice(i,1); renderPreviews(); }
+
+    function validateForm() {
+      const required = { 'p-make':'Make', 'p-model':'Model', 'p-year':'Year', 'p-cond':'Condition', 'p-fuel':'Fuel Type', 'p-trans':'Transmission', 'p-price':'Price', 'p-region':'Region', 'p-city':'City', 'p-title':'Ad Title', 'p-desc':'Description', 'p-phone':'Phone Number' };
+      for (const [id, label] of Object.entries(required)) {
+        if (!document.getElementById(id).value.trim()) { alert(`Please fill in: ${label}`); document.getElementById(id).focus(); return false; }
+      }
+      return true;
+    }
+
+    function submitAd() {
+      if (!validateForm()) return;
+      document.getElementById('progress').style.width = '100%';
+      // In production: POST to post-ad.php
+      setTimeout(() => {
+        alert('🎉 Your ad has been submitted for review! It will go live within 2 hours.');
+        window.location.href = 'dashboard.html';
+      }, 500);
+    }
+
+    function saveDraft() {
+      const data = {
+        make: document.getElementById('p-make').value,
+        model: document.getElementById('p-model').value,
+        title: document.getElementById('p-title').value,
+        price: document.getElementById('p-price').value,
+      };
+      localStorage.setItem('ta_draft', JSON.stringify(data));
+      alert('Draft saved! You can continue later.');
+    }
+
+    // Load draft
+    const draft = JSON.parse(localStorage.getItem('ta_draft') || 'null');
+    if (draft) {
+      if (draft.make) { document.getElementById('p-make').value = draft.make; updatePModels(); }
+      if (draft.title) document.getElementById('p-title').value = draft.title;
+      if (draft.price) document.getElementById('p-price').value = draft.price;
+      updatePreview();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Parts Dealer Dashboard — Trust Automobile Ghana</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;color:#1C2B40;background:#F0F3F8;min-height:100vh;display:flex;flex-direction:column;}
+.shell{display:grid;grid-template-columns:240px 1fr;flex:1;min-height:0;}
+
+/* ── TOPBAR ── */
+.topbar{background:#0B1E3D;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.lm{width:32px;height:32px;background:#E8A020;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#0B1E3D;flex-shrink:0;}
+.lt{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#fff;letter-spacing:.06em;line-height:1.1;}
+.lt small{display:block;font-size:.56rem;font-weight:400;color:#8FA3BD;letter-spacing:.14em;}
+.tr{display:flex;align-items:center;gap:14px;}
+.t-notif{position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#D63B3B;border:1.5px solid #0B1E3D;}
+.t-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7A3A00,#B05A00);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#fff;flex-shrink:0;}
+.t-info{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.2;}
+.t-info small{display:block;font-size:.62rem;color:rgba(255,255,255,.4);font-weight:400;}
+.btn-lo{background:rgba(214,59,59,.18);color:#ff8080;border:none;padding:7px 13px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.btn-lo:hover{background:#D63B3B;color:#fff;}
+
+/* ── SIDEBAR ── */
+.sidebar{background:#fff;border-right:1px solid #DDE4EF;display:flex;flex-direction:column;overflow-y:auto;}
+.sb-prof{padding:18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px;}
+.sb-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7A3A00,#B05A00);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#fff;flex-shrink:0;}
+.sb-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;line-height:1.2;}
+.sb-role{font-size:.7rem;color:#7A3A00;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;}
+.sb-sec{padding:10px 18px 4px;font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8FA3BD;margin-top:4px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.04em;color:#5E7490;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+.sb-item:hover{color:#0B1E3D;background:#F4F7FB;}
+.sb-item.active{color:#7A3A00;background:rgba(122,58,0,.05);border-left-color:#B05A00;font-weight:700;}
+.sb-item i{font-size:.95rem;width:18px;text-align:center;}
+.sb-badge{margin-left:auto;background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sb-item.active .sb-badge{background:#B05A00;}
+.sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid #EEF2F8;}
+.sb-foot a{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#8FA3BD;text-decoration:none;padding:6px 0;transition:color .2s;}
+.sb-foot a:hover{color:#0B1E3D;}
+
+/* ── MAIN ── */
+.main{padding:28px;overflow-y:auto;}
+.sec{display:none;}.sec.active{display:block;}
+.pg-head{margin-bottom:22px;}
+.pg-head h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:.04em;color:#0B1E3D;margin-bottom:3px;}
+.pg-head p{font-size:.86rem;color:#5E7490;line-height:1.6;}
+
+/* ── STATS ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:11px;border:1px solid #DDE4EF;padding:18px;display:flex;align-items:center;gap:14px;transition:all .2s;}
+.stat-card:hover{box-shadow:0 6px 20px rgba(11,30,61,.08);transform:translateY(-1px);}
+.sic{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+.snum{font-family:'Bebas Neue',cursive;font-size:2rem;color:#0B1E3D;letter-spacing:.04em;line-height:1;}
+.slbl{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-top:2px;}
+.sdelta{font-size:.72rem;margin-top:3px;display:flex;align-items:center;gap:3px;}
+.up{color:#1A7A3A;}.dn{color:#D63B3B;}
+
+/* ── CARDS / CHARTS ── */
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px;}
+.card{background:#fff;border-radius:12px;border:1px solid #DDE4EF;overflow:hidden;margin-bottom:20px;}
+.ch{padding:15px 20px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ch h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D;display:flex;align-items:center;gap:7px;}
+.ch h3 i{color:#B05A00;}
+.cb{padding:18px;}
+.cw{position:relative;height:240px;}
+
+/* ── TABLE ── */
+.tbl{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:#F4F7FB;}
+th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;padding:10px 14px;text-align:left;white-space:nowrap;}
+td{padding:11px 14px;font-size:.85rem;color:#1C2B40;border-bottom:1px solid #EEF2F8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FAFBFD;}
+.etd{text-align:center;color:#8FA3BD;padding:40px;font-size:.86rem;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.ba{background:rgba(26,122,58,.1);color:#1A7A3A;}
+.bb{background:rgba(232,160,32,.12);color:#8A5A00;}
+.bc{background:rgba(26,75,140,.1);color:#1A4B8C;}
+.bd{background:rgba(214,59,59,.08);color:#D63B3B;}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;border:none;}
+.bgold{background:#E8A020;color:#0B1E3D;}.bgold:hover{background:#F5C05A;}
+.bbrn{background:#7A3A00;color:#fff;}.bbrn:hover{background:#5A2A00;}
+.bgh{background:transparent;color:#5E7490;border:1.5px solid #DDE4EF;}.bgh:hover{border-color:#0B1E3D;color:#0B1E3D;}
+.bdr{background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2);}.bdr:hover{background:#D63B3B;color:#fff;border-color:#D63B3B;}
+.bsm{padding:5px 10px;font-size:.7rem;}
+
+/* ── FORMS ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;}
+.fg label .r{color:#D63B3B;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid #DDE4EF;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#B05A00;box-shadow:0 0 0 3px rgba(122,58,0,.08);}
+.fg textarea{resize:vertical;min-height:80px;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.img-prev{width:100%;height:160px;object-fit:contain;border-radius:8px;margin-top:6px;display:none;background:#F4F7FB;}
+
+/* ── CHAT ── */
+.chat-layout{display:grid;grid-template-columns:260px 1fr;height:540px;border:1px solid #DDE4EF;border-radius:12px;overflow:hidden;background:#fff;}
+.cl{border-right:1px solid #DDE4EF;overflow-y:auto;background:#FAFBFD;}
+.cl-head{padding:13px 16px;border-bottom:1px solid #EEF2F8;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D;}
+.ci{padding:11px 15px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #EEF2F8;transition:background .15s;}
+.ci:hover,.ci.active{background:rgba(122,58,0,.05);}
+.cav{width:36px;height:36px;border-radius:50%;background:#7A3A00;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.85rem;color:#fff;flex-shrink:0;}
+.cn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;color:#0B1E3D;}
+.cp{font-size:.72rem;color:#8FA3BD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
+.cu{background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:100px;margin-left:auto;flex-shrink:0;}
+.cwin{display:flex;flex-direction:column;flex:1;min-width:0;}
+.cwin-head{padding:12px 17px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:11px;background:rgba(122,58,0,.03);}
+.cmsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#F0F3F8;}
+.msg{max-width:72%;display:flex;flex-direction:column;}
+.msg.sent{align-self:flex-end;align-items:flex-end;}
+.msg.recv{align-self:flex-start;}
+.mb{padding:10px 14px;border-radius:14px;font-size:.86rem;line-height:1.5;}
+.msg.sent .mb{background:#7A3A00;color:#fff;border-bottom-right-radius:4px;}
+.msg.recv .mb{background:#fff;color:#1C2B40;border:1px solid #DDE4EF;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(11,30,61,.06);}
+.mt{font-size:.66rem;color:#8FA3BD;margin-top:3px;}
+.cin{padding:11px 13px;background:#fff;border-top:1px solid #DDE4EF;display:flex;gap:8px;align-items:flex-end;}
+.ctxt{flex:1;padding:9px 13px;border:1.5px solid #DDE4EF;border-radius:20px;font-family:'Barlow',sans-serif;font-size:.87rem;outline:none;resize:none;min-height:40px;transition:border-color .2s;background:#F4F7FB;}
+.ctxt:focus{border-color:#B05A00;background:#fff;}
+.csend{width:38px;height:38px;border-radius:50%;background:#7A3A00;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:.9rem;flex-shrink:0;transition:all .2s;}
+.csend:hover{background:#5A2A00;transform:scale(1.08);}
+.cempty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#8FA3BD;gap:10px;font-size:.86rem;}
+.cempty i{font-size:2.2rem;}
+
+/* ── VIDEOS ── */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
+.vid-card{background:#fff;border-radius:10px;border:1px solid #DDE4EF;overflow:hidden;transition:all .2s;}
+.vid-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(11,30,61,.1);}
+.vt{position:relative;padding-top:56.25%;background:#0B1E3D;cursor:pointer;}
+.vt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);}
+.vpb{width:40px;height:40px;border-radius:50%;background:rgba(122,58,0,.9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;}
+.vdur{position:absolute;bottom:7px;right:7px;background:rgba(11,30,61,.8);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px;}
+.vb{padding:11px 13px;}
+.vtitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.vmeta{font-size:.72rem;color:#8FA3BD;}
+.va{display:flex;gap:6px;margin-top:8px;}
+.vh{display:none;background:#F4F7FB;border:1px solid #DDE4EF;border-radius:7px;padding:9px 12px;margin-top:6px;font-size:.8rem;color:#5E7490;align-items:center;gap:10px;}
+.vh.show{display:flex;}
+.vh img{width:70px;height:44px;object-fit:cover;border-radius:4px;flex-shrink:0;}
+
+/* ── LOW STOCK BAR ── */
+.stock-bar{height:6px;background:#EEF2F8;border-radius:3px;overflow:hidden;margin-top:4px;}
+.stock-fill{height:6px;border-radius:3px;transition:width .3s;}
+
+/* ── MODAL ── */
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(11,30,61,.55);backdrop-filter:blur(6px);z-index:900;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.modal-wrap.open{display:flex;}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:820px;overflow:hidden;box-shadow:0 24px 64px rgba(11,30,61,.2);animation:mIn .25s ease;margin:auto;}
+@keyframes mIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.modal-head{background:linear-gradient(135deg,#3A1E00,#7A3A00);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:.06em;color:#fff;display:flex;align-items:center;gap:8px;}
+.modal-head h3 i{color:#E8A020;}
+.modal-x{background:none;border:none;color:rgba(255,255,255,.6);font-size:1.1rem;cursor:pointer;transition:color .2s;}
+.modal-x:hover{color:#fff;}
+.modal-body{padding:0;}
+.video-iframe{width:100%;aspect-ratio:16/9;border:none;display:block;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#0B1E3D;color:#fff;padding:12px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;box-shadow:0 8px 28px rgba(11,30,61,.3);z-index:9999;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:9px;max-width:340px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.terror{background:#D63B3B;}
+#toast.tsuccess{background:#1A7A3A;}
+
+/* ── PROFILE STAT CARDS ── */
+.prof-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;min-width:220px;}
+.ps-card{text-align:center;background:#F4F7FB;border-radius:9px;padding:14px;}
+.ps-num{font-family:'Bebas Neue',cursive;font-size:1.7rem;line-height:1;}
+.ps-lbl{font-size:.68rem;color:#5E7490;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){.shell{grid-template-columns:1fr;}.sidebar{display:none;}.stat-row{grid-template-columns:1fr 1fr;}.chart-row{grid-template-columns:1fr;}}
+@media(max-width:560px){.stat-row{grid-template-columns:1fr;}.f2{grid-template-columns:1fr;}.chat-layout{grid-template-columns:1fr;}.cl{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">
+    <div class="lm">TA</div>
+    <div class="lt">Trust Automobile<small>Parts Dealer Dashboard</small></div>
+  </a>
+  <div class="tr">
+    <div class="t-notif" onclick="showToast('No new notifications','info')">
+      <i class="bi bi-bell-fill" style="color:rgba(255,255,255,.65);font-size:1.1rem;"></i>
+      <div class="notif-dot"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;">
+      <div class="t-av" id="top-av">–</div>
+      <div class="t-info"><span id="top-name">–</span><small>Parts Dealer</small></div>
+    </div>
+    <button class="btn-lo" onclick="portalLogout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-prof">
+    <div class="sb-av" id="sb-av">–</div>
+    <div>
+      <div class="sb-name" id="sb-name">–</div>
+      <div class="sb-role"><i class="bi bi-box-seam-fill" style="margin-right:3px;"></i>Parts Dealer</div>
+    </div>
+  </div>
+  <div class="sb-sec">Overview</div>
+  <div class="sb-item active" onclick="nav('overview')" data-s="overview"><i class="bi bi-speedometer2"></i> Dashboard</div>
+  <div class="sb-sec">Inventory</div>
+  <div class="sb-item" onclick="nav('inventory')" data-s="inventory"><i class="bi bi-box-seam-fill"></i> Inventory <span class="sb-badge" id="badge-inv">0</span></div>
+  <div class="sb-item" onclick="nav('add-part')" data-s="add-part"><i class="bi bi-plus-circle-fill"></i> Add Part</div>
+  <div class="sb-sec">Orders</div>
+  <div class="sb-item" onclick="nav('orders')" data-s="orders"><i class="bi bi-bag-check-fill"></i> Orders <span class="sb-badge" id="badge-orders">0</span></div>
+  <div class="sb-sec">Communication</div>
+  <div class="sb-item" onclick="nav('chat')" data-s="chat"><i class="bi bi-chat-dots-fill"></i> Customer Chat <span class="sb-badge" id="badge-chat">0</span></div>
+  <div class="sb-sec">Content</div>
+  <div class="sb-item" onclick="nav('videos')" data-s="videos"><i class="bi bi-play-circle-fill"></i> My Videos</div>
+  <div class="sb-item" onclick="nav('add-video')" data-s="add-video"><i class="bi bi-camera-video-fill"></i> Post Video</div>
+  <div class="sb-sec">Account</div>
+  <div class="sb-item" onclick="nav('profile')" data-s="profile"><i class="bi bi-person-circle"></i> My Profile</div>
+  <div class="sb-foot">
+    <a href="spare-parts-public.html" target="_blank"><i class="bi bi-globe"></i> Public Parts Page</a>
+    <a href="index.html"><i class="bi bi-house"></i> Back to Site</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ══════════ OVERVIEW ══════════ -->
+<div class="sec active" id="s-overview">
+  <div class="pg-head">
+    <h2 id="greet">Good day! 👋</h2>
+    <p>Your inventory and sales at a glance.</p>
+  </div>
+  <div class="stat-row" id="dash-stats"></div>
+  <div class="chart-row">
+    <div class="card" style="margin-bottom:0">
+      <div class="ch"><h3><i class="bi bi-graph-up-arrow"></i> Monthly Sales Revenue (GHS)</h3></div>
+      <div class="cb"><div class="cw"><canvas id="chart-sales"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="ch"><h3><i class="bi bi-pie-chart-fill"></i> Parts by Category</h3></div>
+      <div class="cb"><div class="cw"><canvas id="chart-cats"></canvas></div></div>
+    </div>
+  </div>
+  <div style="height:4px"></div>
+  <div class="card">
+    <div class="ch">
+      <h3><i class="bi bi-exclamation-triangle-fill"></i> Low Stock Alerts</h3>
+      <button class="btn bgold bsm" onclick="nav('inventory')"><i class="bi bi-eye"></i> View All</button>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Part Name</th><th>Category</th><th>Stock</th><th>Threshold</th><th>Action</th></tr></thead>
+        <tbody id="low-stock-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <h3><i class="bi bi-chat-dots-fill"></i> Recent Messages</h3>
+      <button class="btn bgh bsm" onclick="nav('chat')">View All</button>
+    </div>
+    <div id="overview-msgs" style="padding:14px 18px;display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+</div>
+
+<!-- ══════════ INVENTORY ══════════ -->
+<div class="sec" id="s-inventory">
+  <div class="pg-head"><h2>Inventory</h2><p>Manage your parts catalogue. All items are visible on the public Spare Parts page.</p></div>
+  <div class="card">
+    <div class="ch">
+      <h3><i class="bi bi-box-seam-fill"></i> Parts Catalogue</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input id="inv-search" placeholder="Search parts…" style="padding:7px 12px;border:1.5px solid #DDE4EF;border-radius:7px;font-family:'Barlow',sans-serif;font-size:.84rem;outline:none;width:160px;" oninput="renderInventory()"/>
+        <select id="inv-filter" onchange="renderInventory()" style="padding:7px 12px;border:1.5px solid #DDE4EF;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.78rem;color:#5E7490;outline:none;background:#fff;">
+          <option value="">All Categories</option>
+          <option value="engine">Engine</option>
+          <option value="brakes">Brakes</option>
+          <option value="electrical">Electrical</option>
+          <option value="body">Body</option>
+          <option value="suspension">Suspension</option>
+          <option value="filters">Filters &amp; Fluids</option>
+          <option value="tyres">Tyres &amp; Wheels</option>
+        </select>
+        <button class="btn bgold bsm" onclick="nav('add-part')"><i class="bi bi-plus-circle"></i> Add Part</button>
+      </div>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Photo</th><th>Part Name</th><th>Compatible Vehicles</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="inv-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADD / EDIT PART ══════════ -->
+<div class="sec" id="s-add-part">
+  <div class="pg-head">
+    <h2 id="part-form-h">Add Part</h2>
+    <p>Part goes live on the public Spare Parts page immediately after saving.</p>
+  </div>
+  <div class="card">
+    <div class="ch"><h3><i class="bi bi-pencil-fill"></i> Part Details</h3></div>
+    <div class="cb">
+      <input type="hidden" id="edit-part-id"/>
+      <div class="f2">
+        <div class="fg"><label>Part Name <span class="r">*</span></label><input id="p-name" placeholder="e.g. Air Filter — Toyota Corolla"/></div>
+        <div class="fg"><label>Category <span class="r">*</span></label>
+          <select id="p-cat">
+            <option value="">Select category</option>
+            <option value="engine">Engine Parts</option>
+            <option value="brakes">Brakes</option>
+            <option value="electrical">Electrical</option>
+            <option value="body">Body Parts</option>
+            <option value="suspension">Suspension</option>
+            <option value="tyres">Tyres &amp; Wheels</option>
+            <option value="filters">Filters &amp; Fluids</option>
+          </select>
+        </div>
+        <div class="fg"><label>Price (GHS) <span class="r">*</span></label><input id="p-price" type="number" min="0" placeholder="120"/></div>
+        <div class="fg"><label>Stock Quantity <span class="r">*</span></label><input id="p-stock" type="number" min="0" placeholder="50"/></div>
+        <div class="fg"><label>Brand</label><input id="p-brand" placeholder="e.g. Bosch, NGK, Toyota OEM"/></div>
+        <div class="fg"><label>Part Number</label><input id="p-partno" placeholder="e.g. 17801-0H050"/></div>
+        <div class="fg"><label>Condition</label>
+          <select id="p-cond">
+            <option value="new">New</option>
+            <option value="used">Used</option>
+            <option value="refurb">Refurbished</option>
+          </select>
+        </div>
+        <div class="fg"><label>Low Stock Warning at (qty)</label><input id="p-low" type="number" min="0" placeholder="5"/></div>
+      </div>
+      <div class="fg"><label>Compatible Vehicles <span class="r">*</span></label><input id="p-compat" placeholder="e.g. Toyota Corolla 2015–2020, Honda Civic 2014–2019"/></div>
+      <div class="fg"><label>Image URL</label><input id="p-img" placeholder="https://…" oninput="prevImg(this.value)"/></div>
+      <img id="p-img-prev" class="img-prev" alt="Part preview" onerror="this.style.display='none'"/>
+      <div class="fg"><label>Description</label><textarea id="p-desc" rows="3" placeholder="Technical specs, fitment notes, warranty information…"></textarea></div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn bgh" onclick="nav('inventory')"><i class="bi bi-arrow-left"></i> Cancel</button>
+        <button class="btn bgold" onclick="savePart()"><i class="bi bi-check-circle"></i> <span id="part-save-lbl">Save Part</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ORDERS ══════════ -->
+<div class="sec" id="s-orders">
+  <div class="pg-head"><h2>Orders</h2><p>Customer orders placed through the platform.</p></div>
+  <div class="card">
+    <div class="ch"><h3><i class="bi bi-bag-check-fill"></i> Recent Orders</h3></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Customer</th><th>Part</th><th>Qty</th><th>Total (GHS)</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="orders-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CHAT ══════════ -->
+<div class="sec" id="s-chat">
+  <div class="pg-head"><h2>Customer Chat</h2><p>Answer questions about parts compatibility, availability, and pricing.</p></div>
+  <div class="chat-layout">
+    <div class="cl">
+      <div class="cl-head">Conversations</div>
+      <div id="chat-list-body"></div>
+    </div>
+    <div class="cwin">
+      <div class="cwin-head">
+        <div class="cav" id="cw-av">–</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;color:#0B1E3D" id="cw-name">Select a chat</div>
+          <div style="font-size:.74rem;color:#5E7490" id="cw-sub"></div>
+        </div>
+      </div>
+      <div class="cmsgs" id="chat-msgs">
+        <div class="cempty"><i class="bi bi-chat-dots"></i><p>Select a conversation to start</p></div>
+      </div>
+      <div class="cin" id="chat-input" style="display:none;">
+        <textarea class="ctxt" id="chat-txt" placeholder="Type your reply…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+        <button class="csend" onclick="sendMsg()"><i class="bi bi-send-fill"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ VIDEOS ══════════ -->
+<div class="sec" id="s-videos">
+  <div class="pg-head"><h2>My Videos</h2><p>Installation guides and product demos. Visible on the Learning Hub and your public profile.</p></div>
+  <div class="card">
+    <div class="ch">
+      <h3><i class="bi bi-play-circle-fill"></i> Posted Videos</h3>
+      <button class="btn bgold bsm" onclick="nav('add-video')"><i class="bi bi-plus-circle"></i> Post Video</button>
+    </div>
+    <div class="cb"><div class="vid-grid" id="vids-grid"><p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No videos yet. Post your first video!</p></div></div>
+  </div>
+</div>
+
+<!-- ══════════ POST VIDEO ══════════ -->
+<div class="sec" id="s-add-video">
+  <div class="pg-head"><h2>Post a Video</h2><p>Share installation guides and product demonstrations with customers. Paste a YouTube or Vimeo link.</p></div>
+  <div class="card">
+    <div class="ch"><h3><i class="bi bi-camera-video-fill"></i> Video Details</h3></div>
+    <div class="cb">
+      <div class="fg">
+        <label>Video URL <span class="r">*</span> (YouTube or Vimeo)</label>
+        <input id="v-url" placeholder="https://www.youtube.com/watch?v=…" oninput="prevVid(this.value)"/>
+        <div class="vh" id="v-hint">
+          <img id="v-thumb" src="" alt="Thumbnail"/>
+          <div>
+            <div id="v-plat" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#0B1E3D;"></div>
+            <div style="font-size:.72rem;color:#8FA3BD;">Video detected — fill in details below</div>
+          </div>
+        </div>
+      </div>
+      <div class="f2">
+        <div class="fg"><label>Title <span class="r">*</span></label><input id="v-title" placeholder="e.g. How to Install Toyota Corolla Air Filter"/></div>
+        <div class="fg"><label>Duration (e.g. 5:30)</label><input id="v-dur" placeholder="MM:SS"/></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea id="v-desc" rows="2" placeholder="What will viewers learn from this video?"></textarea></div>
+      <div class="fg"><label>Category</label>
+        <select id="v-cat">
+          <option value="maintenance">Maintenance / Installation</option>
+          <option value="electrical">Electrical</option>
+          <option value="review">Product Review</option>
+          <option value="buying">Buying Guide</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button class="btn bgh" onclick="nav('videos')"><i class="bi bi-arrow-left"></i> Cancel</button>
+        <button class="btn bgold" onclick="saveVideo()"><i class="bi bi-send"></i> Publish Video</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PROFILE ══════════ -->
+<div class="sec" id="s-profile">
+  <div class="pg-head"><h2>My Profile</h2><p>Your public dealer information visible to customers.</p></div>
+  <div id="profile-body"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- VIDEO MODAL -->
+<div class="modal-wrap" id="modal-video">
+  <div class="modal" style="max-width:820px;">
+    <div class="modal-head">
+      <h3><i class="bi bi-play-circle-fill"></i> <span id="vid-modal-title">Video</span></h3>
+      <button class="modal-x" onclick="closeVideoModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <iframe id="vid-modal-iframe" class="video-iframe" src="" allowfullscreen allow="autoplay"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><i class="bi bi-check-circle-fill" style="color:#E8A020;flex-shrink:0;"></i><span id="toast-msg"></span></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   SESSION — reads from localStorage just like
+   the seller dashboard. Accepts role 'parts'.
+═══════════════════════════════════════════ */
+const SESSION_KEY = 'ta_session';
+let S = null;
+try { S = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e){ S = null; }
+if (!S) { window.location.href = 'login.html'; throw new Error('No session'); }
+if (S.role !== 'parts') { window.location.href = 'index.html'; throw new Error('Wrong role'); }
+
+/* Derive display names safely */
+const dealerDisplayName = (S.businessName && S.businessName.trim())
+  ? S.businessName
+  : ((S.firstName||'') + ' ' + (S.lastName||'')).trim() || 'Dealer';
+const dealerFirstName  = S.firstName || '';
+const dealerLastName   = S.lastName  || '';
+const dealerInitials   = ((dealerFirstName[0]||'') + (dealerLastName[0]||'')).toUpperCase() || 'TA';
+
+/* ── Per-dealer localStorage keys ── */
+const PKEY = 'ta_parts_'  + S.id;   // this dealer's parts
+const OKEY = 'ta_orders_' + S.id;   // this dealer's orders
+const VKEY = 'ta_vid_p_'  + S.id;   // this dealer's private video list
+const CKEY = 'ta_chat_p_' + S.id;   // this dealer's chats
+const SHARED_PARTS_KEY  = 'ta_spare_parts'; // public parts catalogue
+const SHARED_VIDEOS_KEY = 'ta_videos';      // shared video hub (education.html reads this)
+
+let activeChatId = null;
+
+/* ═══════════════════════════════════════════
+   DB HELPERS  (self-contained, no external dep)
+═══════════════════════════════════════════ */
+const DB = {
+  get(k)       { try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch{ return []; } },
+  set(k,v)     { localStorage.setItem(k, JSON.stringify(v)); },
+  add(k,item)  { const a=this.get(k); a.unshift(item); this.set(k,a); },
+  upd(k,item)  { this.set(k, this.get(k).map(x=>x.id===item.id?item:x)); },
+  del(k,id)    { this.set(k, this.get(k).filter(x=>x.id!==id)); },
+  find(k,id)   { return this.get(k).find(x=>x.id===id)||null; },
+  uid()        { return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+};
+
+/* ═══════════════════════════════════════════
+   VIDEO HELPERS
+═══════════════════════════════════════════ */
+const VID = {
+  ytId(u)    { const m=(u||'').match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/); return m?m[1]:null; },
+  vmId(u)    { const m=(u||'').match(/vimeo\.com\/(\d+)/); return m?m[1]:null; },
+  isValid(u) { return !!(VID.ytId(u)||VID.vmId(u)); },
+  thumb(u)   { const y=VID.ytId(u); if(y) return `https://img.youtube.com/vi/${y}/hqdefault.jpg`; const v=VID.vmId(u); if(v) return `https://vumbnail.com/${v}.jpg`; return ''; },
+  platform(u){ if(VID.ytId(u)) return 'YouTube'; if(VID.vmId(u)) return 'Vimeo'; return ''; },
+  embedUrl(u){ const y=VID.ytId(u); if(y) return `https://www.youtube.com/embed/${y}?autoplay=1`; const v=VID.vmId(u); if(v) return `https://player.vimeo.com/video/${v}?autoplay=1`; return ''; }
+};
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+function showToast(msg, type='info'){
+  const t=document.getElementById('toast'), s=document.getElementById('toast-msg');
+  s.textContent=msg;
+  t.className='show '+(type==='error'?'terror':type==='success'?'tsuccess':'');
+  clearTimeout(window._tT);
+  window._tT=setTimeout(()=>{t.className='';},3200);
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+function timeAgo(iso){
+  if(!iso) return '–';
+  const d=Date.now()-new Date(iso).getTime();
+  const dd=Math.floor(d/86400000),hh=Math.floor(d/3600000),mm=Math.floor(d/60000);
+  return dd>0?dd+'d ago':hh>0?hh+'h ago':mm>0?mm+'m ago':'Just now';
+}
+function capFirst(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', init);
+
+function init(){
+  /* Greet */
+  const hr = new Date().getHours();
+  document.getElementById('greet').textContent =
+    (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening')+', '+
+    (S.businessName||dealerFirstName||'Dealer')+'! 👋';
+
+  /* Topbar & Sidebar identity */
+  document.getElementById('top-av').textContent   = dealerInitials;
+  document.getElementById('top-name').textContent = dealerDisplayName;
+  document.getElementById('sb-av').textContent    = dealerInitials;
+  document.getElementById('sb-name').textContent  = dealerDisplayName;
+
+  seedDemo();
+  renderStats();
+  buildCharts();
+  renderInventory();
+  renderOrders();
+  renderChatList();
+  renderVideos();
+  renderProfile();
+}
+
+/* ═══════════════════════════════════════════
+   DEMO SEED  (runs only once per dealer)
+═══════════════════════════════════════════ */
+function seedDemo(){
+  if(DB.get(PKEY).length) return;
+
+  const parts = [
+    {id:DB.uid(),name:'Air Filter — Toyota Corolla',cat:'filters',price:'85',stock:'12',compat:'Toyota Corolla 2012–2020',brand:'Toyota OEM',partno:'17801-0H050',cond:'new',lowStock:'5',image:'',desc:'Genuine Toyota air filter for optimal engine performance.',sold:34,createdAt:new Date(Date.now()-15*86400000).toISOString()},
+    {id:DB.uid(),name:'Brake Pads — Front (Honda Civic)',cat:'brakes',price:'220',stock:'3',compat:'Honda Civic 2014–2019',brand:'Bosch',partno:'BP-HC-F14',cond:'new',lowStock:'5',image:'',desc:'OEM-spec front brake pads, set of 4.',sold:18,createdAt:new Date(Date.now()-10*86400000).toISOString()},
+    {id:DB.uid(),name:'Alternator — Nissan Sentra',cat:'electrical',price:'650',stock:'2',compat:'Nissan Sentra 2013–2019',brand:'Denso',partno:'ALT-NS13',cond:'refurb',lowStock:'3',image:'',desc:'Refurbished alternator with 6-month warranty.',sold:7,createdAt:new Date(Date.now()-20*86400000).toISOString()},
+    {id:DB.uid(),name:'Engine Oil — 5W-30 (4L)',cat:'filters',price:'145',stock:'28',compat:'Universal / Most Japanese vehicles',brand:'Mobil 1',partno:'MOB-5W30-4L',cond:'new',lowStock:'10',image:'',desc:'Full synthetic 5W-30 engine oil, 4-litre pack.',sold:89,createdAt:new Date(Date.now()-5*86400000).toISOString()},
+    {id:DB.uid(),name:'Shock Absorber — Rear (Toyota Camry)',cat:'suspension',price:'380',stock:'4',compat:'Toyota Camry 2015–2022',brand:'KYB',partno:'SA-TC-R15',cond:'new',lowStock:'3',image:'',desc:'KYB Excel-G rear shock absorber, single unit.',sold:12,createdAt:new Date(Date.now()-25*86400000).toISOString()},
+  ];
+
+  parts.forEach(p => {
+    const full = {...p, dealerId:S.id, dealerName:dealerDisplayName, region:S.region||''};
+    DB.add(PKEY, full);
+    /* Also push to public spare parts catalogue */
+    const pub = DB.get(SHARED_PARTS_KEY).filter(x=>x.id!==p.id);
+    pub.unshift(full);
+    DB.set(SHARED_PARTS_KEY, pub);
+  });
+
+  const orders = [
+    {id:DB.uid(),cust:'Kwame Asante',part:'Air Filter — Toyota Corolla',qty:2,price:85,date:new Date(Date.now()-1*86400000).toISOString(),status:'pending'},
+    {id:DB.uid(),cust:'Abena Owusu', part:'Engine Oil — 5W-30 (4L)',     qty:3,price:145,date:new Date(Date.now()-3*86400000).toISOString(),status:'fulfilled'},
+    {id:DB.uid(),cust:'Fiifi Mensah',part:'Brake Pads — Honda Civic',     qty:1,price:220,date:new Date(Date.now()-7*86400000).toISOString(),status:'fulfilled'},
+  ];
+  orders.forEach(o => DB.add(OKEY, o));
+
+  DB.set(CKEY, [
+    {id:'cp1',custName:'Kwame Asante',custInit:'KA',topic:'Air Filter',unread:2,msgs:[
+      {type:'recv',text:'Hi, do you have the air filter for a 2017 Corolla in stock?',ts:new Date(Date.now()-2*3600000).toISOString()},
+      {type:'sent',text:'Yes we do! We have 12 units at GHS 85 each.',ts:new Date(Date.now()-1.5*3600000).toISOString()},
+      {type:'recv',text:'I will take 2. How do I pay?',ts:new Date(Date.now()-3600000).toISOString()},
+    ]},
+    {id:'cp2',custName:'Yaw Darko',custInit:'YD',topic:'Alternator',unread:0,msgs:[
+      {type:'recv',text:'Is the Nissan Sentra alternator still available?',ts:new Date(Date.now()-5*3600000).toISOString()},
+      {type:'sent',text:'Yes, 2 units left. Comes with a 6-month warranty.',ts:new Date(Date.now()-4*3600000).toISOString()},
+    ]},
+  ]);
+}
+
+/* ═══════════════════════════════════════════
+   STATS & OVERVIEW
+═══════════════════════════════════════════ */
+function renderStats(){
+  const parts  = DB.get(PKEY);
+  const orders = DB.get(OKEY);
+  const vids   = DB.get(VKEY);
+  const chats  = DB.get(CKEY);
+
+  const lowStock = parts.filter(p=>Number(p.stock)<=Number(p.lowStock||5)&&Number(p.stock)>0).length;
+  const outStock = parts.filter(p=>Number(p.stock)===0).length;
+  const revenue  = orders.filter(o=>o.status==='fulfilled').reduce((s,o)=>s+(Number(o.qty)*Number(o.price)),0);
+  const pending  = orders.filter(o=>o.status==='pending').length;
+  const chatUnread = chats.reduce((s,c)=>s+(c.unread||0),0);
+
+  document.getElementById('badge-inv').textContent    = parts.length || '';
+  document.getElementById('badge-orders').textContent = pending || '';
+  document.getElementById('badge-chat').textContent   = chatUnread || '';
+
+  const stats = [
+    {label:'Total Parts',    num:parts.length,              delta:'in catalogue',       up:true,  icon:'bi-box-seam-fill',         bg:'rgba(122,58,0,.1)',    ic:'#7A3A00'},
+    {label:'Low Stock',      num:lowStock,                  delta:outStock+' out of stock',up:false,icon:'bi-exclamation-triangle-fill',bg:'rgba(232,160,32,.12)',ic:'#E8A020'},
+    {label:'Pending Orders', num:pending,                   delta:'awaiting fulfilment', up:false, icon:'bi-bag-check-fill',        bg:'rgba(26,75,140,.1)',   ic:'#1A4B8C'},
+    {label:'Revenue (GHS)',  num:'GHS '+revenue.toLocaleString(), delta:'fulfilled orders',up:true,icon:'bi-graph-up-arrow',        bg:'rgba(26,122,58,.1)',   ic:'#1A7A3A'},
+    {label:'Videos',         num:vids.length,               delta:'on Learning Hub',    up:true,  icon:'bi-play-circle-fill',      bg:'rgba(11,30,61,.06)',   ic:'#0B1E3D'},
+  ];
+  document.getElementById('dash-stats').innerHTML = stats.map(c=>`
+    <div class="stat-card">
+      <div class="sic" style="background:${c.bg}"><i class="bi ${c.icon}" style="color:${c.ic}"></i></div>
+      <div>
+        <div class="snum">${c.num}</div>
+        <div class="slbl">${c.label}</div>
+        <div class="sdelta ${c.up?'up':'dn'}"><i class="bi bi-arrow-${c.up?'up':'down'}-right"></i>${c.delta}</div>
+      </div>
+    </div>`).join('');
+
+  /* Low stock table */
+  const low = parts.filter(p=>Number(p.stock)<=Number(p.lowStock||5));
+  document.getElementById('low-stock-tbody').innerHTML = low.length
+    ? low.map(p=>{
+        const stk=Number(p.stock), mx=Math.max(Number(p.lowStock||5)*2,10);
+        const pct=Math.min(100,Math.round(stk/mx*100));
+        const col=stk===0?'#D63B3B':stk<=Math.floor(mx/4)?'#E8A020':'#1A7A3A';
+        return `<tr>
+          <td style="font-weight:600">${p.name}</td>
+          <td style="font-size:.78rem;text-transform:capitalize">${p.cat}</td>
+          <td>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${col}">${stk}</div>
+            <div class="stock-bar"><div class="stock-fill" style="width:${pct}%;background:${col}"></div></div>
+          </td>
+          <td>${p.lowStock||5}</td>
+          <td><button class="btn bgold bsm" onclick="editPart('${p.id}')"><i class="bi bi-plus"></i> Restock</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="5" class="etd">All parts are well-stocked! ✓</td></tr>';
+
+  /* Recent messages preview */
+  document.getElementById('overview-msgs').innerHTML = chats.slice(0,2).map(c=>{
+    const last = c.msgs[c.msgs.length-1];
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF2F8;cursor:pointer;" onclick="openChat('${c.id}');nav('chat')">
+      <div class="cav">${c.custInit}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D;">${c.custName} <span style="font-size:.72rem;color:#8FA3BD;">re: ${c.topic}</span></div>
+        <div style="font-size:.78rem;color:#5E7490;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${last?.text||''}</div>
+      </div>
+      ${c.unread?`<span class="sb-badge">${c.unread}</span>`:''}
+    </div>`;
+  }).join('') || '<p style="font-size:.84rem;color:#8FA3BD;text-align:center;padding:14px;">No messages yet.</p>';
+}
+
+/* ═══════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════ */
+let salesChart, catChart;
+function buildCharts(){
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  salesChart = new Chart(document.getElementById('chart-sales'),{
+    type:'line',
+    data:{labels:months,datasets:[{label:'Revenue (GHS)',data:months.map(()=>Math.floor(Math.random()*12000)+3000),borderColor:'#7A3A00',backgroundColor:'rgba(122,58,0,.08)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#7A3A00'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(11,30,61,.05)'}},x:{grid:{display:false}}}}
+  });
+  const cats=['Engine','Brakes','Electrical','Body','Suspension','Filters'];
+  catChart = new Chart(document.getElementById('chart-cats'),{
+    type:'doughnut',
+    data:{labels:cats,datasets:[{data:cats.map(()=>Math.floor(Math.random()*20)+3),backgroundColor:['#7A3A00','#1A4B8C','#E8A020','#1A7A3A','#8FA3BD','#0B1E3D'],borderWidth:0,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{family:'Barlow Condensed',size:11}}}}}
+  });
+}
+
+/* ═══════════════════════════════════════════
+   INVENTORY
+═══════════════════════════════════════════ */
+function renderInventory(){
+  const q    = (document.getElementById('inv-search')?.value||'').toLowerCase();
+  const filt = document.getElementById('inv-filter')?.value||'';
+  let parts  = DB.get(PKEY);
+  if(q)    parts = parts.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.compat||'').toLowerCase().includes(q));
+  if(filt) parts = parts.filter(p=>p.cat===filt);
+
+  document.getElementById('inv-tbody').innerHTML = parts.length
+    ? parts.map(p=>{
+        const stk=Number(p.stock||0), low=Number(p.lowStock||5);
+        const sb = stk===0
+          ? '<span class="badge bd">Out of Stock</span>'
+          : stk<=low
+          ? '<span class="badge bb">Low Stock</span>'
+          : '<span class="badge ba">In Stock</span>';
+        return `<tr>
+          <td>${p.image?`<img src="${p.image}" style="width:44px;height:34px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"/>`:''}</td>
+          <td>
+            <div style="font-weight:600">${p.name}</div>
+            <div style="font-size:.72rem;color:#8FA3BD;">${p.brand||''} ${p.partno?'· '+p.partno:''}</div>
+          </td>
+          <td style="font-size:.78rem;color:#5E7490;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.compat||'–'}</td>
+          <td style="font-size:.76rem;text-transform:capitalize">${p.cat}</td>
+          <td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(p.price||0).toLocaleString()}</td>
+          <td style="font-weight:700;color:${stk===0?'#D63B3B':stk<=low?'#B07A10':'#1A7A3A'}">${stk}</td>
+          <td>${sb}</td>
+          <td>
+            <div style="display:flex;gap:5px">
+              <button class="btn bgh bsm" onclick="editPart('${p.id}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn bdr bsm" onclick="delPart('${p.id}')"><i class="bi bi-trash3"></i></button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" class="etd">No parts yet. <a href="#" onclick="nav(\'add-part\')" style="color:#7A3A00;font-weight:600;">Add your first part →</a></td></tr>';
+}
+
+function savePart(){
+  const id     = document.getElementById('edit-part-id').value;
+  const name   = document.getElementById('p-name').value.trim();
+  const cat    = document.getElementById('p-cat').value;
+  const price  = document.getElementById('p-price').value;
+  const stock  = document.getElementById('p-stock').value;
+  const compat = document.getElementById('p-compat').value.trim();
+
+  if(!name||!cat||!price||!stock||!compat){
+    showToast('Please fill all required fields.','error'); return;
+  }
+  if(Number(price)<=0){ showToast('Price must be greater than 0.','error'); return; }
+
+  const existing = id ? DB.find(PKEY, id) : null;
+  const part = {
+    id:      id || DB.uid(),
+    dealerId: S.id,
+    dealerName: dealerDisplayName,
+    region:  S.region||'',
+    name, cat, price, stock, compat,
+    brand:   document.getElementById('p-brand').value.trim(),
+    partno:  document.getElementById('p-partno').value.trim(),
+    cond:    document.getElementById('p-cond').value,
+    lowStock: document.getElementById('p-low').value || '5',
+    image:   document.getElementById('p-img').value.trim(),
+    desc:    document.getElementById('p-desc').value.trim(),
+    sold:    existing?.sold || 0,
+    createdAt: existing?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  if(id){ DB.upd(PKEY, part); showToast('Part updated!','success'); }
+  else  { DB.add(PKEY, part); showToast('Part added — now live!','success'); }
+
+  /* Sync to public spare-parts catalogue */
+  const pub = DB.get(SHARED_PARTS_KEY).filter(p=>p.id!==part.id);
+  pub.unshift(part);
+  DB.set(SHARED_PARTS_KEY, pub);
+
+  clearPartForm();
+  renderInventory();
+  renderStats();
+  nav('inventory');
+}
+
+function editPart(id){
+  const p = DB.find(PKEY, id);
+  if(!p) return;
+  document.getElementById('edit-part-id').value = id;
+  document.getElementById('p-name').value   = p.name   || '';
+  document.getElementById('p-cat').value    = p.cat    || '';
+  document.getElementById('p-price').value  = p.price  || '';
+  document.getElementById('p-stock').value  = p.stock  || '';
+  document.getElementById('p-compat').value = p.compat || '';
+  document.getElementById('p-brand').value  = p.brand  || '';
+  document.getElementById('p-partno').value = p.partno || '';
+  document.getElementById('p-cond').value   = p.cond   || 'new';
+  document.getElementById('p-low').value    = p.lowStock|| '5';
+  document.getElementById('p-img').value    = p.image  || '';
+  document.getElementById('p-desc').value   = p.desc   || '';
+  prevImg(p.image);
+  document.getElementById('part-form-h').textContent  = 'Edit Part';
+  document.getElementById('part-save-lbl').textContent = 'Update Part';
+  nav('add-part');
+}
+
+function delPart(id){
+  if(!confirm('Delete this part? This cannot be undone.')) return;
+  DB.del(PKEY, id);
+  DB.set(SHARED_PARTS_KEY, DB.get(SHARED_PARTS_KEY).filter(p=>p.id!==id));
+  renderInventory();
+  renderStats();
+  showToast('Part deleted.');
+}
+
+function clearPartForm(){
+  ['edit-part-id','p-name','p-price','p-stock','p-compat','p-brand','p-partno','p-img','p-desc','p-low']
+    .forEach(x=>{ document.getElementById(x).value=''; });
+  document.getElementById('p-cat').value  = '';
+  document.getElementById('p-cond').value = 'new';
+  const prev = document.getElementById('p-img-prev');
+  prev.style.display = 'none'; prev.src = '';
+  document.getElementById('part-form-h').textContent  = 'Add Part';
+  document.getElementById('part-save-lbl').textContent = 'Save Part';
+}
+
+function prevImg(src){
+  const el = document.getElementById('p-img-prev');
+  if(src){ el.src=src; el.style.display='block'; }
+  else   { el.style.display='none'; el.src=''; }
+}
+
+/* ═══════════════════════════════════════════
+   ORDERS
+═══════════════════════════════════════════ */
+function renderOrders(){
+  const SB = {
+    pending:   '<span class="badge bb">Pending</span>',
+    fulfilled: '<span class="badge ba">Fulfilled</span>',
+    cancelled: '<span class="badge bd">Cancelled</span>',
+  };
+  const rows = DB.get(OKEY);
+  document.getElementById('orders-tbody').innerHTML = rows.length
+    ? rows.map(o=>`<tr>
+        <td style="font-weight:600">${o.cust}</td>
+        <td style="font-size:.82rem">${o.part}</td>
+        <td style="text-align:center">${o.qty}</td>
+        <td style="font-family:'Bebas Neue',cursive;font-size:1rem">${(Number(o.qty)*Number(o.price)).toLocaleString()}</td>
+        <td style="font-size:.8rem;color:#8FA3BD">${new Date(o.date).toLocaleDateString('en-GH')}</td>
+        <td>${SB[o.status]||''}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="etd">No orders yet.</td></tr>';
+}
+
+/* ═══════════════════════════════════════════
+   CHAT
+═══════════════════════════════════════════ */
+function renderChatList(){
+  const chats = DB.get(CKEY);
+  document.getElementById('chat-list-body').innerHTML = chats.map(c=>{
+    const last = c.msgs[c.msgs.length-1];
+    return `<div class="ci${c.id===activeChatId?' active':''}" onclick="openChat('${c.id}')">
+      <div class="cav">${c.custInit}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="cn">${c.custName}</div>
+        <div class="cp">${last?.text||''}</div>
+        <div style="font-size:.66rem;color:#B05A00;">${c.topic}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+        <span style="font-size:.65rem;color:#8FA3BD;">${timeAgo(last?.ts)}</span>
+        ${c.unread>0?`<span class="cu">${c.unread}</span>`:''}
+      </div>
+    </div>`;
+  }).join('') || '<div style="padding:20px;text-align:center;color:#8FA3BD;font-size:.84rem;">No conversations yet.</div>';
+}
+
+function openChat(id){
+  activeChatId = id;
+  const chats = DB.get(CKEY);
+  const c = chats.find(x=>x.id===id);
+  if(!c) return;
+  c.unread = 0;
+  DB.set(CKEY, chats);
+
+  document.getElementById('cw-av').textContent  = c.custInit;
+  document.getElementById('cw-name').textContent = c.custName;
+  document.getElementById('cw-sub').textContent  = 'Re: '+c.topic;
+  document.getElementById('chat-input').style.display = 'flex';
+
+  const box = document.getElementById('chat-msgs');
+  box.innerHTML = c.msgs.map(m=>`
+    <div class="msg ${m.type}">
+      <div class="mb">${m.text}</div>
+      <div class="mt">${new Date(m.ts).toLocaleTimeString('en-GH',{hour:'2-digit',minute:'2-digit'})}</div>
+    </div>`).join('');
+  box.scrollTop = box.scrollHeight;
+  renderChatList();
+
+  /* Simulated auto-reply */
+  const replies = ['Do you offer delivery?','Is this compatible with 2018 models too?','Can I pay via MoMo?','What is the warranty period?','I will place the order now!','Do you have it in stock right now?'];
+  setTimeout(()=>{
+    const r = replies[Math.floor(Math.random()*replies.length)];
+    const cn = DB.get(CKEY);
+    const cv = cn.find(x=>x.id===id);
+    if(cv && activeChatId===id){
+      cv.msgs.push({type:'recv',text:r,ts:new Date().toISOString()});
+      DB.set(CKEY, cn);
+      box.innerHTML += `<div class="msg recv"><div class="mb">${r}</div><div class="mt">Just now</div></div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+  }, 3000+Math.random()*4000);
+}
+
+function sendMsg(){
+  if(!activeChatId) return;
+  const inp  = document.getElementById('chat-txt');
+  const text = inp.value.trim();
+  if(!text) return;
+  const chats = DB.get(CKEY);
+  const c = chats.find(x=>x.id===activeChatId);
+  if(!c) return;
+  c.msgs.push({type:'sent',text,ts:new Date().toISOString()});
+  DB.set(CKEY, chats);
+  inp.value = '';
+  const box = document.getElementById('chat-msgs');
+  box.innerHTML += `<div class="msg sent"><div class="mb">${text}</div><div class="mt">Just now</div></div>`;
+  box.scrollTop = box.scrollHeight;
+  renderChatList();
+}
+
+/* ═══════════════════════════════════════════
+   VIDEOS  ← KEY FIX: saves to BOTH VKEY
+   (private list) AND ta_videos (shared hub
+   that education.html reads from)
+═══════════════════════════════════════════ */
+function renderVideos(){
+  const vids = DB.get(VKEY);
+  const grid = document.getElementById('vids-grid');
+  if(!vids.length){
+    grid.innerHTML = '<p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No videos yet. Post your first video!</p>';
+    return;
+  }
+  grid.innerHTML = vids.map(v=>{
+    const th = VID.thumb(v.url);
+    const safeTitle = (v.title||'').replace(/'/g,"\\'");
+    return `<div class="vid-card">
+      <div class="vt" onclick="playPortalVideo('${v.url}','${safeTitle}')">
+        ${th?`<img src="${th}" loading="lazy" alt="${v.title}"/>`:''}
+        <div class="vplay"><div class="vpb"><i class="bi bi-play-fill"></i></div></div>
+        ${v.duration?`<span class="vdur">${v.duration}</span>`:''}
+      </div>
+      <div class="vb">
+        <div class="vtitle" title="${v.title||''}">${v.title||'Untitled'}</div>
+        <div class="vmeta">${v.desc||''}</div>
+        <div class="va">
+          <button class="btn bgh bsm" onclick="playPortalVideo('${v.url}','${safeTitle}')"><i class="bi bi-play-circle"></i> Watch</button>
+          <button class="btn bdr bsm" onclick="delVid('${v.id}')"><i class="bi bi-trash3"></i> Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveVideo(){
+  const url   = document.getElementById('v-url').value.trim();
+  const title = document.getElementById('v-title').value.trim();
+
+  if(!url||!title){ showToast('URL and title are required.','error'); return; }
+  if(!VID.isValid(url)){ showToast('Please enter a valid YouTube or Vimeo URL.','error'); return; }
+
+  const v = {
+    id:        'pv-'+DB.uid(),
+    url,
+    title,
+    desc:      document.getElementById('v-desc').value.trim(),
+    category:  document.getElementById('v-cat').value,
+    duration:  document.getElementById('v-dur').value.trim(),
+    thumbnail: VID.thumb(url),
+    poster:    dealerDisplayName,
+    role:      'parts',      /* badge shown on education.html */
+    dealerId:  S.id,
+    views:     0,
+    postedAt:  new Date().toISOString(),
+    new:       true,
+    featured:  false,
+  };
+
+  /* 1. Add to dealer's private list */
+  DB.add(VKEY, v);
+
+  /* 2. ── CRITICAL FIX ──
+     Also write to the shared 'ta_videos' key.
+     education.html (and ta-live-sync.js) reads from
+     'ta_videos' to populate the Learning Hub. Without
+     this step, videos never appear on that page.
+  */
+  const shared  = DB.get(SHARED_VIDEOS_KEY).filter(x=>x.id!==v.id);
+  shared.unshift(v);
+  DB.set(SHARED_VIDEOS_KEY, shared);
+
+  /* 3. Clear form */
+  ['v-url','v-title','v-desc','v-dur'].forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('v-hint').classList.remove('show');
+
+  renderVideos();
+  renderStats();
+  showToast('Video published — now live on the Learning Hub!','success');
+  nav('videos');
+}
+
+function delVid(id){
+  if(!confirm('Delete this video?')) return;
+  DB.del(VKEY, id);
+  /* Remove from shared hub too */
+  DB.set(SHARED_VIDEOS_KEY, DB.get(SHARED_VIDEOS_KEY).filter(v=>v.id!==id));
+  renderVideos();
+  renderStats();
+  showToast('Video deleted.');
+}
+
+function playPortalVideo(url, title){
+  document.getElementById('vid-modal-title').textContent  = title || 'Video';
+  document.getElementById('vid-modal-iframe').src = VID.embedUrl(url);
+  document.getElementById('modal-video').classList.add('open');
+}
+
+function closeVideoModal(){
+  document.getElementById('vid-modal-iframe').src = '';
+  document.getElementById('modal-video').classList.remove('open');
+}
+
+function prevVid(url){
+  const p = document.getElementById('v-hint');
+  if(!VID.isValid(url)){ p.classList.remove('show'); return; }
+  document.getElementById('v-thumb').src = VID.thumb(url);
+  document.getElementById('v-plat').textContent = VID.platform(url)+' detected';
+  p.classList.add('show');
+}
+
+/* ═══════════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════════ */
+function renderProfile(){
+  const parts   = DB.get(PKEY);
+  const orders  = DB.get(OKEY);
+  const vids    = DB.get(VKEY);
+  const revenue = orders.filter(o=>o.status==='fulfilled').reduce((s,o)=>s+(Number(o.qty)*Number(o.price)),0);
+  const fulfilled = orders.filter(o=>o.status==='fulfilled').length;
+
+  document.getElementById('profile-body').innerHTML = `
+    <div class="card" style="margin-bottom:16px;">
+      <div class="cb" style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7A3A00,#B05A00);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:#fff;flex-shrink:0;">${dealerInitials}</div>
+        <div style="flex:1;min-width:160px;">
+          <div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:.04em;color:#0B1E3D;">${dealerFirstName} ${dealerLastName}</div>
+          ${S.businessName?`<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#7A3A00;margin-bottom:4px;">${S.businessName}</div>`:''}
+          <div style="font-size:.82rem;color:#5E7490;">${S.email||''} ${S.phone?'· '+S.phone:''}</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+            <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px;"><i class="bi bi-geo-alt-fill" style="color:#7A3A00"></i>${S.region||'Ghana'}</span>
+            <span style="font-size:.78rem;color:#1A7A3A;font-weight:600;display:flex;align-items:center;gap:4px;"><i class="bi bi-patch-check-fill"></i>Verified Parts Dealer</span>
+          </div>
+        </div>
+        <div class="prof-stats">
+          <div class="ps-card"><div class="ps-num" style="color:#7A3A00">${parts.length}</div><div class="ps-lbl">Parts</div></div>
+          <div class="ps-card"><div class="ps-num" style="color:#1A4B8C">${fulfilled}</div><div class="ps-lbl">Orders</div></div>
+          <div class="ps-card"><div class="ps-num" style="color:#1A7A3A;font-size:1.2rem;">GHS ${revenue.toLocaleString()}</div><div class="ps-lbl">Revenue</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3><i class="bi bi-box-seam-fill"></i> Active Inventory</h3><button class="btn bgold bsm" onclick="nav('add-part')"><i class="bi bi-plus-circle"></i> Add Part</button></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;padding:18px;">
+        ${parts.slice(0,6).map(p=>`
+          <div style="border:1px solid #DDE4EF;border-radius:9px;overflow:hidden;cursor:pointer;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(11,30,61,.1)'" onmouseout="this.style.boxShadow='none'" onclick="editPart('${p.id}')">
+            ${p.image?`<div style="height:100px;background:#F4F7FB;overflow:hidden"><img src="${p.image}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/></div>`:'<div style="height:100px;background:#F4F7FB;display:flex;align-items:center;justify-content:center;"><i class="bi bi-box-seam" style="font-size:2rem;color:#DDE4EF;"></i></div>'}
+            <div style="padding:10px 12px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;color:#0B1E3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+              <div style="font-family:'Bebas Neue',cursive;font-size:1rem;color:#7A3A00">GHS ${Number(p.price||0).toLocaleString()}</div>
+              <div style="font-size:.7rem;color:#8FA3BD;">Stock: ${p.stock}</div>
+            </div>
+          </div>`).join('') || '<p style="color:#8FA3BD;font-size:.84rem;grid-column:1/-1">No parts added yet.</p>'}
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function nav(k){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+k)?.classList.add('active');
+  document.querySelector(`.sb-item[data-s="${k}"]`)?.classList.add('active');
+  if(k==='add-part') clearPartForm();
+  document.querySelector('.main')?.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════
+   LOGOUT
+═══════════════════════════════════════════ */
+function portalLogout(){
+  if(!confirm('Log out of the Parts Dealer Dashboard?')) return;
+  showToast('Logged out successfully.','success');
+  localStorage.removeItem(SESSION_KEY);
+  setTimeout(()=>{ window.location.href='login.html'; },1200);
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL EVENT LISTENERS
+═══════════════════════════════════════════ */
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('modal-wrap')) e.target.classList.remove('open');
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-wrap.open').forEach(m=>m.classList.remove('open'));
+    closeVideoModal();
+  }
+});
+</script>
+</body>
+</html>

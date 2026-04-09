@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — Trust Automobile Ghana</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="ta-shared.js"></script>
+    <style id="shared-style"></style>
+    <style>
+      /* ── BASE ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: #060f1e;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: "Barlow", sans-serif;
+        color: #1c2b40;
+      }
+
+      /* ── TWO COLUMN LAYOUT ── */
+      .auth-page {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 480px;
+        min-height: 100vh;
+      }
+
+      /* ══════════════════════════════
+   LEFT PANEL
+══════════════════════════════ */
+      .auth-side {
+        background: linear-gradient(
+          160deg,
+          #0b1e3d 0%,
+          #1a4b8c 60%,
+          #0b1e3d 100%
+        );
+        padding: 52px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+      .auth-side::before {
+        content: "";
+        position: absolute;
+        top: -20%;
+        right: -15%;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: rgba(232, 160, 32, 0.06);
+        pointer-events: none;
+      }
+      .auth-side::after {
+        content: "";
+        position: absolute;
+        bottom: -15%;
+        left: -10%;
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        background: rgba(26, 75, 140, 0.15);
+        pointer-events: none;
+      }
+      .side-inner {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Logo in left panel */
+      .side-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        margin-bottom: 0;
+      }
+      .side-logo .lm {
+        width: 36px;
+        height: 36px;
+        background: #e8a020;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.2rem;
+        color: #0b1e3d;
+        flex-shrink: 0;
+      }
+      .side-logo .lt {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+        letter-spacing: 0.06em;
+        line-height: 1.1;
+      }
+      .side-logo .lt small {
+        display: block;
+        font-size: 0.58rem;
+        font-weight: 400;
+        color: #8fa3bd;
+        letter-spacing: 0.14em;
+      }
+
+      .side-tagline {
+        font-family: "Bebas Neue", cursive;
+        font-size: clamp(2.4rem, 4vw, 3.6rem);
+        letter-spacing: 0.04em;
+        color: #ffffff;
+        line-height: 0.95;
+        margin: 40px 0 16px;
+      }
+      .side-tagline span {
+        color: #e8a020;
+      }
+      .side-desc {
+        font-size: 0.92rem;
+        color: rgba(255, 255, 255, 0.55);
+        line-height: 1.7;
+        max-width: 340px;
+        margin-bottom: 36px;
+      }
+      .side-features {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+      }
+      .side-feat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.86rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .sf-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(232, 160, 32, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.88rem;
+        color: #e8a020;
+        flex-shrink: 0;
+      }
+      .side-bottom {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.25);
+        position: relative;
+        z-index: 2;
+      }
+
+      /* ══════════════════════════════
+   RIGHT PANEL
+══════════════════════════════ */
+      .auth-right {
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 44px;
+      }
+      .auth-panel {
+        width: 100%;
+        display: none;
+      }
+      .auth-panel.active {
+        display: block;
+      }
+
+      /* Step label & headings */
+      .step-lbl {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #e8a020;
+        margin-bottom: 6px;
+      }
+      .auth-h2 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 2rem;
+        letter-spacing: 0.04em;
+        color: #0b1e3d;
+        margin-bottom: 4px;
+        line-height: 1;
+      }
+      .auth-sub {
+        font-size: 0.86rem;
+        color: #5e7490;
+        margin-bottom: 26px;
+        line-height: 1.55;
+      }
+
+      /* Form field group */
+      .fg {
+        margin-bottom: 14px;
+      }
+      .fg label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5e7490;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .input-wrap {
+        position: relative;
+      }
+      .input-icon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8fa3bd;
+        font-size: 0.95rem;
+        pointer-events: none;
+      }
+      .fg input {
+        width: 100%;
+        padding: 12px 14px 12px 38px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 9px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.92rem;
+        color: #1c2b40;
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .fg input:focus {
+        border-color: #1a4b8c;
+        box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.08);
+      }
+
+      /* Password toggle */
+      .pw-eye {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #8fa3bd;
+        cursor: pointer;
+        font-size: 0.95rem;
+        padding: 2px;
+        transition: color 0.2s;
+      }
+      .pw-eye:hover {
+        color: #0b1e3d;
+      }
+
+      /* Status & error boxes */
+      .err-box {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.83rem;
+        color: #b91c1c;
+        margin-bottom: 14px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+      .err-box.show {
+        display: flex;
+      }
+      .err-box i {
+        flex-shrink: 0;
+      }
+
+      .status-box {
+        border-radius: 9px;
+        padding: 13px 16px;
+        font-size: 0.84rem;
+        line-height: 1.6;
+        margin-bottom: 14px;
+        display: none;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .status-box.show {
+        display: flex;
+      }
+      .status-box i {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .status-box.pending {
+        background: rgba(232, 160, 32, 0.08);
+        border: 1px solid rgba(232, 160, 32, 0.3);
+        color: #7a5500;
+      }
+      .status-box.blocked {
+        background: rgba(214, 59, 59, 0.06);
+        border: 1px solid rgba(214, 59, 59, 0.2);
+        color: #b91c1c;
+      }
+      .status-box.rejected {
+        background: rgba(11, 30, 61, 0.06);
+        border: 1px solid rgba(11, 30, 61, 0.2);
+        color: #0b1e3d;
+      }
+
+      /* Forgot link */
+      .forgot {
+        font-size: 0.8rem;
+        color: #1a4b8c;
+        text-decoration: none;
+        float: right;
+        margin-bottom: 16px;
+        transition: color 0.2s;
+      }
+      .forgot:hover {
+        color: #0b1e3d;
+      }
+
+      /* Primary submit button */
+      .btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: #0b1e3d;
+        color: #ffffff;
+        border: none;
+        border-radius: 9px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .btn-submit:hover {
+        background: #1a4b8c;
+        transform: translateY(-1px);
+      }
+      .btn-submit.loading {
+        opacity: 0.7;
+        cursor: wait;
+      }
+
+      /* Divider */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #dde4ef;
+      }
+      .divider span {
+        font-size: 0.76rem;
+        color: #8fa3bd;
+        white-space: nowrap;
+      }
+
+      /* Register CTA button */
+      .btn-register {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px;
+        background: #f4f7fb;
+        color: #0b1e3d;
+        border: 1.5px solid #dde4ef;
+        border-radius: 9px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .btn-register:hover {
+        background: #e8a020;
+        color: #0b1e3d;
+        border-color: #e8a020;
+      }
+
+      /* Admin link */
+      .admin-link {
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid #eef2f8;
+        text-align: center;
+      }
+      .admin-link a {
+        font-size: 0.78rem;
+        color: #8fa3bd;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.2s;
+      }
+      .admin-link a:hover {
+        color: #0b1e3d;
+      }
+
+      /* Demo accounts collapsible */
+      .demo-box {
+        margin-top: 18px;
+        background: rgba(232, 160, 32, 0.07);
+        border: 1px solid rgba(232, 160, 32, 0.25);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .demo-box-toggle {
+        width: 100%;
+        background: none;
+        border: none;
+        padding: 10px 14px;
+        text-align: left;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.76rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #8a5a00;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .demo-box-toggle i.chevron {
+        margin-left: auto;
+      }
+      .demo-box-content {
+        display: none;
+        padding: 0 14px 12px;
+        font-size: 0.78rem;
+        color: #7a5500;
+        line-height: 2;
+      }
+      .demo-box-content strong {
+        color: #5a3700;
+      }
+      .demo-box-content .demo-email {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        color: #0b1e3d;
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+      .demo-box-content .demo-email:hover {
+        color: #1a4b8c;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ── SUCCESS PANEL ── */
+      .redirect-card {
+        text-align: center;
+        padding: 8px 0;
+      }
+      .redirect-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #e8f5ed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #1a7a3a;
+        margin: 0 auto 18px;
+      }
+      .redirect-card h3 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.8rem;
+        letter-spacing: 0.04em;
+        color: #0b1e3d;
+        margin-bottom: 6px;
+      }
+      .redirect-card p {
+        font-size: 0.88rem;
+        color: #5e7490;
+        line-height: 1.65;
+        margin-bottom: 8px;
+      }
+      .user-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f4f7fb;
+        border: 1px solid #dde4ef;
+        border-radius: 100px;
+        padding: 6px 14px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        color: #0b1e3d;
+        margin: 12px 0 20px;
+      }
+      .role-badge {
+        padding: 2px 9px;
+        border-radius: 100px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        font-family: "Barlow Condensed", sans-serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .rb-customer {
+        background: rgba(26, 75, 140, 0.1);
+        color: #1a4b8c;
+      }
+      .rb-seller {
+        background: rgba(26, 122, 58, 0.1);
+        color: #1a7a3a;
+      }
+      .rb-renter {
+        background: rgba(232, 160, 32, 0.12);
+        color: #8a5a00;
+      }
+      .rb-mechanic {
+        background: rgba(11, 30, 61, 0.08);
+        color: #0b1e3d;
+      }
+      .rb-parts {
+        background: rgba(139, 69, 19, 0.1);
+        color: #7a3a00;
+      }
+
+      .btn-go {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px;
+        background: #e8a020;
+        color: #0b1e3d;
+        border: none;
+        border-radius: 9px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        margin-bottom: 10px;
+      }
+      .btn-go:hover {
+        background: #f5c05a;
+        transform: translateY(-1px);
+      }
+
+      .btn-go-sec {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 11px;
+        background: transparent;
+        color: #5e7490;
+        border: 1.5px solid #dde4ef;
+        border-radius: 9px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      .btn-go-sec:hover {
+        border-color: #0b1e3d;
+        color: #0b1e3d;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0b1e3d;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.86rem;
+        letter-spacing: 0.04em;
+        box-shadow: 0 8px 28px rgba(11, 30, 61, 0.3);
+        z-index: 999;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.35s;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 320px;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast i {
+        color: #e8a020;
+      }
+
+      /* ── FORGOT PANEL ── */
+      .reg-prompt {
+        text-align: center;
+        font-size: 0.86rem;
+        color: #5e7490;
+        margin-top: 18px;
+      }
+      .reg-prompt a {
+        color: #1a4b8c;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .reg-prompt a:hover {
+        color: #0b1e3d;
+      }
+      .ok-box {
+        background: #e8f5ed;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.83rem;
+        color: #166534;
+        margin-bottom: 14px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+      .ok-box.show {
+        display: flex;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 860px) {
+        .auth-page {
+          grid-template-columns: 1fr;
+        }
+        .auth-side {
+          display: none;
+        }
+        .auth-right {
+          padding: 36px 24px;
+          min-height: 100vh;
+        }
+      }
+      @media (max-width: 420px) {
+        .auth-right {
+          padding: 28px 18px;
+        }
+        .auth-h2 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-page">
+      <!-- ══ LEFT SIDE ══ -->
+      <div class="auth-side">
+        <div class="side-inner">
+          <a href="index.html" class="side-logo">
+            <div class="lm">TA</div>
+            <div class="lt">
+              Trust Automobile<small>Verified Marketplace</small>
+            </div>
+          </a>
+          <div class="side-tagline">
+            Ghana's Most<br /><span>Trusted</span><br />Car Platform
+          </div>
+          <p class="side-desc">
+            Buy, sell, rent vehicles and book certified mechanics — all
+            verified, all in one place.
+          </p>
+          <div class="side-features">
+            <div class="side-feat">
+              <div class="sf-dot"><i class="bi bi-patch-check-fill"></i></div>
+              Every seller verified with official documents
+            </div>
+            <div class="side-feat">
+              <div class="sf-dot"><i class="bi bi-shield-fill-check"></i></div>
+              Safe, scam-free buying experience
+            </div>
+            <div class="side-feat">
+              <div class="sf-dot"><i class="bi bi-tools"></i></div>
+              120+ certified mechanics across Ghana
+            </div>
+            <div class="side-feat">
+              <div class="sf-dot"><i class="bi bi-graph-up-arrow"></i></div>
+              Reach thousands of buyers every day
+            </div>
+          </div>
+        </div>
+        <div class="side-bottom">
+          © 2026 Trust Automobile Ghana · All rights reserved
+        </div>
+      </div>
+
+      <!-- ══ RIGHT SIDE ══ -->
+      <div class="auth-right">
+        <!-- ─── LOGIN PANEL ─── -->
+        <div class="auth-panel active" id="panel-login">
+          <div class="step-lbl">Welcome Back</div>
+          <h2 class="auth-h2">Sign In to Your Account</h2>
+          <p class="auth-sub">Enter your email and password to continue.</p>
+
+          <!-- Status messages -->
+          <div class="status-box pending" id="status-pending">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <strong>Account Pending Approval</strong><br />Your application is
+              under review. You will receive an email once approved — usually
+              1–3 business days.
+            </div>
+          </div>
+          <div class="status-box blocked" id="status-blocked">
+            <i class="bi bi-slash-circle-fill"></i>
+            <div>
+              <strong>Account Suspended</strong><br />Your account has been
+              suspended. Please contact support at hello@trustautomobile.gh
+            </div>
+          </div>
+          <div class="status-box rejected" id="status-rejected">
+            <i class="bi bi-x-circle-fill"></i>
+            <div>
+              <strong>Application Not Approved</strong><br />Your application
+              was not approved.
+              <a href="register.html" style="color: #0b1e3d; font-weight: 700"
+                >Re-register</a
+              >
+              with updated documents.
+            </div>
+          </div>
+          <div class="err-box" id="login-err">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span>Incorrect email or password. Please try again.</span>
+          </div>
+
+          <!-- Email -->
+          <div class="fg">
+            <label>Email Address</label>
+            <div class="input-wrap">
+              <i class="bi bi-envelope input-icon"></i>
+              <input
+                type="email"
+                id="l-email"
+                placeholder="you@email.com"
+                autocomplete="email"
+                onkeydown="if(event.key==='Enter')doLogin()"
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="fg">
+            <label>Password</label>
+            <div class="input-wrap">
+              <i class="bi bi-lock input-icon"></i>
+              <input
+                type="password"
+                id="l-pw"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                onkeydown="if(event.key==='Enter')doLogin()"
+              />
+              <button
+                class="pw-eye"
+                type="button"
+                onclick="togglePw('l-pw',this)"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <a href="#" class="forgot" onclick="showForgot();return false;"
+            >Forgot password?</a
+          >
+          <div style="clear: both"></div>
+
+          <button class="btn-submit" id="login-btn" onclick="doLogin()">
+            <i class="bi bi-box-arrow-in-right"></i> Sign In
+          </button>
+
+          <div class="divider"><span>New to Trust Automobile?</span></div>
+
+          <a href="register.html" class="btn-register">
+            <i class="bi bi-person-plus-fill"></i> Create an Account
+          </a>
+
+          <div class="admin-link">
+            <a href="admin.html"
+              ><i class="bi bi-shield-lock"></i> Admin Portal</a
+            >
+          </div>
+
+          <!-- Demo accounts — plain text, no Cloudflare obfuscation -->
+          <div class="demo-box">
+            <button class="demo-box-toggle" onclick="toggleDemo(this)">
+              <i class="bi bi-info-circle"></i> Demo Accounts
+              <i class="bi bi-chevron-down chevron"></i>
+            </button>
+            <div class="demo-box-content" id="demo-content">
+              <div>
+                <strong>Customer:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('kofi@email.gh','demo123')"
+                  >kofi@email.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Car Seller:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('kwame@asantemotors.gh','demo123')"
+                  >kwame@asantemotors.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Car Renter:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('abena@mensahrentals.gh','demo123')"
+                  >abena@mensahrentals.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Mechanic:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('emmanuel@profix.gh','demo123')"
+                  >emmanuel@profix.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Parts Dealer:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('fiifi@takoradiparts.gh','demo123')"
+                  >fiifi@takoradiparts.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Pending account:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('nana@pending.gh','demo123')"
+                  >nana@pending.gh</span
+                >
+                / demo123
+              </div>
+              <div>
+                <strong>Blocked account:</strong>
+                <span
+                  class="demo-email"
+                  onclick="fillLogin('isaac@blocked.gh','demo123')"
+                  >isaac@blocked.gh</span
+                >
+                / demo123
+              </div>
+              <div style="font-size: 0.7rem; color: #8fa3bd; margin-top: 6px">
+                <i class="bi bi-hand-index"></i> Click any email above to
+                auto-fill
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /panel-login -->
+
+        <!-- ─── FORGOT PASSWORD PANEL ─── -->
+        <div class="auth-panel" id="panel-forgot">
+          <div class="step-lbl">Account Recovery</div>
+          <h2 class="auth-h2">Reset Password</h2>
+          <p class="auth-sub">
+            Enter your registered email and we'll send a reset link.
+          </p>
+
+          <div class="ok-box" id="forgot-ok">
+            <i
+              class="bi bi-check-circle-fill"
+              style="color: #1a7a3a; flex-shrink: 0"
+            ></i>
+            <span>Reset link sent! Check your email inbox.</span>
+          </div>
+
+          <div class="fg">
+            <label>Email Address</label>
+            <div class="input-wrap">
+              <i class="bi bi-envelope input-icon"></i>
+              <input
+                type="email"
+                id="f-email"
+                placeholder="you@email.com"
+                autocomplete="email"
+                onkeydown="if(event.key==='Enter')doForgot()"
+              />
+            </div>
+          </div>
+
+          <button class="btn-submit" onclick="doForgot()">
+            <i class="bi bi-send"></i> Send Reset Link
+          </button>
+
+          <div class="reg-prompt" style="margin-top: 14px">
+            <a onclick="showLogin()" style="cursor: pointer">
+              <i class="bi bi-arrow-left"></i> Back to Sign In
+            </a>
+          </div>
+        </div>
+        <!-- /panel-forgot -->
+
+        <!-- ─── SUCCESS / REDIRECT PANEL ─── -->
+        <div class="auth-panel" id="panel-success">
+          <div class="redirect-card">
+            <div class="redirect-icon">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <h3>Signed In!</h3>
+            <p>Welcome back. You are now logged in as:</p>
+            <div class="user-pill">
+              <i class="bi bi-person-circle"></i>
+              <span id="s-name">–</span>
+              <span class="role-badge" id="s-role-badge">–</span>
+            </div>
+            <p
+              id="s-redirect-note"
+              style="font-size: 0.8rem; color: #8fa3bd; margin-bottom: 20px"
+            ></p>
+            <a class="btn-go" id="s-dashboard-btn" href="#">
+              <i class="bi bi-speedometer2"></i> Go to Dashboard
+            </a>
+            <a class="btn-go-sec" href="index.html">
+              <i class="bi bi-house"></i> Back to Home
+            </a>
+          </div>
+        </div>
+        <!-- /panel-success -->
+      </div>
+      <!-- /auth-right -->
+    </div>
+    <!-- /auth-page -->
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+      <i class="bi bi-check-circle-fill"></i><span id="toast-msg"></span>
+    </div>
+
+    <script>
+      /* ════════════════════════════════════════════════
+   TRUST AUTOMOBILE — LOGIN PAGE
+   Clean rewrite — no Cloudflare, no obfuscation.
+   Works with register.html (ta_users localStorage)
+   and all 4 stakeholder portals + multi-role portal.
+════════════════════════════════════════════════ */
+
+      /* ── INIT ──────────────────────────────────────── */
+      document.addEventListener("DOMContentLoaded", function () {
+        /* Inject TA_STYLE from ta-shared.js if available */
+        if (typeof TA_STYLE !== "undefined") {
+          document.getElementById("shared-style").textContent = TA_STYLE;
+        }
+
+        /* If already logged in, show success panel immediately */
+        var session = getSession();
+        if (session) {
+          showSuccessPanel(session);
+          return;
+        }
+
+        /* URL param: ?mode=register → redirect straight to register page */
+        var p = new URLSearchParams(window.location.search);
+        if (p.get("mode") === "register") {
+          window.location.href = "register.html";
+          return;
+        }
+
+        /* URL param: ?status=pending or ?status=blocked (redirected from portal guard) */
+        var status = p.get("status");
+        if (status === "pending") {
+          document.getElementById("status-pending").classList.add("show");
+        } else if (status === "blocked") {
+          document.getElementById("status-blocked").classList.add("show");
+        }
+      });
+
+      /* ── SESSION ────────────────────────────────────── */
+      function getSession() {
+        try {
+          return JSON.parse(localStorage.getItem("ta_session"));
+        } catch (e) {
+          return null;
+        }
+      }
+      function setSession(u) {
+        localStorage.setItem("ta_session", JSON.stringify(u));
+      }
+
+      /* ── DEMO USERS ─────────────────────────────────── */
+      /* Plain text — no Cloudflare obfuscation */
+      var DEMO_USERS = [
+        {
+          id: "D-C1",
+          role: "customer",
+          status: "active",
+          firstName: "Kofi",
+          lastName: "Mensah",
+          email: "kofi@email.gh",
+          password: "demo123",
+        },
+        {
+          id: "D-S1",
+          role: "seller",
+          status: "active",
+          firstName: "Kwame",
+          lastName: "Asante",
+          email: "kwame@asantemotors.gh",
+          password: "demo123",
+          businessName: "Asante Motors Ltd",
+        },
+        {
+          id: "D-R1",
+          role: "renter",
+          status: "active",
+          firstName: "Abena",
+          lastName: "Mensah",
+          email: "abena@mensahrentals.gh",
+          password: "demo123",
+          businessName: "Mensah Car Rentals",
+        },
+        {
+          id: "D-M1",
+          role: "mechanic",
+          status: "active",
+          firstName: "Emmanuel",
+          lastName: "Darko",
+          email: "emmanuel@profix.gh",
+          password: "demo123",
+          businessName: "ProFix Auto Electricals",
+        },
+        {
+          id: "D-P1",
+          role: "parts",
+          status: "active",
+          firstName: "Fiifi",
+          lastName: "Acquah",
+          email: "fiifi@takoradiparts.gh",
+          password: "demo123",
+          businessName: "Takoradi Genuine Parts",
+        },
+        {
+          id: "D-PD",
+          role: "seller",
+          status: "pending",
+          firstName: "Nana",
+          lastName: "Adjei",
+          email: "nana@pending.gh",
+          password: "demo123",
+        },
+        {
+          id: "D-BL",
+          role: "mechanic",
+          status: "blocked",
+          firstName: "Isaac",
+          lastName: "Frimpong",
+          email: "isaac@blocked.gh",
+          password: "demo123",
+        },
+        /* Legacy seller account for backward compatibility */
+        {
+          id: "D-L1",
+          role: "seller",
+          status: "active",
+          firstName: "AutoHub",
+          lastName: "Accra",
+          email: "seller@ta.gh",
+          password: "demo123",
+        },
+      ];
+
+      /* ── FIND USER (checks localStorage first, then demo) ── */
+      function findUser(email, password) {
+        var emailLower = email.toLowerCase();
+
+        /* 1. Check users registered via register.html (stored in ta_users) */
+        var stored = [];
+        try {
+          stored = JSON.parse(localStorage.getItem("ta_users") || "[]");
+        } catch (e) {}
+
+        for (var i = 0; i < stored.length; i++) {
+          var u = stored[i];
+          if (u.email && u.email.toLowerCase() === emailLower) {
+            /* Password field is set by register.html */
+            if (u.password && u.password !== password) return { err: "wrong" };
+            /* No password stored = old registration, accept any (demo fallback) */
+            return { user: u };
+          }
+        }
+
+        /* 2. Check built-in demo accounts */
+        for (var j = 0; j < DEMO_USERS.length; j++) {
+          var d = DEMO_USERS[j];
+          if (d.email.toLowerCase() === emailLower) {
+            if (d.password !== password) return { err: "wrong" };
+            return { user: d };
+          }
+        }
+
+        return { err: "not_found" };
+      }
+
+      /* ── ROLE → PORTAL ROUTING ──────────────────────── */
+      var ROLES = {
+        customer: {
+          label: "Customer",
+          badge: "rb-customer",
+          dest: "index.html",
+          icon: "bi-house-fill",
+        },
+        seller: {
+          label: "Car Seller",
+          badge: "rb-seller",
+          dest: "portal-seller.html",
+          icon: "bi-car-front-fill",
+        },
+        renter: {
+          label: "Car Renter",
+          badge: "rb-renter",
+          dest: "portal-renter.html",
+          icon: "bi-key-fill",
+        },
+        mechanic: {
+          label: "Mechanic",
+          badge: "rb-mechanic",
+          dest: "portal-mechanic.html",
+          icon: "bi-tools",
+        },
+        parts: {
+          label: "Parts Dealer",
+          badge: "rb-parts",
+          dest: "portal-parts.html",
+          icon: "bi-box-seam-fill",
+        },
+      };
+
+      /*
+  getDestination — handles single role AND multi-role users.
+  Multi-role users (granted by admin) have a roles[] array in their session.
+  They go to portal-multi.html which shows all their roles combined.
+*/
+      function getDestination(user) {
+        if (Array.isArray(user.roles) && user.roles.length > 1) {
+          return "portal-multi.html";
+        }
+        if (Array.isArray(user.roles) && user.roles.length === 1) {
+          return ROLES[user.roles[0]]
+            ? ROLES[user.roles[0]].dest
+            : "index.html";
+        }
+        return ROLES[user.role] ? ROLES[user.role].dest : "index.html";
+      }
+
+      /* ── DO LOGIN ────────────────────────────────────── */
+      function doLogin() {
+        var email = document.getElementById("l-email").value.trim();
+        var pw = document.getElementById("l-pw").value;
+
+        /* Clear previous messages */
+        hideAllStatus();
+
+        if (!email || !pw) {
+          showErr("login-err", "Please enter your email and password.");
+          return;
+        }
+
+        /* Show loading spinner */
+        var btn = document.getElementById("login-btn");
+        btn.innerHTML = '<span class="spinner"></span> Signing In&hellip;';
+        btn.classList.add("loading");
+
+        /* Simulate network delay (replace with real fetch() when backend is ready) */
+        setTimeout(function () {
+          btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+          btn.classList.remove("loading");
+
+          var result = findUser(email, pw);
+
+          if (result.err === "not_found" || result.err === "wrong") {
+            showErr("login-err");
+            return;
+          }
+
+          var user = result.user;
+
+          /* Status gate — only active accounts can proceed */
+          if (user.status === "pending") {
+            document.getElementById("status-pending").classList.add("show");
+            return;
+          }
+          if (user.status === "blocked") {
+            document.getElementById("status-blocked").classList.add("show");
+            return;
+          }
+          if (user.status === "rejected") {
+            document.getElementById("status-rejected").classList.add("show");
+            return;
+          }
+
+          /* Save session and show success */
+          setSession(user);
+          showSuccessPanel(user);
+        }, 700);
+      }
+
+      /* ── SUCCESS PANEL ───────────────────────────────── */
+      function showSuccessPanel(user) {
+        var cfg = ROLES[user.role] || ROLES.customer;
+        var name = (
+          (user.firstName || "") +
+          " " +
+          (user.lastName || "")
+        ).trim();
+        var dest = getDestination(user);
+
+        document.getElementById("s-name").textContent = name;
+        document.getElementById("s-role-badge").textContent = cfg.label;
+        document.getElementById("s-role-badge").className =
+          "role-badge " + cfg.badge;
+
+        var dashBtn = document.getElementById("s-dashboard-btn");
+        dashBtn.href = dest;
+        dashBtn.innerHTML =
+          '<i class="bi ' +
+          cfg.icon +
+          '"></i> ' +
+          (user.role === "customer" ? "Browse Marketplace" : "Go to My Portal");
+
+        var note =
+          user.role === "customer"
+            ? "You can now browse verified listings and book mechanics."
+            : "Signed in as " +
+              cfg.label +
+              ". Taking you to your portal now\u2026";
+
+        /* Multi-role note */
+        if (Array.isArray(user.roles) && user.roles.length > 1) {
+          note =
+            "You have " +
+            user.roles.length +
+            " roles. Redirecting to your combined portal\u2026";
+        }
+
+        document.getElementById("s-redirect-note").textContent = note;
+
+        showPanel("panel-success");
+
+        /* Auto-redirect for non-customers after 2.5 seconds */
+        if (user.role !== "customer") {
+          setTimeout(function () {
+            window.location.href = dest;
+          }, 2500);
+        }
+      }
+
+      /* ── FORGOT PASSWORD ─────────────────────────────── */
+      function showForgot() {
+        showPanel("panel-forgot");
+      }
+      function showLogin() {
+        showPanel("panel-login");
+      }
+
+      function doForgot() {
+        var val = document.getElementById("f-email").value.trim();
+        if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          showToast("Please enter a valid email address.", "error");
+          return;
+        }
+        /* Demo mode: show success message */
+        document.getElementById("forgot-ok").classList.add("show");
+        showToast("Reset link sent! (demo — no real email sent)");
+      }
+
+      /* ── DEMO HELPERS ────────────────────────────────── */
+      function toggleDemo(btn) {
+        var content = document.getElementById("demo-content");
+        var chevron = btn.querySelector(".chevron");
+        var isOpen = content.style.display === "block";
+        content.style.display = isOpen ? "none" : "block";
+        chevron.className =
+          "bi " + (isOpen ? "bi-chevron-down" : "bi-chevron-up") + " chevron";
+      }
+
+      function fillLogin(email, password) {
+        document.getElementById("l-email").value = email;
+        document.getElementById("l-pw").value = password;
+        showToast("Credentials filled — click Sign In!");
+      }
+
+      /* ── PANEL NAVIGATION ────────────────────────────── */
+      function showPanel(id) {
+        var panels = document.querySelectorAll(".auth-panel");
+        for (var i = 0; i < panels.length; i++) {
+          panels[i].classList.remove("active");
+        }
+        document.getElementById(id).classList.add("active");
+      }
+
+      /* ── HIDE ALL STATUS MESSAGES ────────────────────── */
+      function hideAllStatus() {
+        var ids = [
+          "status-pending",
+          "status-blocked",
+          "status-rejected",
+          "login-err",
+        ];
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (el) el.classList.remove("show");
+        }
+      }
+
+      /* ── ERROR BOX ───────────────────────────────────── */
+      function showErr(id, msg) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (msg) {
+          var span = el.querySelector("span");
+          if (span) span.textContent = msg;
+        }
+        el.classList.add("show");
+      }
+
+      /* ── TOGGLE PASSWORD VISIBILITY ──────────────────── */
+      function togglePw(inputId, btn) {
+        var inp = document.getElementById(inputId);
+        var show = inp.type === "password";
+        inp.type = show ? "text" : "password";
+        var icon = btn.querySelector("i");
+        icon.className = show ? "bi bi-eye-slash" : "bi bi-eye";
+      }
+
+      /* ── TOAST NOTIFICATION ──────────────────────────── */
+      function showToast(msg, type) {
+        var t = document.getElementById("toast");
+        var ic = t.querySelector("i");
+        document.getElementById("toast-msg").textContent = msg;
+        ic.className =
+          type === "error"
+            ? "bi bi-exclamation-circle-fill"
+            : "bi bi-check-circle-fill";
+        t.style.background = type === "error" ? "#D63B3B" : "#0B1E3D";
+        t.classList.add("show");
+        clearTimeout(window._loginToastTT);
+        window._loginToastTT = setTimeout(function () {
+          t.classList.remove("show");
+        }, 3500);
+      }
+    </script>
+  </body>
+</html>

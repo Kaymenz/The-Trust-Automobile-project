@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trust Automobile — Ghana's #1 Car Marketplace</title>
+    <link rel="stylesheet" href="shared.css" />
+    <style>
+      /* Hero */
+      .hero {
+        background: #0b1e3d;
+        position: relative;
+        overflow: hidden;
+        padding: 80px 48px 0;
+        min-height: 540px;
+        display: flex;
+        align-items: flex-start;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+            circle at 70% 50%,
+            rgba(26, 75, 140, 0.5) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(232, 160, 32, 0.12) 0%,
+            transparent 40%
+          );
+        pointer-events: none;
+      }
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(143, 163, 189, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(143, 163, 189, 0.05) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        padding-top: 20px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(232, 160, 32, 0.15);
+        border: 1px solid rgba(232, 160, 32, 0.35);
+        color: #f5c05a;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 20px;
+        margin-bottom: 24px;
+      }
+      .hero-badge-dot {
+        width: 6px;
+        height: 6px;
+        background: #e8a020;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(40px, 5vw, 66px);
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.08;
+        letter-spacing: -1.5px;
+        margin-bottom: 20px;
+      }
+      .hero h1 em {
+        font-style: normal;
+        color: #e8a020;
+      }
+      .hero-sub {
+        font-size: 17px;
+        color: #8fa3bd;
+        line-height: 1.6;
+        margin-bottom: 40px;
+        max-width: 500px;
+      }
+      /* Search box */
+      .search-box {
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px 28px 24px;
+        box-shadow: 0 20px 60px rgba(11, 30, 61, 0.35);
+        position: relative;
+        z-index: 3;
+      }
+      .search-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 22px;
+        background: #f4f7fb;
+        border-radius: 10px;
+        padding: 4px;
+      }
+      .search-tab {
+        flex: 1;
+        padding: 9px 16px;
+        border: none;
+        background: transparent;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #8fa3bd;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .search-tab.active {
+        background: #0b1e3d;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(11, 30, 61, 0.25);
+      }
+      .search-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr auto;
+        gap: 10px;
+        align-items: end;
+      }
+      .search-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .search-field label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #8fa3bd;
+      }
+      .search-field select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        color: #0b1e3d;
+        background: #fff;
+        appearance: none;
+        outline: none;
+        transition: border-color 0.2s;
+        cursor: pointer;
+      }
+      .search-field select:focus {
+        border-color: #1a4b8c;
+        box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.1);
+      }
+      .sel-wrap {
+        position: relative;
+      }
+      .sel-wrap::after {
+        content: "";
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #8fa3bd;
+        pointer-events: none;
+      }
+      .btn-search {
+        background: #e8a020;
+        border: none;
+        color: #0b1e3d;
+        padding: 11px 28px;
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .btn-search:hover {
+        background: #f5c05a;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(232, 160, 32, 0.4);
+      }
+      .search-chips {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .chip-label {
+        font-size: 12px;
+        color: #8fa3bd;
+        font-weight: 500;
+      }
+      .chip {
+        background: #f4f7fb;
+        border: 1px solid #e2e8f0;
+        color: #1a4b8c;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 4px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+      }
+      .chip:hover {
+        background: #1a4b8c;
+        color: #fff;
+        border-color: #1a4b8c;
+      }
+      /* Stats strip */
+      .stats-strip {
+        background: #1a4b8c;
+        padding: 20px 48px;
+        display: flex;
+        align-items: center;
+      }
+      .stat-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 24px;
+        border-right: 1px solid rgba(143, 163, 189, 0.25);
+      }
+      .stat-item:first-child {
+        padding-left: 0;
+      }
+      .stat-item:last-child {
+        border-right: none;
+      }
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(232, 160, 32, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .stat-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: #e8a020;
+      }
+      .stat-number {
+        font-family: "Playfair Display", serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #8fa3bd;
+        margin-top: 2px;
+      }
+      /* Browse makes */
+      .browse-section {
+        background: #0b1e3d;
+        padding: 64px 48px;
+      }
+      .browse-section .section-title {
+        color: #fff;
+      }
+      .makes-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
+      }
+      .make-card {
+        background: rgba(26, 75, 140, 0.3);
+        border: 1px solid rgba(143, 163, 189, 0.2);
+        border-radius: 12px;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      .make-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s,
+          border-color 0.2s;
+      }
+      .make-card:hover {
+        background: rgba(26, 75, 140, 0.6);
+        border-color: #e8a020;
+        transform: translateY(-3px) !important;
+      }
+      .make-logo {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #f5c05a;
+      }
+      .make-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .make-count {
+        font-size: 11px;
+        color: #8fa3bd;
+      }
+      /* Why section */
+      .why-section {
+        padding: 64px 48px;
+        background: #fff;
+      }
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        margin-top: 40px;
+      }
+      .feature-card {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      .feature-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+      .feature-icon {
+        width: 52px;
+        height: 52px;
+        background: rgba(232, 160, 32, 0.12);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .feature-icon svg {
+        width: 26px;
+        height: 26px;
+        fill: #e8a020;
+      }
+      .feature-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0b1e3d;
+      }
+      .feature-desc {
+        font-size: 14px;
+        color: #8fa3bd;
+        line-height: 1.6;
+      }
+      /* CTA */
+      .cta-banner {
+        margin: 0 48px 64px;
+        background: #1a4b8c;
+        border-radius: 20px;
+        padding: 56px 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-banner::before {
+        content: "";
+        position: absolute;
+        right: -60px;
+        top: -60px;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: rgba(232, 160, 32, 0.12);
+      }
+      .cta-text h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+      .cta-text p {
+        font-size: 15px;
+        color: #8fa3bd;
+      }
+      @media (max-width: 900px) {
+        .hero {
+          padding: 48px 20px 0;
+        }
+        .search-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .btn-search {
+          grid-column: span 2;
+          justify-content: center;
+        }
+        .stats-strip {
+          padding: 16px 20px;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .stat-item {
+          border-right: none;
+          padding: 0;
+        }
+        .browse-section {
+          padding: 48px 20px;
+        }
+        .makes-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .why-section {
+          padding: 48px 20px;
+        }
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .cta-banner {
+          margin: 0 20px 48px;
+          padding: 36px 28px;
+          flex-direction: column;
+          gap: 24px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav-root"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <div class="hero-badge anim">
+          <div class="hero-badge-dot"></div>
+          Ghana's #1 Car Marketplace
+        </div>
+        <h1 class="anim anim-d1">Find Your <em>Perfect</em><br />Car Today</h1>
+        <p class="hero-sub anim anim-d2">
+          Thousands of verified listings from trusted dealers and private
+          sellers across Ghana.
+        </p>
+        <div class="search-box anim anim-d3">
+          <div class="search-tabs">
+            <button class="search-tab active" onclick="setTab(this,'')">
+              All Cars
+            </button>
+            <button class="search-tab" onclick="setTab(this,'New')">
+              New Cars
+            </button>
+            <button class="search-tab" onclick="setTab(this,'Used')">
+              Used Cars
+            </button>
+            <button class="search-tab" onclick="setTab(this,'dealer')">
+              By Dealer
+            </button>
+          </div>
+          <div class="search-row">
+            <div class="search-field">
+              <label>Make</label>
+              <div class="sel-wrap">
+                <select id="s-make" onchange="updateModels()">
+                  <option value="">Any Make</option>
+                  <option>Toyota</option>
+                  <option>Honda</option>
+                  <option>Ford</option>
+                  <option>Mercedes-Benz</option>
+                  <option>BMW</option>
+                  <option>Hyundai</option>
+                  <option>Kia</option>
+                  <option>Nissan</option>
+                  <option>Volkswagen</option>
+                </select>
+              </div>
+            </div>
+            <div class="search-field">
+              <label>Model</label>
+              <div class="sel-wrap">
+                <select id="s-model">
+                  <option value="">Any Model</option>
+                </select>
+              </div>
+            </div>
+            <div class="search-field">
+              <label>Max Price</label>
+              <div class="sel-wrap">
+                <select id="s-price">
+                  <option value="">Any Price</option>
+                  <option value="10000">GHS 10,000</option>
+                  <option value="20000">GHS 20,000</option>
+                  <option value="50000">GHS 50,000</option>
+                  <option value="100000">GHS 100,000</option>
+                  <option value="200000">GHS 200,000</option>
+                  <option value="999999">GHS 200,000+</option>
+                </select>
+              </div>
+            </div>
+            <div class="search-field">
+              <label>Location</label>
+              <div class="sel-wrap">
+                <select id="s-loc">
+                  <option value="">Anywhere</option>
+                  <option>Accra</option>
+                  <option>Kumasi</option>
+                  <option>Tamale</option>
+                  <option>Takoradi</option>
+                  <option>Cape Coast</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-search" onclick="doSearch()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style="width: 16px; height: 16px"
+              >
+                <path
+                  d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"
+                />
+              </svg>
+              Search
+            </button>
+          </div>
+          <div class="search-chips">
+            <span class="chip-label">Popular:</span>
+            <a class="chip" href="search.html?make=Toyota">Toyota</a>
+            <a class="chip" href="search.html?make=Honda">Honda</a>
+            <a class="chip" href="search.html?price=50000">Under GHS 50k</a>
+            <a class="chip" href="search.html?transmission=Automatic"
+              >Automatic</a
+            >
+            <a class="chip" href="search.html?condition=New">New Cars</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M9 17H7V10H9V17M13 17H11V7H13V17M17 17H15V13H17V17Z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">12,400+</div>
+          <div class="stat-label">Active listings</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M16 11C17.66 11 18.99 9.66 18.99 8C18.99 6.34 17.66 5 16 5C14.34 5 13 6.34 13 8C13 9.66 14.34 11 16 11M8 11C9.66 11 10.99 9.66 10.99 8C10.99 6.34 9.66 5 8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11M8 13C5.67 13 1 14.17 1 16.5V19H15V16.5C15 14.17 10.33 13 8 13M16 13C15.71 13 15.38 13.02 15.03 13.05C16.19 13.89 17 15.02 17 16.5V19H23V16.5C23 14.17 18.33 13 16 13Z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">3,200+</div>
+          <div class="stat-label">Verified sellers</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2M12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5Z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">10 Regions</div>
+          <div class="stat-label">Across Ghana</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Verified listings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURED LISTINGS -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Featured <span>Listings</span></h2>
+          <p class="section-subtitle">Hand-picked deals updated daily</p>
+        </div>
+        <a href="search.html" class="view-all">View all listings →</a>
+      </div>
+      <div class="cards-grid" id="featured-grid"></div>
+    </section>
+
+    <!-- BROWSE BY MAKE -->
+    <section class="browse-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Browse by <span>Make</span></h2>
+          <p class="section-subtitle" style="color: #8fa3bd">
+            Find your preferred brand quickly
+          </p>
+        </div>
+        <a href="search.html" class="view-all" style="color: #8fa3bd"
+          >All makes →</a
+        >
+      </div>
+      <div class="makes-grid">
+        <a href="search.html?make=Toyota" class="make-card"
+          ><div class="make-logo">T</div>
+          <div class="make-name">Toyota</div>
+          <div class="make-count">2,140 cars</div></a
+        >
+        <a href="search.html?make=Honda" class="make-card"
+          ><div class="make-logo">H</div>
+          <div class="make-name">Honda</div>
+          <div class="make-count">1,380 cars</div></a
+        >
+        <a href="search.html?make=Mercedes-Benz" class="make-card"
+          ><div class="make-logo">M</div>
+          <div class="make-name">Mercedes</div>
+          <div class="make-count">870 cars</div></a
+        >
+        <a href="search.html?make=BMW" class="make-card"
+          ><div class="make-logo">B</div>
+          <div class="make-name">BMW</div>
+          <div class="make-count">640 cars</div></a
+        >
+        <a href="search.html?make=Hyundai" class="make-card"
+          ><div class="make-logo">H</div>
+          <div class="make-name">Hyundai</div>
+          <div class="make-count">910 cars</div></a
+        >
+        <a href="search.html?make=Ford" class="make-card"
+          ><div class="make-logo">F</div>
+          <div class="make-name">Ford</div>
+          <div class="make-count">520 cars</div></a
+        >
+      </div>
+    </section>
+
+    <!-- WHY TA -->
+    <section class="why-section">
+      <div style="text-align: center">
+        <h2 class="section-title">Why Choose <span>Trust Automobile?</span></h2>
+        <p style="font-size: 15px; color: #8fa3bd; margin-top: 8px">
+          We make buying and selling cars simple, safe and fast.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+              />
+            </svg>
+          </div>
+          <div class="feature-title">Verified Listings</div>
+          <div class="feature-desc">
+            Every listing is reviewed by our team before going live. No scams,
+            no fake ads.
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M13 2.05V4.05C17.39 4.59 20.5 8.58 19.96 12.97C19.5 16.61 16.64 19.5 13 19.93V21.93C18.5 21.38 22.5 16.5 21.95 11C21.5 6.25 17.73 2.5 13 2.05M11 2.06C9.05 2.25 7.19 3 5.67 4.26L7.1 5.74C8.22 4.84 9.57 4.26 11 4.06V2.06M4.26 5.67C3 7.19 2.25 9.04 2.05 11H4.05C4.24 9.58 4.8 8.23 5.69 7.1L4.26 5.67M2.06 13C2.26 14.96 3.03 16.81 4.27 18.33L5.69 16.9C4.81 15.77 4.24 14.42 4.06 13H2.06M7.1 18.37L5.67 19.74C7.18 21 9.04 21.79 11 22V20C9.58 19.82 8.23 19.25 7.1 18.37Z"
+              />
+            </svg>
+          </div>
+          <div class="feature-title">Fast Listing</div>
+          <div class="feature-desc">
+            List your car in under 5 minutes. Add photos, set your price, go
+            live instantly.
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 1C8.676 1 6 3.676 6 7C6 9.217 7.164 11.173 8.908 12.29C5.98 13.38 4 16.21 4 19.5V21H20V19.5C20 16.21 18.02 13.38 15.092 12.29C16.836 11.173 18 9.217 18 7C18 3.676 15.324 1 12 1Z"
+              />
+            </svg>
+          </div>
+          <div class="feature-title">Trusted Sellers</div>
+          <div class="feature-desc">
+            All sellers go through an identity check before posting. Buy with
+            confidence.
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+              />
+            </svg>
+          </div>
+          <div class="feature-title">24/7 Support</div>
+          <div class="feature-desc">
+            Our support team is always available to help buyers and sellers
+            through every step.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <div class="cta-text">
+        <h2>Ready to Sell Your Car?</h2>
+        <p>
+          Post your listing for free and reach thousands of buyers across Ghana
+          today.
+        </p>
+      </div>
+      <a
+        href="post-ad.html"
+        class="btn-primary"
+        style="font-size: 15px; padding: 14px 36px"
+        >Post a Free Ad →</a
+      >
+    </div>
+
+    <div id="footer-root"></div>
+
+    <script src="shared.js"></script>
+    <script>
+      document.getElementById("nav-root").innerHTML = renderNav("home");
+      document.getElementById("footer-root").innerHTML = renderFooter();
+
+      // Render featured cards
+      const featured = CARS.filter((c) => c.badge === "Featured").slice(0, 4);
+      document.getElementById("featured-grid").innerHTML = featured
+        .map((c, i) => renderCard(c, i * 0.08))
+        .join("");
+      initScrollAnim();
+
+      const MODELS = {
+        Toyota: [
+          "Corolla",
+          "Camry",
+          "RAV4",
+          "Land Cruiser",
+          "Land Cruiser Prado",
+          "Hilux",
+          "Prado",
+        ],
+        Honda: ["Civic", "Accord", "CR-V", "HR-V", "Pilot", "Fit"],
+        Ford: ["Focus", "Escape", "Explorer", "F-150", "Ranger", "Edge"],
+        "Mercedes-Benz": ["C200", "E200", "GLE", "GLC", "A200", "S500"],
+        BMW: ["3 Series", "5 Series", "X3", "X5", "1 Series", "7 Series"],
+        Hyundai: ["Elantra", "Tucson", "Santa Fe", "Sonata", "i10", "i20"],
+        Kia: ["Picanto", "Rio", "Sportage", "Sorento", "Stinger"],
+        Nissan: ["Almera", "Juke", "X-Trail", "Pathfinder", "Navara"],
+        Volkswagen: ["Golf", "Polo", "Passat", "Tiguan", "Touareg"],
+      };
+
+      function updateModels() {
+        const make = document.getElementById("s-make").value;
+        const sel = document.getElementById("s-model");
+        sel.innerHTML = '<option value="">Any Model</option>';
+        (MODELS[make] || []).forEach((m) => {
+          const o = document.createElement("option");
+          o.value = o.textContent = m;
+          sel.appendChild(o);
+        });
+      }
+
+      let activeTab = "";
+      function setTab(btn, val) {
+        document
+          .querySelectorAll(".search-tab")
+          .forEach((t) => t.classList.remove("active"));
+        btn.classList.add("active");
+        activeTab = val;
+      }
+
+      function doSearch() {
+        const params = new URLSearchParams();
+        const make = document.getElementById("s-make").value;
+        const model = document.getElementById("s-model").value;
+        const price = document.getElementById("s-price").value;
+        const loc = document.getElementById("s-loc").value;
+        if (make) params.set("make", make);
+        if (model) params.set("model", model);
+        if (price) params.set("price", price);
+        if (loc) params.set("location", loc);
+        if (activeTab && activeTab !== "dealer")
+          params.set("condition", activeTab);
+        window.location.href = "search.html?" + params.toString();
+      }
+    </script>
+    <script src="ta-live-sync.js"></script>
+  </body>
+</html>

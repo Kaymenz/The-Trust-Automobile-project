@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Learning Hub — Trust Automobile Ghana</title>
+
+    <!-- ta-shared.js deferred so TA_STYLE + renderNav() exist at DOMContentLoaded -->
+    <script src="ta-shared.js" defer></script>
+    <script src="ta-live-sync.js" defer></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <style id="shared-style"></style>
+    <style>
+      /* ══ HERO ══ */
+      .page-hero {
+        background: linear-gradient(135deg, #0b1e3d 0%, #1a4b8c 100%);
+        padding: 60px 28px 80px;
+        position: relative;
+        overflow: hidden;
+      }
+      .page-hero::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #f4f7fb;
+        clip-path: polygon(0 100%, 100% 0, 100% 100%);
+      }
+      .page-hero::before {
+        content: "";
+        position: absolute;
+        top: -30%;
+        right: -5%;
+        width: 440px;
+        height: 440px;
+        border-radius: 50%;
+        background: rgba(232, 160, 32, 0.06);
+        pointer-events: none;
+      }
+      .hero-inner {
+        max-width: 1340px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 28px;
+      }
+      .hero-text-col {
+        max-width: 560px;
+      }
+      .page-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(232, 160, 32, 0.14);
+        border: 1px solid rgba(232, 160, 32, 0.3);
+        border-radius: 100px;
+        padding: 6px 16px;
+        margin-bottom: 18px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #e8a020;
+      }
+      .page-hero h1 {
+        font-family: "Bebas Neue", cursive;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        letter-spacing: 0.04em;
+        color: #fff;
+        line-height: 0.95;
+        margin-bottom: 14px;
+      }
+      .page-hero h1 span {
+        color: #e8a020;
+      }
+      .page-hero p {
+        font-size: 0.98rem;
+        color: rgba(255, 255, 255, 0.62);
+        line-height: 1.7;
+        margin-bottom: 28px;
+      }
+      .hero-stats {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .hero-stat-num {
+        font-family: "Bebas Neue", cursive;
+        font-size: 2rem;
+        color: #e8a020;
+        line-height: 1;
+      }
+      .hero-stat-label {
+        font-size: 0.74rem;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+      }
+
+      /* ══ CATEGORY BAR ══ */
+      .category-bar {
+        background: #fff;
+        border-bottom: 1px solid #dde4ef;
+        position: sticky;
+        top: 64px;
+        z-index: 100;
+        box-shadow: 0 2px 12px rgba(11, 30, 61, 0.06);
+      }
+      .category-bar-inner {
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .category-bar-inner::-webkit-scrollbar {
+        display: none;
+      }
+      .cat-pill {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 14px 18px;
+        border: none;
+        background: transparent;
+        color: #5e7490;
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .cat-pill:hover {
+        color: #0b1e3d;
+      }
+      .cat-pill.active {
+        color: #0b1e3d;
+        border-bottom-color: #e8a020;
+      }
+      .cat-count {
+        background: #eef2f8;
+        color: #5e7490;
+        font-size: 0.64rem;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 100px;
+      }
+      .cat-pill.active .cat-count {
+        background: rgba(232, 160, 32, 0.15);
+        color: #8a5a00;
+      }
+
+      /* ══ PAGE BODY ══ */
+      .page-body {
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 40px 28px 80px;
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 28px;
+        align-items: start;
+      }
+
+      /* ── TOOLBAR ── */
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .toolbar-left {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.88rem;
+        letter-spacing: 0.06em;
+        color: #5e7490;
+      }
+      .toolbar-left strong {
+        color: #0b1e3d;
+      }
+      .search-inline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        padding: 8px 14px;
+        transition: border-color 0.2s;
+      }
+      .search-inline:focus-within {
+        border-color: #1a4b8c;
+      }
+      .search-inline i {
+        color: #8fa3bd;
+        font-size: 0.9rem;
+      }
+      .search-inline input {
+        border: none;
+        outline: none;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.88rem;
+        color: #1c2b40;
+        background: transparent;
+        width: 200px;
+      }
+      .sort-sel {
+        padding: 8px 14px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        color: #1c2b40;
+        background: #fff;
+        outline: none;
+        appearance: none;
+        cursor: pointer;
+      }
+
+      /* ══ VIDEO GRID ══ */
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      /* ── CARD ── */
+      .video-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #dde4ef;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .video-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 40px rgba(11, 30, 61, 0.12);
+        border-color: #c5d0e0;
+      }
+      .video-card.featured {
+        border-color: #e8a020;
+        border-width: 1.5px;
+      }
+      .vc-thumb {
+        position: relative;
+        padding-top: 56.25%;
+        background: #0b1e3d;
+        overflow: hidden;
+      }
+      .vc-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+      }
+      .video-card:hover .vc-thumb img {
+        transform: scale(1.05);
+      }
+      .vc-play {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 30, 61, 0.35);
+        transition: background 0.3s;
+      }
+      .video-card:hover .vc-play {
+        background: rgba(11, 30, 61, 0.55);
+      }
+      .vc-play-btn {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: rgba(232, 160, 32, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        color: #0b1e3d;
+        transition: transform 0.25s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      .video-card:hover .vc-play-btn {
+        transform: scale(1.12);
+      }
+      .vc-duration {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(11, 30, 61, 0.8);
+        color: #fff;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+      .vc-category-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 9px;
+        border-radius: 100px;
+      }
+      .vc-new-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #e8a020;
+        color: #0b1e3d;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 100px;
+      }
+      .vc-source-badge {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 3px 9px;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .src-mechanic {
+        background: rgba(26, 122, 58, 0.85);
+        color: #fff;
+      }
+      .src-seller {
+        background: rgba(26, 75, 140, 0.85);
+        color: #fff;
+      }
+      .src-platform {
+        background: rgba(232, 160, 32, 0.9);
+        color: #0b1e3d;
+      }
+      .vc-body {
+        padding: 16px;
+      }
+      .vc-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #0b1e3d;
+        line-height: 1.25;
+        margin-bottom: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .vc-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .vc-meta-item {
+        font-size: 0.76rem;
+        color: #8fa3bd;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .vc-meta-item i {
+        font-size: 0.72rem;
+      }
+      .vc-poster {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid #eef2f8;
+      }
+      .vc-poster-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #0b1e3d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 0.7rem;
+        color: #e8a020;
+        flex-shrink: 0;
+      }
+      .vc-poster-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: #5e7490;
+      }
+      .vc-poster-role {
+        font-size: 0.68rem;
+        color: #8fa3bd;
+      }
+      .vc-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .vc-btn {
+        flex: 1;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 7px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: all 0.2s;
+        border: none;
+      }
+      .vc-btn-play {
+        background: #e8a020;
+        color: #0b1e3d;
+      }
+      .vc-btn-play:hover {
+        background: #f5c05a;
+      }
+      .vc-btn-save {
+        background: transparent;
+        color: #5e7490;
+        border: 1.5px solid #dde4ef;
+      }
+      .vc-btn-save:hover {
+        border-color: #0b1e3d;
+        color: #0b1e3d;
+      }
+      .vc-btn-save.saved {
+        background: #0b1e3d;
+        color: #e8a020;
+        border-color: #0b1e3d;
+      }
+      .empty-state {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 80px 30px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #dde4ef;
+      }
+      .empty-state i {
+        font-size: 3.2rem;
+        color: #dde4ef;
+        display: block;
+        margin-bottom: 16px;
+      }
+      .empty-state h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.2rem;
+        letter-spacing: 0.06em;
+        color: #0b1e3d;
+        margin-bottom: 6px;
+      }
+      .empty-state p {
+        font-size: 0.88rem;
+        color: #5e7490;
+      }
+
+      /* ══ SIDEBAR ══ */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        position: sticky;
+        top: 120px;
+      }
+      .sidebar-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #dde4ef;
+        overflow: hidden;
+      }
+      .sidebar-card-head {
+        background: #0b1e3d;
+        padding: 13px 18px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar-card-head i {
+        color: #e8a020;
+      }
+      .sidebar-card-body {
+        padding: 16px;
+      }
+      .trending-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 9px 0;
+        border-bottom: 1px solid #eef2f8;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .trending-item:last-child {
+        border-bottom: none;
+      }
+      .trending-item:hover {
+        background: #fafbfd;
+        margin: 0 -16px;
+        padding: 9px 16px;
+        border-radius: 4px;
+      }
+      .trending-thumb {
+        width: 68px;
+        height: 44px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #0b1e3d;
+        position: relative;
+      }
+      .trending-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .trending-thumb-play {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 30, 61, 0.3);
+        color: #fff;
+        font-size: 0.7rem;
+      }
+      .trending-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .trending-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        color: #0b1e3d;
+        line-height: 1.2;
+        margin-bottom: 3px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .trending-meta {
+        font-size: 0.7rem;
+        color: #8fa3bd;
+      }
+
+      /* ══ LIGHTBOX ══ */
+      .lightbox-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 15, 30, 0.93);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 20px;
+        overflow-y: auto;
+      }
+      .lightbox-overlay.open {
+        display: flex;
+      }
+      .lightbox-wrap {
+        width: 100%;
+        max-width: 860px;
+        margin: auto;
+        animation: lbIn 0.28s ease;
+      }
+      @keyframes lbIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .lb-title-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .lb-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+        color: #fff;
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .lb-meta {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.45);
+        white-space: nowrap;
+      }
+      .lb-close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .lb-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .lb-player {
+        position: relative;
+        padding-top: 56.25%;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+      }
+      .lb-player iframe,
+      .lb-player video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      .lb-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .lb-btn {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 8px 16px;
+        border-radius: 7px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+      }
+      .lb-btn-gold {
+        background: #e8a020;
+        color: #0b1e3d;
+      }
+      .lb-btn-gold:hover {
+        background: #f5c05a;
+      }
+      .lb-btn-ghost {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .lb-btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      /* ══ COMMENTS PANEL ══ */
+      .comments-panel {
+        background: #0d2347;
+        border-radius: 12px;
+        margin-top: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .comments-head {
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .comments-head-left {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.88rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .comments-head-left i {
+        color: #e8a020;
+      }
+      .comment-count-badge {
+        background: rgba(232, 160, 32, 0.18);
+        color: #e8a020;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.68rem;
+        padding: 2px 8px;
+        border-radius: 100px;
+      }
+
+      /* comment form */
+      .comment-form {
+        padding: 14px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .comment-form-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .cf-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 7px;
+        padding: 9px 13px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.86rem;
+        color: #fff;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .cf-input::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .cf-input:focus {
+        border-color: #e8a020;
+      }
+      .cf-textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 7px;
+        padding: 9px 13px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.86rem;
+        color: #fff;
+        outline: none;
+        resize: vertical;
+        min-height: 72px;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+      }
+      .cf-textarea::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .cf-textarea:focus {
+        border-color: #e8a020;
+      }
+      .cf-submit {
+        margin-top: 10px;
+        background: #e8a020;
+        color: #0b1e3d;
+        border: none;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 9px 20px;
+        border-radius: 7px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+      }
+      .cf-submit:hover {
+        background: #f5c05a;
+      }
+      .cf-submit:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* comment list */
+      .comment-list {
+        padding: 4px 18px 14px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .comment-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .comment-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .comment-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+      }
+      .comment-item {
+        display: flex;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .comment-item:last-child {
+        border-bottom: none;
+      }
+      .comment-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #1a4b8c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 0.78rem;
+        color: #e8a020;
+        flex-shrink: 0;
+      }
+      .comment-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .comment-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        color: #e8a020;
+        margin-bottom: 3px;
+      }
+      .comment-text {
+        font-size: 0.84rem;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.5;
+        word-break: break-word;
+      }
+      .comment-time {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.32);
+        margin-top: 4px;
+      }
+      .comment-delete {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.22);
+        font-size: 0.8rem;
+        cursor: pointer;
+        padding: 2px 4px;
+        transition: color 0.2s;
+        flex-shrink: 0;
+        align-self: flex-start;
+      }
+      .comment-delete:hover {
+        color: #e84040;
+      }
+      .no-comments {
+        text-align: center;
+        padding: 28px 20px;
+        font-size: 0.84rem;
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .no-comments i {
+        display: block;
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        opacity: 0.4;
+      }
+
+      /* ══ MINI PLAYER ══ */
+      .mini-player {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 320px;
+        background: #0b1e3d;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        z-index: 800;
+        display: none;
+        flex-direction: column;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: miniIn 0.3s ease;
+      }
+      .mini-player.show {
+        display: flex;
+      }
+      @keyframes miniIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .mini-player-video {
+        position: relative;
+        padding-top: 56.25%;
+        background: #000;
+      }
+      .mini-player-video iframe,
+      .mini-player-video video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      .mini-player-bar {
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mini-player-title {
+        flex: 1;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mini-ctrl {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        cursor: pointer;
+        padding: 3px;
+        transition: color 0.2s;
+        flex-shrink: 0;
+      }
+      .mini-ctrl:hover {
+        color: #e8a020;
+      }
+
+      /* ══ TOAST ══ */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: #0b1e3d;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.86rem;
+        letter-spacing: 0.04em;
+        box-shadow: 0 8px 28px rgba(11, 30, 61, 0.3);
+        z-index: 1100;
+        opacity: 0;
+        transition: all 0.35s;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 320px;
+        white-space: nowrap;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      .toast i {
+        color: #e8a020;
+      }
+
+      /* ══ RESPONSIVE ══ */
+      @media (max-width: 1024px) {
+        .page-body {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+        }
+        .video-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        .hamburger {
+          display: block !important;
+        }
+        .hero-inner {
+          flex-direction: column;
+        }
+        .page-body {
+          padding: 24px 18px 60px;
+        }
+        .video-grid {
+          grid-template-columns: 1fr;
+        }
+        .mini-player {
+          width: calc(100vw - 32px);
+          right: 16px;
+        }
+        .toolbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .search-inline input {
+          width: 140px;
+        }
+        .toast {
+          left: 16px;
+          right: 16px;
+          transform: translateY(80px);
+          white-space: normal;
+        }
+        .toast.show {
+          transform: translateY(0);
+        }
+        .comment-form-row {
+          flex-direction: column;
+        }
+      }
+      @media (max-width: 480px) {
+        .page-hero {
+          padding: 40px 18px 68px;
+        }
+        .video-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav-root"></div>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="page-hero">
+      <div class="hero-inner">
+        <div class="hero-text-col">
+          <div class="page-hero-badge">
+            <i class="bi bi-play-circle-fill"></i> Auto Learning Hub
+          </div>
+          <h1>Learn More.<br /><span>Drive Better.</span></h1>
+          <p>
+            Watch educational videos from verified mechanics, car sellers, and
+            automotive experts across Ghana. Free tutorials on maintenance,
+            repairs, buying tips, and more.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat-item">
+              <div class="hero-stat-num" id="stat-total">0</div>
+              <div class="hero-stat-label">Videos</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num">24</div>
+              <div class="hero-stat-label">Instructors</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num">7</div>
+              <div class="hero-stat-label">Categories</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CATEGORY BAR ═══ -->
+    <div class="category-bar">
+      <div class="category-bar-inner">
+        <button
+          class="cat-pill active"
+          data-cat="all"
+          onclick="setCategory(this,'all')"
+        >
+          <i class="bi bi-grid-3x3-gap-fill"></i> All Videos
+          <span class="cat-count" id="cc-all">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="maintenance"
+          onclick="setCategory(this,'maintenance')"
+        >
+          <i class="bi bi-tools"></i> Maintenance
+          <span class="cat-count" id="cc-maintenance">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="buying"
+          onclick="setCategory(this,'buying')"
+        >
+          <i class="bi bi-car-front"></i> Buying Tips
+          <span class="cat-count" id="cc-buying">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="electrical"
+          onclick="setCategory(this,'electrical')"
+        >
+          <i class="bi bi-lightning-charge"></i> Electrical
+          <span class="cat-count" id="cc-electrical">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="bodywork"
+          onclick="setCategory(this,'bodywork')"
+        >
+          <i class="bi bi-brush"></i> Bodywork
+          <span class="cat-count" id="cc-bodywork">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="diagnostics"
+          onclick="setCategory(this,'diagnostics')"
+        >
+          <i class="bi bi-cpu"></i> Diagnostics
+          <span class="cat-count" id="cc-diagnostics">0</span>
+        </button>
+        <button
+          class="cat-pill"
+          data-cat="community"
+          onclick="setCategory(this,'community')"
+        >
+          <i class="bi bi-people-fill"></i> Community
+          <span class="cat-count" id="cc-community">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE BODY ═══ -->
+    <div class="page-body">
+      <div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            Showing <strong id="showing-count">0</strong> videos
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              flex-wrap: wrap;
+            "
+          >
+            <div class="search-inline">
+              <i class="bi bi-search"></i>
+              <!-- search listener attached in JS with 250ms debounce -->
+              <input type="text" id="vid-search" placeholder="Search videos…" />
+            </div>
+            <select class="sort-sel" id="vid-sort">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Viewed</option>
+              <option value="mechanic">From Mechanics</option>
+              <option value="seller">From Car Sellers</option>
+            </select>
+          </div>
+        </div>
+        <div class="video-grid" id="video-grid"></div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <i class="bi bi-fire"></i> Trending Now
+          </div>
+          <div class="sidebar-card-body" id="trending-list"></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <i class="bi bi-collection-play-fill"></i> Browse by Topic
+          </div>
+          <div class="sidebar-card-body" id="cat-summary"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div class="lightbox-overlay" id="lightbox">
+      <div class="lightbox-wrap">
+        <!-- title bar -->
+        <div class="lb-title-bar">
+          <div class="lb-title" id="lb-title">–</div>
+          <div class="lb-meta" id="lb-meta">–</div>
+          <button class="lb-close" onclick="closeLightbox()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <!-- video player -->
+        <div class="lb-player" id="lb-player"></div>
+
+        <!-- action row -->
+        <div class="lb-actions">
+          <button class="lb-btn lb-btn-gold" onclick="popOutMini()">
+            <i class="bi bi-pip"></i> Mini Player
+          </button>
+          <span style="font-size: 0.76rem; color: rgba(255, 255, 255, 0.38)"
+            >Press
+            <kbd
+              style="
+                background: rgba(255, 255, 255, 0.1);
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+              >Esc</kbd
+            >
+            to close</span
+          >
+        </div>
+
+        <!-- ═══ COMMENTS PANEL ═══ -->
+        <div class="comments-panel">
+          <div class="comments-head">
+            <div class="comments-head-left">
+              <i class="bi bi-chat-dots-fill"></i> Comments
+              <span class="comment-count-badge" id="comment-count">0</span>
+            </div>
+          </div>
+
+          <!-- form -->
+          <div class="comment-form">
+            <div class="comment-form-row">
+              <input
+                class="cf-input"
+                id="cf-name"
+                type="text"
+                placeholder="Your name"
+                maxlength="60"
+              />
+              <input
+                class="cf-input"
+                id="cf-email"
+                type="email"
+                placeholder="Email (optional)"
+                style="flex: 1.4"
+              />
+            </div>
+            <textarea
+              class="cf-textarea"
+              id="cf-text"
+              placeholder="Share your thoughts on this video…"
+              maxlength="600"
+            ></textarea>
+            <button
+              class="cf-submit"
+              id="cf-submit-btn"
+              onclick="submitComment()"
+            >
+              <i class="bi bi-send-fill"></i> Post Comment
+            </button>
+          </div>
+
+          <!-- list -->
+          <div class="comment-list" id="comment-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MINI PLAYER ═══ -->
+    <div class="mini-player" id="mini-player">
+      <div class="mini-player-video" id="mini-player-video"></div>
+      <div class="mini-player-bar">
+        <span class="mini-player-title" id="mini-title">–</span>
+        <button class="mini-ctrl" onclick="expandMini()" title="Expand">
+          <i class="bi bi-arrows-angle-expand"></i>
+        </button>
+        <button class="mini-ctrl" onclick="closeMini()" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+      <i class="bi bi-check-circle-fill"></i><span id="toast-msg"></span>
+    </div>
+
+    <div id="footer-root"></div>
+
+    <script>
+      /* ══════════════════════════════════════════════
+         FALLBACK SEED VIDEOS
+         These are only shown when no admin has uploaded
+         any videos yet (ta_videos in localStorage is empty).
+         Once an admin uploads even one video, SEED_VIDEOS
+         are replaced entirely by the admin-managed list.
+      ══════════════════════════════════════════════ */
+      const SEED_VIDEOS = [
+        {
+          id: "v1",
+          title: "How to Change Your Engine Oil — Full Guide",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=0lSLPMgMdXs",
+          views: 4821,
+          duration: "12:34",
+          postedAt: "2026-03-10T10:00:00Z",
+          featured: true,
+          new: false,
+        },
+        {
+          id: "v2",
+          title: "5 Things to Check Before Buying a Used Car in Ghana",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=qvR3Yrj1PkE",
+          views: 7230,
+          duration: "9:18",
+          postedAt: "2026-03-08T09:00:00Z",
+          featured: true,
+          new: false,
+        },
+        {
+          id: "v3",
+          title: "How to Diagnose a Dead Car Battery",
+          poster: "Kwame Auto Services",
+          role: "mechanic",
+          category: "electrical",
+          url: "https://www.youtube.com/watch?v=0IKiKDHNPIM",
+          views: 3104,
+          duration: "7:42",
+          postedAt: "2026-03-14T11:00:00Z",
+          featured: false,
+          new: true,
+        },
+        {
+          id: "v4",
+          title: "Tyre Maintenance & When to Replace — Ghana Roads",
+          poster: "Takoradi Tyres & More",
+          role: "mechanic",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=TivfmJumJGE",
+          views: 2288,
+          duration: "8:05",
+          postedAt: "2026-03-12T14:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v5",
+          title: "Understand Your Car's Warning Lights",
+          poster: "ProFix Auto Electricals",
+          role: "mechanic",
+          category: "diagnostics",
+          url: "https://www.youtube.com/watch?v=QKhFBDXNdT0",
+          views: 5910,
+          duration: "10:21",
+          postedAt: "2026-03-06T08:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v6",
+          title: "How to Negotiate a Car Price Like a Pro",
+          poster: "Accra Central Motors",
+          role: "seller",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=YR0gEQFYVP0",
+          views: 1987,
+          duration: "6:55",
+          postedAt: "2026-03-15T13:00:00Z",
+          featured: false,
+          new: true,
+        },
+        {
+          id: "v7",
+          title: "Basic Car Air Conditioning Repair",
+          poster: "Cool Breeze Auto AC",
+          role: "mechanic",
+          category: "maintenance",
+          url: "https://www.youtube.com/watch?v=TKjMFZOhvpI",
+          views: 3450,
+          duration: "14:02",
+          postedAt: "2026-03-03T10:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v8",
+          title: "Bodywork Repair — Dent Removal Without a Spray",
+          poster: "Accra Central Motors",
+          role: "seller",
+          category: "bodywork",
+          url: "https://www.youtube.com/watch?v=lq2_Cz5hlYg",
+          views: 1654,
+          duration: "11:30",
+          postedAt: "2026-03-01T09:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v9",
+          title: "How the Ghana Car Market Works — Buyer's Guide 2026",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=k4sAKirfLhM",
+          views: 6341,
+          duration: "15:10",
+          postedAt: "2026-02-25T10:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v10",
+          title: "OBD2 Scanner Tutorial — Read & Clear Fault Codes",
+          poster: "GreenLight Auto Works",
+          role: "mechanic",
+          category: "diagnostics",
+          url: "https://www.youtube.com/watch?v=8Iz3JQfFmYA",
+          views: 2890,
+          duration: "9:48",
+          postedAt: "2026-02-20T11:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v11",
+          title: "How to Spot a Flooded Car Before You Buy",
+          poster: "Trust Automobile",
+          role: "platform",
+          category: "buying",
+          url: "https://www.youtube.com/watch?v=6Bl4Q_gRwgI",
+          views: 8102,
+          duration: "8:33",
+          postedAt: "2026-02-18T09:00:00Z",
+          featured: false,
+          new: false,
+        },
+        {
+          id: "v12",
+          title: "Kumasi Workshop Tour — Gearbox Rebuild Timelapse",
+          poster: "Kumasi AutoCare Hub",
+          role: "mechanic",
+          category: "community",
+          url: "https://www.youtube.com/watch?v=vgBh-7QGMpM",
+          views: 1240,
+          duration: "5:20",
+          postedAt: "2026-03-17T15:00:00Z",
+          featured: false,
+          new: true,
+        },
+      ];
+
+      /* ══════════════════════════════════════════════
+         STATE
+      ══════════════════════════════════════════════ */
+      let allVideos = [];
+      const videoMap = new Map(); // id → video (O(1) lookup — no JSON in HTML attrs)
+      let activeCategory = "all";
+      let currentVideo = null;
+
+      let savedVideos = new Set(
+        JSON.parse(localStorage.getItem("ta_saved_videos") || "[]")
+      );
+      const persistSaved = () =>
+        localStorage.setItem(
+          "ta_saved_videos",
+          JSON.stringify([...savedVideos])
+        );
+
+      const viewedThisSession = new Set(); // prevents double-counting views on re-open
+
+      const CAT_COLOURS = {
+        maintenance: "#1A7A3A",
+        buying: "#1A4B8C",
+        electrical: "#E8A020",
+        bodywork: "#8B4513",
+        diagnostics: "#6B21A8",
+        community: "#0B1E3D",
+      };
+      const CAT_LABELS = {
+        maintenance: "Maintenance",
+        buying: "Buying Tips",
+        electrical: "Electrical",
+        bodywork: "Bodywork",
+        diagnostics: "Diagnostics",
+        community: "Community",
+      };
+      const ROLE_LABELS = {
+        mechanic: "Mechanic",
+        seller: "Car Seller",
+        platform: "TA Platform",
+      };
+
+      /* ══════════════════════════════════════════════
+         COMMENTS — localStorage key: ta_comments_v1
+         Structure: { [videoId]: [ { id, name, email, text, postedAt } ] }
+      ══════════════════════════════════════════════ */
+      function loadComments() {
+        try {
+          return JSON.parse(localStorage.getItem("ta_comments_v1") || "{}");
+        } catch {
+          return {};
+        }
+      }
+      function saveComments(data) {
+        localStorage.setItem("ta_comments_v1", JSON.stringify(data));
+      }
+      function getVideoComments(videoId) {
+        return loadComments()[videoId] || [];
+      }
+      function addComment(videoId, name, email, text) {
+        const all = loadComments();
+        if (!all[videoId]) all[videoId] = [];
+        all[videoId].unshift({
+          id: "c" + Date.now(),
+          name: name.trim(),
+          email: email.trim(),
+          text: text.trim(),
+          postedAt: new Date().toISOString(),
+        });
+        saveComments(all);
+        return all[videoId];
+      }
+      function deleteComment(videoId, commentId) {
+        const all = loadComments();
+        if (all[videoId])
+          all[videoId] = all[videoId].filter((c) => c.id !== commentId);
+        saveComments(all);
+        return all[videoId] || [];
+      }
+
+      /* render the comment panel for the currently open video */
+      function renderComments(videoId) {
+        const comments = getVideoComments(videoId);
+        document.getElementById("comment-count").textContent = comments.length;
+        const list = document.getElementById("comment-list");
+        if (comments.length === 0) {
+          list.innerHTML = `<div class="no-comments"><i class="bi bi-chat-square-text"></i>No comments yet — be the first!</div>`;
+          return;
+        }
+        const frag = document.createDocumentFragment();
+        comments.forEach((c) => {
+          const initials =
+            c.name
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .substring(0, 2)
+              .toUpperCase() || "?";
+          const div = document.createElement("div");
+          div.className = "comment-item";
+          div.innerHTML = `
+            <div class="comment-avatar">${escHtml(initials)}</div>
+            <div class="comment-body">
+              <div class="comment-name">${escHtml(c.name)}</div>
+              <div class="comment-text">${escHtml(c.text)}</div>
+              <div class="comment-time">${timeAgo(c.postedAt)}</div>
+            </div>
+            <button class="comment-delete" title="Delete comment" onclick="removeComment('${videoId}','${
+            c.id
+          }')">
+              <i class="bi bi-trash3"></i>
+            </button>`;
+          frag.appendChild(div);
+        });
+        list.innerHTML = "";
+        list.appendChild(frag);
+      }
+
+      function submitComment() {
+        if (!currentVideo) return;
+        const name = document.getElementById("cf-name").value.trim();
+        const text = document.getElementById("cf-text").value.trim();
+        const email = document.getElementById("cf-email").value.trim();
+        if (!name) {
+          showToast("Please enter your name", "error");
+          return;
+        }
+        if (!text) {
+          showToast("Please write a comment", "error");
+          return;
+        }
+
+        const btn = document.getElementById("cf-submit-btn");
+        btn.disabled = true;
+        addComment(currentVideo.id, name, email, text);
+        document.getElementById("cf-text").value = "";
+        renderComments(currentVideo.id);
+        showToast("Comment posted!");
+        setTimeout(() => (btn.disabled = false), 800);
+      }
+
+      function removeComment(videoId, commentId) {
+        if (!confirm("Delete this comment?")) return;
+        deleteComment(videoId, commentId);
+        renderComments(videoId);
+        showToast("Comment deleted");
+      }
+
+      /* ══════════════════════════════════════════════
+         VIDEO URL UTILS
+      ══════════════════════════════════════════════ */
+      function parseVideoUrl(url) {
+        if (!url) return null;
+        const yt = url.match(
+          /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/
+        );
+        if (yt) return { type: "youtube", id: yt[1] };
+        const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+        if (vm) return { type: "vimeo", id: vm[1] };
+        return null;
+      }
+      function getEmbedUrl(p) {
+        if (!p) return "";
+        if (p.type === "youtube")
+          return `https://www.youtube.com/embed/${p.id}?autoplay=1&rel=0&modestbranding=1`;
+        if (p.type === "vimeo")
+          return `https://player.vimeo.com/video/${p.id}?autoplay=1`;
+        return "";
+      }
+      function getThumbnail(p) {
+        if (!p) return "";
+        if (p.type === "youtube")
+          return `https://img.youtube.com/vi/${p.id}/mqdefault.jpg`;
+        if (p.type === "vimeo") return `https://vumbnail.com/${p.id}.jpg`;
+        return "";
+      }
+
+      /* ══════════════════════════════════════════════
+         LOAD VIDEOS
+         Admin videos come from ta_videos in localStorage.
+         SEED_VIDEOS are the fallback shown only when
+         no admin videos have been uploaded yet.
+      ══════════════════════════════════════════════ */
+      function loadVideos() {
+        const adminVideos = JSON.parse(
+          localStorage.getItem("ta_videos") || "[]"
+        );
+
+        // Use admin videos if available; fall back to seeds so the page is never blank
+        allVideos = adminVideos.length > 0 ? adminVideos : SEED_VIDEOS;
+
+        videoMap.clear();
+        allVideos.forEach((v) => videoMap.set(v.id, v));
+
+        document.getElementById("stat-total").textContent = allVideos.length;
+        updateCategoryCounts();
+      }
+
+      function updateCategoryCounts() {
+        [
+          "all",
+          "maintenance",
+          "buying",
+          "electrical",
+          "bodywork",
+          "diagnostics",
+          "community",
+        ].forEach((cat) => {
+          const el = document.getElementById(`cc-${cat}`);
+          if (el)
+            el.textContent =
+              cat === "all"
+                ? allVideos.length
+                : allVideos.filter((v) => v.category === cat).length;
+        });
+      }
+
+      /* ══════════════════════════════════════════════
+         FILTER (pure — no side effects)
+      ══════════════════════════════════════════════ */
+      function getFiltered() {
+        const q = document
+          .getElementById("vid-search")
+          .value.trim()
+          .toLowerCase();
+        const sort = document.getElementById("vid-sort").value;
+        let vids =
+          activeCategory === "all"
+            ? [...allVideos]
+            : allVideos.filter((v) => v.category === activeCategory);
+        if (q)
+          vids = vids.filter(
+            (v) =>
+              v.title.toLowerCase().includes(q) ||
+              v.poster.toLowerCase().includes(q) ||
+              (v.desc || "").toLowerCase().includes(q)
+          );
+        if (sort === "popular") vids.sort((a, b) => b.views - a.views);
+        else if (sort === "mechanic")
+          vids = vids.filter((v) => v.role === "mechanic");
+        else if (sort === "seller")
+          vids = vids.filter((v) => v.role === "seller");
+        else vids.sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
+        return vids;
+      }
+
+      /* ══════════════════════════════════════════════
+         RENDER GRID
+         Uses DocumentFragment — one reflow, not N.
+         Sidebar render is separate (only on data change).
+      ══════════════════════════════════════════════ */
+      function renderVideos() {
+        const vids = getFiltered();
+        const grid = document.getElementById("video-grid");
+        document.getElementById("showing-count").textContent = vids.length;
+        if (vids.length === 0) {
+          grid.innerHTML = `<div class="empty-state"><i class="bi bi-camera-video-off"></i><h3>No Videos Found</h3><p>Try a different category or search term.</p></div>`;
+          return;
+        }
+        const frag = document.createDocumentFragment();
+        vids.forEach((v) => {
+          const d = document.createElement("div");
+          d.innerHTML = videoCardHTML(v);
+          frag.appendChild(d.firstElementChild);
+        });
+        grid.innerHTML = "";
+        grid.appendChild(frag);
+      }
+
+      function renderSidebar() {
+        renderTrending();
+        renderCatSummary();
+      }
+
+      /* ══════════════════════════════════════════════
+         VIDEO CARD — passes only v.id to onclick
+         (no JSON serialisation in HTML attributes)
+      ══════════════════════════════════════════════ */
+      function videoCardHTML(v) {
+        const parsed = parseVideoUrl(v.url);
+        const thumb =
+          v.thumbnail ||
+          getThumbnail(parsed) ||
+          "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=600&q=70";
+        const catColour = CAT_COLOURS[v.category] || "#0B1E3D";
+        const isSaved = savedVideos.has(v.id);
+        const viewsText =
+          v.views >= 1000 ? (v.views / 1000).toFixed(1) + "k" : v.views;
+        const initials = v.poster
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+          .substring(0, 2)
+          .toUpperCase();
+        const srcCls =
+          v.role === "mechanic"
+            ? "src-mechanic"
+            : v.role === "seller"
+            ? "src-seller"
+            : "src-platform";
+        const srcLabel = ROLE_LABELS[v.role] || "Platform";
+        const roleIcon =
+          v.role === "mechanic"
+            ? "tools"
+            : v.role === "seller"
+            ? "car-front"
+            : "patch-check-fill";
+        const commentCount = getVideoComments(v.id).length;
+
+        return `
+<div class="video-card${v.featured ? " featured" : ""}" onclick="playVideo('${
+          v.id
+        }')">
+  <div class="vc-thumb">
+    <img src="${thumb}" alt="${escHtml(v.title)}" loading="lazy"
+         onerror="this.src='https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=70'" />
+    <div class="vc-play"><div class="vc-play-btn"><i class="bi bi-play-fill"></i></div></div>
+    <span class="vc-duration">${v.duration || "–"}</span>
+    <span class="vc-category-badge" style="background:${catColour}20;color:${catColour};border:1px solid ${catColour}40;">${
+          CAT_LABELS[v.category] || v.category
+        }</span>
+    ${v.new ? '<span class="vc-new-badge">New</span>' : ""}
+    <span class="vc-source-badge ${srcCls}"><i class="bi bi-${roleIcon}"></i> ${srcLabel}</span>
+  </div>
+  <div class="vc-body">
+    <div class="vc-title">${escHtml(v.title)}</div>
+    <div class="vc-meta">
+      <span class="vc-meta-item"><i class="bi bi-eye"></i>${viewsText} views</span>
+      <span class="vc-meta-item"><i class="bi bi-clock"></i>${timeAgo(
+        v.postedAt
+      )}</span>
+      <span class="vc-meta-item"><i class="bi bi-chat-dots"></i>${commentCount} comment${
+          commentCount === 1 ? "" : "s"
+        }</span>
+    </div>
+    <div class="vc-poster">
+      <div class="vc-poster-avatar">${initials}</div>
+      <div><div class="vc-poster-name">${escHtml(
+        v.poster
+      )}</div><div class="vc-poster-role">${srcLabel}</div></div>
+    </div>
+    <div class="vc-actions" onclick="event.stopPropagation()">
+      <button class="vc-btn vc-btn-play" onclick="playVideo('${
+        v.id
+      }')"><i class="bi bi-play-circle-fill"></i> Watch</button>
+      <button class="vc-btn vc-btn-save${isSaved ? " saved" : ""}" id="save-${
+          v.id
+        }" onclick="toggleSave('${v.id}')">
+        <i class="bi bi-bookmark${isSaved ? "-fill" : ""}"></i> ${
+          isSaved ? "Saved" : "Save"
+        }
+      </button>
+    </div>
+  </div>
+</div>`;
+      }
+
+      /* ══════════════════════════════════════════════
+         LIGHTBOX
+      ══════════════════════════════════════════════ */
+      function playVideo(idOrObj) {
+        const v = typeof idOrObj === "string" ? videoMap.get(idOrObj) : idOrObj;
+        if (!v) return;
+        currentVideo = v;
+
+        const parsed = parseVideoUrl(v.url);
+        const embed = getEmbedUrl(parsed);
+        if (!embed) {
+          showToast("Could not parse video URL", "error");
+          return;
+        }
+
+        // Count view only once per session
+        if (!viewedThisSession.has(v.id)) {
+          viewedThisSession.add(v.id);
+          const live = videoMap.get(v.id);
+          if (live) live.views = (live.views || 0) + 1;
+        }
+
+        document.getElementById("lb-title").textContent = v.title;
+        document.getElementById("lb-meta").textContent = `${v.poster} · ${
+          v.duration || ""
+        }`;
+        document.getElementById(
+          "lb-player"
+        ).innerHTML = `<iframe src="${embed}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+
+        // Reset comment form & render comments for this video
+        document.getElementById("cf-name").value =
+          localStorage.getItem("ta_commenter_name") || "";
+        document.getElementById("cf-email").value =
+          localStorage.getItem("ta_commenter_email") || "";
+        document.getElementById("cf-text").value = "";
+        renderComments(v.id);
+
+        closeMini();
+        document.getElementById("lightbox").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLightbox() {
+        document.getElementById("lightbox").classList.remove("open");
+        document.getElementById("lb-player").innerHTML = "";
+        document.body.style.overflow = "";
+      }
+
+      /* Remember commenter name/email across sessions */
+      document.addEventListener("input", (e) => {
+        if (e.target.id === "cf-name")
+          localStorage.setItem("ta_commenter_name", e.target.value);
+        if (e.target.id === "cf-email")
+          localStorage.setItem("ta_commenter_email", e.target.value);
+      });
+
+      /* ══════════════════════════════════════════════
+         MINI PLAYER
+      ══════════════════════════════════════════════ */
+      function popOutMini() {
+        if (!currentVideo) return;
+        const embed = getEmbedUrl(parseVideoUrl(currentVideo.url));
+        document.getElementById("mini-title").textContent = currentVideo.title;
+        document.getElementById(
+          "mini-player-video"
+        ).innerHTML = `<iframe src="${embed}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        document.getElementById("mini-player").classList.add("show");
+        closeLightbox();
+      }
+      function expandMini() {
+        if (currentVideo) playVideo(currentVideo.id || currentVideo);
+        closeMini();
+      }
+      function closeMini() {
+        document.getElementById("mini-player").classList.remove("show");
+        document.getElementById("mini-player-video").innerHTML = "";
+      }
+
+      /* ══════════════════════════════════════════════
+         LINK INTERCEPTION — YouTube / Vimeo anchors
+      ══════════════════════════════════════════════ */
+      document.addEventListener(
+        "click",
+        (e) => {
+          const a = e.target.closest("a[href]");
+          if (!a) return;
+          const parsed = parseVideoUrl(a.href);
+          if (!parsed) return;
+          e.preventDefault();
+          const ext = {
+            id: "ext-" + Date.now(),
+            title: a.textContent.trim() || a.href,
+            poster: "External Link",
+            role: "platform",
+            category: "community",
+            url: a.href,
+            views: 0,
+            duration: "",
+            postedAt: new Date().toISOString(),
+          };
+          videoMap.set(ext.id, ext);
+          playVideo(ext.id);
+        },
+        true
+      );
+
+      /* ══════════════════════════════════════════════
+         CATEGORY FILTER
+      ══════════════════════════════════════════════ */
+      function setCategory(el, cat) {
+        activeCategory = cat;
+        document
+          .querySelectorAll(".cat-pill")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        renderVideos();
+      }
+
+      /* ══════════════════════════════════════════════
+         SAVE / BOOKMARK
+      ══════════════════════════════════════════════ */
+      function toggleSave(id) {
+        savedVideos.has(id)
+          ? (savedVideos.delete(id), showToast("Removed from saved"))
+          : (savedVideos.add(id), showToast("Video saved!"));
+        persistSaved();
+        const btn = document.getElementById("save-" + id);
+        if (btn) {
+          const s = savedVideos.has(id);
+          btn.className = "vc-btn vc-btn-save" + (s ? " saved" : "");
+          btn.innerHTML = `<i class="bi bi-bookmark${s ? "-fill" : ""}"></i> ${
+            s ? "Saved" : "Save"
+          }`;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+         SIDEBAR  (only called when allVideos changes)
+      ══════════════════════════════════════════════ */
+      function renderTrending() {
+        const top5 = [...allVideos]
+          .sort((a, b) => b.views - a.views)
+          .slice(0, 5);
+        document.getElementById("trending-list").innerHTML = top5
+          .map((v) => {
+            const thumb = v.thumbnail || getThumbnail(parseVideoUrl(v.url));
+            return `<div class="trending-item" onclick="playVideo('${v.id}')">
+            <div class="trending-thumb"><img src="${thumb}" alt="${escHtml(
+              v.title
+            )}" loading="lazy"><div class="trending-thumb-play"><i class="bi bi-play-fill"></i></div></div>
+            <div class="trending-info">
+              <div class="trending-title">${escHtml(v.title)}</div>
+              <div class="trending-meta">${
+                v.views >= 1000 ? (v.views / 1000).toFixed(1) + "k" : v.views
+              } views · ${v.duration || "–"}</div>
+            </div>
+          </div>`;
+          })
+          .join("");
+      }
+
+      function renderCatSummary() {
+        document.getElementById("cat-summary").innerHTML = Object.entries(
+          CAT_LABELS
+        )
+          .map(([key, label]) => {
+            const count = allVideos.filter((v) => v.category === key).length;
+            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #EEF2F8;cursor:pointer" onclick="setCategory(document.querySelector('[data-cat=${key}]'),'${key}')">
+            <span style="font-size:.86rem;color:#1C2B40;display:flex;align-items:center;gap:8px">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${CAT_COLOURS[key]}"></span>${label}
+            </span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:#5E7490">${count}</span>
+          </div>`;
+          })
+          .join("");
+      }
+
+      /* ══════════════════════════════════════════════
+         UTILS
+      ══════════════════════════════════════════════ */
+      function timeAgo(iso) {
+        const d = Math.floor((Date.now() - new Date(iso)) / 86400000),
+          h = Math.floor((Date.now() - new Date(iso)) / 3600000),
+          m = Math.floor((Date.now() - new Date(iso)) / 60000);
+        if (d > 30) return Math.floor(d / 30) + " mo ago";
+        if (d > 0) return d + "d ago";
+        if (h > 0) return h + "h ago";
+        if (m > 0) return m + "m ago";
+        return "just now";
+      }
+
+      let _tt;
+      function showToast(msg, type = "success") {
+        const t = document.getElementById("toast"),
+          ic = t.querySelector("i");
+        document.getElementById("toast-msg").textContent = msg;
+        ic.className =
+          type === "error"
+            ? "bi bi-exclamation-circle-fill"
+            : "bi bi-check-circle-fill";
+        t.style.background = type === "error" ? "#D63B3B" : "#0B1E3D";
+        t.classList.add("show");
+        clearTimeout(_tt);
+        _tt = setTimeout(() => t.classList.remove("show"), 3200);
+      }
+
+      // Prevents XSS from user-supplied strings injected into innerHTML
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      // 250ms debounce — grid only rebuilds after user stops typing
+      function debounce(fn, ms) {
+        let t;
+        return (...a) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn(...a), ms);
+        };
+      }
+
+      /* ══════════════════════════════════════════════
+         REFRESH  (called whenever allVideos changes)
+      ══════════════════════════════════════════════ */
+      function refreshAllData() {
+        loadVideos(); // rebuild allVideos + videoMap from localStorage
+        renderVideos(); // refresh grid
+        renderSidebar(); // refresh trending + topic counts (NOT on every keystroke)
+      }
+
+      /* ══════════════════════════════════════════════
+         INIT
+      ══════════════════════════════════════════════ */
+      document.addEventListener("DOMContentLoaded", () => {
+        // ta-shared.js is deferred — guard in case it hasn't defined these yet
+        if (typeof TA_STYLE !== "undefined")
+          document.getElementById("shared-style").textContent = TA_STYLE;
+        if (typeof renderNav === "function")
+          document.getElementById("nav-root").innerHTML = renderNav("videos");
+
+        document.getElementById("footer-root").innerHTML = `
+<footer class="ta-footer"><div class="footer-inner">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="ta-logo"><div class="logo-mark">TA</div><div class="logo-text">Trust Automobile<small>Verified Marketplace</small></div></a>
+      <p>Ghana's most trusted automotive platform.</p>
+    </div>
+    <div class="footer-col"><h5>Platform</h5><ul>
+      <li><a href="index.html">Home</a></li><li><a href="listings.html">Buy a Car</a></li>
+      <li><a href="mechanics.html">Find a Mechanic</a></li><li><a href="spare.html">Spare Parts</a></li>
+      <li><a href="videos.html">Learning Hub</a></li>
+    </ul></div>
+    <div class="footer-col"><h5>Account</h5><ul>
+      <li><a href="bookings.html">My Bookings</a></li><li><a href="login.html">Sign In</a></li>
+      <li><a href="login.html?mode=register">Register</a></li>
+    </ul></div>
+    <div class="footer-col"><h5>Contact</h5><ul>
+      <li><a href="tel:+233301234567">+233 30 123 4567</a></li>
+      <li><a href="mailto:hello@trustautomobile.gh">hello@trustautomobile.gh</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 Trust Automobile Ghana. All rights reserved.</p></div>
+</div></footer>`;
+
+        // Debounced search — only re-renders grid, not sidebar
+        document
+          .getElementById("vid-search")
+          .addEventListener("input", debounce(renderVideos, 250));
+        document
+          .getElementById("vid-sort")
+          .addEventListener("change", renderVideos);
+
+        // Full refresh only when admin uploads a new video in another tab
+        window.addEventListener("storage", (e) => {
+          if (e.key === "ta_videos") refreshAllData();
+        });
+
+        refreshAllData();
+
+        // Keyboard: Esc closes lightbox
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.key === "Escape" &&
+            document.getElementById("lightbox").classList.contains("open")
+          )
+            closeLightbox();
+        });
+
+        // Click outside lightbox wrap to close
+        document.getElementById("lightbox").addEventListener("click", (e) => {
+          if (e.target === document.getElementById("lightbox")) closeLightbox();
+        });
+
+        // Enter key submits comment
+        document.getElementById("cf-text").addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && e.ctrlKey) submitComment();
+        });
+      });
+    </script>
+  </body>
+</html>

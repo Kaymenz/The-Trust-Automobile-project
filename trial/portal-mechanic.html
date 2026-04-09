@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mechanic Dashboard — Trust Automobile Ghana</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="portal-shared.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;color:#1C2B40;background:#F0F3F8;min-height:100vh;display:flex;flex-direction:column}
+.portal-shell{display:grid;grid-template-columns:240px 1fr;flex:1;min-height:0}
+/* TOPBAR */
+.topbar{background:#0B1E3D;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lm{width:32px;height:32px;background:#E8A020;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#0B1E3D;flex-shrink:0}
+.lt{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#fff;letter-spacing:.06em;line-height:1.1}
+.lt small{display:block;font-size:.56rem;font-weight:400;color:#8FA3BD;letter-spacing:.14em}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-notif{position:relative;cursor:pointer}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#D63B3B;border:1.5px solid #0B1E3D}
+.topbar-user{display:flex;align-items:center;gap:9px}
+.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#F5C05A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#0B1E3D}
+.user-info{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.2}
+.user-info small{display:block;font-size:.62rem;color:rgba(255,255,255,.4);font-weight:400}
+.btn-topbar{background:rgba(214,59,59,.18);color:#ff8080;border:none;padding:7px 13px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.btn-topbar:hover{background:#D63B3B;color:#fff}
+/* SIDEBAR */
+.sidebar{background:#fff;border-right:1px solid #DDE4EF;display:flex;flex-direction:column;overflow-y:auto}
+.sb-profile{padding:20px 18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px}
+.sb-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#F5C05A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#0B1E3D;flex-shrink:0}
+.sb-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;line-height:1.2}
+.sb-role{font-size:.7rem;color:#E8A020;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.sb-section{padding:10px 18px 4px;font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8FA3BD;margin-top:6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.04em;color:#5E7490;cursor:pointer;transition:all .2s;border-left:3px solid transparent;position:relative}
+.sb-item:hover{color:#0B1E3D;background:#FFFBF0}
+.sb-item.active{color:#0B1E3D;background:#FFFBF0;border-left-color:#E8A020;font-weight:700}
+.sb-item i{font-size:.95rem;width:18px;text-align:center}
+.sb-badge{margin-left:auto;background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px}
+.sb-item.active .sb-badge{background:#E8A020;color:#0B1E3D}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid #EEF2F8}
+.sb-footer a{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#8FA3BD;text-decoration:none;padding:6px 0;transition:color .2s}
+.sb-footer a:hover{color:#0B1E3D}
+/* MAIN */
+.main{padding:28px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.section{display:none}.section.active{display:block}
+.section-head{margin-bottom:22px}
+.section-head h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:.04em;color:#0B1E3D;margin-bottom:3px}
+.section-head p{font-size:.86rem;color:#5E7490;line-height:1.6}
+/* STATS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:11px;border:1px solid #DDE4EF;padding:18px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.stat-card:hover{box-shadow:0 6px 20px rgba(11,30,61,.08);transform:translateY(-1px)}
+.stat-ic{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.stat-num{font-family:'Bebas Neue',cursive;font-size:2rem;color:#0B1E3D;letter-spacing:.04em;line-height:1}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-top:2px}
+.stat-delta{font-size:.72rem;margin-top:3px;display:flex;align-items:center;gap:3px}
+.stat-delta.up{color:#1A7A3A}.stat-delta.down{color:#D63B3B}
+/* CARDS */
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+.card{background:#fff;border-radius:12px;border:1px solid #DDE4EF;overflow:hidden;margin-bottom:20px}
+.card-head{padding:15px 20px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-head h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D;display:flex;align-items:center;gap:7px}
+.card-head h3 i{color:#E8A020}
+.card-body{padding:18px}
+.chart-wrap{position:relative;height:240px}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:#F4F7FB}
+th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;padding:10px 14px;text-align:left;white-space:nowrap}
+td{padding:12px 14px;font-size:.85rem;color:#1C2B40;border-bottom:1px solid #EEF2F8;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBFD}
+.empty-td{text-align:center;color:#8FA3BD;padding:40px 14px;font-size:.86rem}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.bg-active{background:rgba(26,122,58,.1);color:#1A7A3A}
+.bg-pending{background:rgba(232,160,32,.12);color:#8A5A00}
+.bg-done{background:rgba(26,75,140,.1);color:#1A4B8C}
+.bg-cancelled{background:rgba(214,59,59,.08);color:#D63B3B}
+.bg-free{background:rgba(26,122,58,.1);color:#1A7A3A}
+.bg-fixed{background:rgba(26,75,140,.08);color:#1A4B8C}
+.bg-neg{background:rgba(232,160,32,.1);color:#8A5A00}
+/* BUTTONS */
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;border:none}
+.btn-gold{background:#E8A020;color:#0B1E3D}.btn-gold:hover{background:#F5C05A}
+.btn-navy{background:#0B1E3D;color:#fff}.btn-navy:hover{background:#1A4B8C}
+.btn-ghost{background:transparent;color:#5E7490;border:1.5px solid #DDE4EF}.btn-ghost:hover{border-color:#0B1E3D;color:#0B1E3D}
+.btn-danger{background:rgba(214,59,59,.08);color:#D63B3B;border:1.5px solid rgba(214,59,59,.2)}.btn-danger:hover{background:#D63B3B;color:#fff;border-color:#D63B3B}
+.btn-sm{padding:5px 10px;font-size:.7rem}
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490}
+.fg label .req{color:#D63B3B}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid #DDE4EF;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#E8A020;box-shadow:0 0 0 3px rgba(232,160,32,.1)}
+.fg textarea{resize:vertical;min-height:80px}
+/* AVAILABILITY */
+.avail-row{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #EEF2F8;flex-wrap:wrap}
+.toggle{width:40px;height:22px;background:#DDE4EF;border-radius:100px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:#E8A020}
+.toggle-knob{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle.on .toggle-knob{left:21px}
+/* CHAT */
+.chat-layout{display:grid;grid-template-columns:280px 1fr;height:560px;border:1px solid #DDE4EF;border-radius:12px;overflow:hidden;background:#fff}
+.chat-list{border-right:1px solid #DDE4EF;overflow-y:auto;background:#FFFBF0}
+.chat-list-head{padding:14px 16px;border-bottom:1px solid #EEF2F8;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#0B1E3D}
+.chat-item{padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #EEF2F8;transition:background .15s}
+.chat-item:hover,.chat-item.active{background:rgba(232,160,32,.06)}
+.chat-av{width:38px;height:38px;border-radius:50%;background:#E8A020;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:.9rem;color:#0B1E3D;flex-shrink:0}
+.chat-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;color:#0B1E3D}
+.chat-preview{font-size:.74rem;color:#8FA3BD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.chat-unread{background:#D63B3B;color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:100px;margin-left:auto}
+.chat-window{display:flex;flex-direction:column}
+.chat-win-head{padding:13px 18px;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;gap:12px;background:#FFFBF0}
+.chat-win-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;color:#0B1E3D}
+.chat-win-sub{font-size:.74rem;color:#5E7490}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#F4F7FB}
+.msg{max-width:72%;display:flex;flex-direction:column}
+.msg.sent{align-self:flex-end;align-items:flex-end}
+.msg.recv{align-self:flex-start;align-items:flex-start}
+.msg-bubble{padding:10px 14px;border-radius:14px;font-size:.86rem;line-height:1.5;word-break:break-word}
+.msg.sent .msg-bubble{background:#E8A020;color:#0B1E3D;border-bottom-right-radius:4px}
+.msg.recv .msg-bubble{background:#fff;color:#1C2B40;border:1px solid #DDE4EF;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(11,30,61,.06)}
+.msg-time{font-size:.66rem;color:#8FA3BD;margin-top:3px}
+.chat-input-area{padding:12px 14px;background:#fff;border-top:1px solid #DDE4EF;display:flex;gap:9px;align-items:flex-end}
+.chat-input{flex:1;padding:10px 14px;border:1.5px solid #DDE4EF;border-radius:22px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1C2B40;outline:none;resize:none;min-height:42px;max-height:100px;transition:border-color .2s;background:#F4F7FB}
+.chat-input:focus{border-color:#E8A020;background:#fff}
+.chat-send{width:40px;height:40px;border-radius:50%;background:#E8A020;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0B1E3D;font-size:.95rem;flex-shrink:0;transition:all .2s}
+.chat-send:hover{background:#F5C05A;transform:scale(1.08)}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#8FA3BD;gap:10px}
+.chat-empty i{font-size:2.5rem}
+.chat-empty p{font-size:.86rem}
+/* BOOKING CARDS */
+.booking-card{background:#fff;border:1px solid #DDE4EF;border-radius:10px;padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start}
+.bk-av{width:44px;height:44px;border-radius:50%;background:#F4F7FB;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1rem;color:#E8A020;flex-shrink:0;border:2px solid #EEF2F8}
+/* VIDEO */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.vid-card{background:#fff;border-radius:10px;border:1px solid #DDE4EF;overflow:hidden;transition:all .2s}
+.vid-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(11,30,61,.1)}
+.vid-thumb{position:relative;padding-top:56.25%;background:#0B1E3D;cursor:pointer}
+.vid-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,30,61,.4)}
+.vid-play-btn{width:42px;height:42px;border-radius:50%;background:rgba(232,160,32,.9);display:flex;align-items:center;justify-content:center;color:#0B1E3D;font-size:1rem}
+.vid-dur{position:absolute;bottom:7px;right:8px;background:rgba(11,30,61,.8);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:4px}
+.vid-body{padding:11px 13px}
+.vid-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid-meta{font-size:.72rem;color:#8FA3BD}
+.vid-actions{display:flex;gap:6px;margin-top:9px}
+.vid-url-hint{display:none;background:#F4F7FB;border:1px solid #DDE4EF;border-radius:7px;padding:9px 12px;margin-top:6px;font-size:.8rem;color:#5E7490;align-items:center;gap:10px}
+.vid-url-hint.show{display:flex}
+.vid-url-hint img{width:72px;height:45px;object-fit:cover;border-radius:4px;flex-shrink:0}
+/* MODAL */
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(11,30,61,.55);backdrop-filter:blur(6px);z-index:900;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.modal-wrap.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:600px;overflow:hidden;box-shadow:0 24px 64px rgba(11,30,61,.2);animation:mIn .25s ease;margin:auto}
+@keyframes mIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.modal-head{background:linear-gradient(135deg,#0B1E3D,#E8A020);padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:.06em;color:#fff;display:flex;align-items:center;gap:8px}
+.modal-x{background:none;border:none;color:rgba(255,255,255,.6);font-size:1.1rem;cursor:pointer;transition:color .2s}
+.modal-x:hover{color:#fff}
+.modal-body{padding:22px;max-height:68vh;overflow-y:auto}
+.modal-foot{padding:13px 22px;background:#F4F7FB;border-top:1px solid #DDE4EF;display:flex;gap:10px;justify-content:flex-end}
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:#0B1E3D;color:#fff;padding:12px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;box-shadow:0 8px 28px rgba(11,30,61,.3);z-index:9999;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:9px;max-width:340px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.error{background:#D63B3B}
+#toast.success{background:#1A7A3A}
+/* RESPONSIVE */
+@media(max-width:960px){.portal-shell{grid-template-columns:1fr}.sidebar{display:none}.stat-row{grid-template-columns:1fr 1fr}.chart-row{grid-template-columns:1fr}}
+@media(max-width:560px){.stat-row{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.chat-layout{grid-template-columns:1fr}.chat-list{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">
+    <div class="lm">TA</div>
+    <div class="lt">Trust Automobile<small>Mechanic Dashboard</small></div>
+  </a>
+  <div class="topbar-right">
+    <div class="topbar-notif"><i class="bi bi-bell-fill" style="color:rgba(255,255,255,.65);font-size:1.1rem"></i><div class="notif-dot"></div></div>
+    <div class="topbar-user">
+      <div class="user-av" id="top-av">–</div>
+      <div class="user-info"><span id="top-name">–</span><small>Mechanic</small></div>
+    </div>
+    <button class="btn-topbar" onclick="portalLogout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+  </div>
+</div>
+
+<div class="portal-shell">
+  <div class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av" id="sb-av">–</div>
+      <div><div class="sb-name" id="sb-name">–</div><div class="sb-role"><i class="bi bi-tools" style="margin-right:3px"></i>Certified Mechanic</div></div>
+    </div>
+    <div class="sb-section">Overview</div>
+    <div class="sb-item active" onclick="nav('overview')" data-s="overview"><i class="bi bi-speedometer2"></i> Dashboard</div>
+    <div class="sb-section">Services</div>
+    <div class="sb-item" onclick="nav('services')" data-s="services"><i class="bi bi-tools"></i> My Services <span class="sb-badge" id="badge-svcs">0</span></div>
+    <div class="sb-item" onclick="nav('add-service')" data-s="add-service"><i class="bi bi-plus-circle-fill"></i> Add Service</div>
+    <div class="sb-section">Bookings</div>
+    <div class="sb-item" onclick="nav('bookings')" data-s="bookings"><i class="bi bi-calendar-check-fill"></i> Bookings <span class="sb-badge" id="badge-bk">0</span></div>
+    <div class="sb-section">Communication</div>
+    <div class="sb-item" onclick="nav('chat')" data-s="chat"><i class="bi bi-chat-dots-fill"></i> Customer Chat <span class="sb-badge" id="badge-chat">0</span></div>
+    <div class="sb-section">Availability</div>
+    <div class="sb-item" onclick="nav('schedule')" data-s="schedule"><i class="bi bi-calendar3"></i> My Schedule</div>
+    <div class="sb-section">Content</div>
+    <div class="sb-item" onclick="nav('videos')" data-s="videos"><i class="bi bi-play-circle-fill"></i> My Videos</div>
+    <div class="sb-item" onclick="nav('add-video')" data-s="add-video"><i class="bi bi-camera-video-fill"></i> Post Tutorial</div>
+    <div class="sb-section">Account</div>
+    <div class="sb-item" onclick="nav('profile')" data-s="profile"><i class="bi bi-person-circle"></i> My Profile</div>
+    <div class="sb-item" onclick="nav('settings')" data-s="settings"><i class="bi bi-gear-fill"></i> Settings</div>
+    <div class="sb-footer">
+      <a href="mechanic-services.html" target="_blank"><i class="bi bi-globe"></i> Public Services Page</a>
+      <a href="mechanics.html" target="_blank"><i class="bi bi-people-fill"></i> Mechanic Directory</a>
+    </div>
+  </div>
+
+  <div class="main" id="main">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="s-overview">
+      <div class="section-head"><h2 id="greet-title">Good day! 👋</h2><p>Here's your workshop performance at a glance.</p></div>
+      <div class="stat-row" id="dash-stats"></div>
+      <div class="chart-row">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-head"><h3><i class="bi bi-graph-up-arrow"></i> Bookings &amp; Revenue (Last 8 Weeks)</h3></div>
+          <div class="card-body"><div class="chart-wrap"><canvas id="chart-bookings"></canvas></div></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-head"><h3><i class="bi bi-pie-chart-fill"></i> Services Breakdown</h3></div>
+          <div class="card-body"><div class="chart-wrap"><canvas id="chart-svc-pie"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-calendar-check-fill"></i> Upcoming Bookings</h3><button class="btn btn-ghost btn-sm" onclick="nav('bookings')">View All</button></div>
+        <div id="overview-bk" style="padding:14px 18px;display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-chat-dots-fill"></i> Recent Messages</h3><button class="btn btn-ghost btn-sm" onclick="nav('chat')">View All</button></div>
+        <div id="overview-msgs" style="padding:14px 18px;display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="section" id="s-services">
+      <div class="section-head"><h2>My Services</h2><p>All services visible on your public mechanic profile and the Mechanic Services directory.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-tools"></i> Service Catalogue</h3><button class="btn btn-gold btn-sm" onclick="nav('add-service')"><i class="bi bi-plus-circle"></i> Add Service</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Service Name</th><th>Category</th><th>Price</th><th>Type</th><th>Est. Time</th><th>Bookings</th><th>Actions</th></tr></thead><tbody id="svcs-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT SERVICE -->
+    <div class="section" id="s-add-service">
+      <div class="section-head"><h2 id="svc-form-h">Add Service</h2><p>Goes live on your profile immediately.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-pencil-fill"></i> Service Details</h3></div>
+        <div class="card-body">
+          <input type="hidden" id="edit-svc-id"/>
+          <div class="fg"><label>Service Name <span class="req">*</span></label><input id="s-name" placeholder="e.g. Full Engine Oil Change"/></div>
+          <div class="fg"><label>Description</label><textarea id="s-desc" placeholder="What does this service include? Tools? Warranty?"></textarea></div>
+          <div class="form-grid">
+            <div class="fg"><label>Category <span class="req">*</span></label>
+              <select id="s-cat"><option value="">Select</option><option value="general">General Repairs</option><option value="electrical">Auto Electrical</option><option value="bodywork">Bodywork &amp; Paint</option><option value="aircon">Air Conditioning</option><option value="diagnostic">Diagnostics</option><option value="transmission">Transmission</option><option value="tyres">Tyres &amp; Alignment</option></select>
+            </div>
+            <div class="fg"><label>Price Type <span class="req">*</span></label>
+              <select id="s-ptype"><option value="fixed">Fixed</option><option value="negotiable">Negotiable</option><option value="free">Free</option></select>
+            </div>
+            <div class="fg"><label>Price (GHS)</label><input id="s-price" type="number" min="0" placeholder="150"/></div>
+            <div class="fg"><label>Estimated Duration</label><input id="s-dur" placeholder="e.g. 1–2 hours"/></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn btn-ghost" onclick="nav('services')"><i class="bi bi-arrow-left"></i> Cancel</button>
+            <button class="btn btn-gold" onclick="saveSvc()"><i class="bi bi-check-circle"></i> <span id="svc-save-lbl">Save Service</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="section" id="s-bookings">
+      <div class="section-head"><h2>Bookings</h2><p>Customers who have booked your services through Trust Automobile.</p></div>
+      <div class="card">
+        <div class="card-head">
+          <h3><i class="bi bi-calendar-check-fill"></i> All Bookings</h3>
+          <select id="bk-filter" onchange="renderBookings()" style="padding:6px 11px;border:1.5px solid #DDE4EF;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.78rem;color:#5E7490;outline:none;background:#fff">
+            <option value="">All Status</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Service</th><th>Date &amp; Time</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bk-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="section" id="s-chat">
+      <div class="section-head"><h2>Customer Chat</h2><p>Direct messages from customers about bookings and service queries.</p></div>
+      <div class="chat-layout">
+        <div class="chat-list">
+          <div class="chat-list-head">Conversations</div>
+          <div id="chat-list-body"></div>
+        </div>
+        <div class="chat-window">
+          <div class="chat-win-head" id="chat-win-head">
+            <div class="chat-av" id="cw-av">–</div>
+            <div><div class="chat-win-name" id="cw-name">Select a conversation</div><div class="chat-win-sub" id="cw-sub"></div></div>
+          </div>
+          <div class="chat-messages" id="chat-msgs"><div class="chat-empty"><i class="bi bi-chat-dots"></i><p>Select a conversation to start messaging</p></div></div>
+          <div class="chat-input-area" id="chat-input-area" style="display:none">
+            <textarea class="chat-input" id="chat-msg-input" placeholder="Type a message…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+            <button class="chat-send" onclick="sendMsg()"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="section" id="s-schedule">
+      <div class="section-head"><h2>My Schedule</h2><p>Set your working days and hours. Shown on your public mechanic profile.</p></div>
+      <div class="card"><div class="card-head"><h3><i class="bi bi-calendar3"></i> Weekly Availability</h3></div><div class="card-body" id="avail-body"></div></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="section" id="s-videos">
+      <div class="section-head"><h2>My Videos</h2><p>Tutorials and demos on the public Learning Hub and your mechanic profile.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-play-circle-fill"></i> Posted Tutorials</h3><button class="btn btn-gold btn-sm" onclick="nav('add-video')"><i class="bi bi-plus-circle"></i> Post Tutorial</button></div>
+        <div class="card-body"><div class="vid-grid" id="vids-grid"><p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No tutorials yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- POST VIDEO -->
+    <div class="section" id="s-add-video">
+      <div class="section-head"><h2>Post a Tutorial</h2><p>Share repair walkthroughs, diagnostics guides, and how-to videos.</p></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-camera-video-fill"></i> Video Details</h3></div>
+        <div class="card-body">
+          <div class="fg"><label>Video URL <span class="req">*</span> (YouTube or Vimeo)</label>
+            <input id="v-url" placeholder="https://www.youtube.com/watch?v=…" oninput="prevVid(this.value)"/>
+            <div class="vid-url-hint" id="v-preview"><img id="v-thumb" src=""/><div><div id="v-plat" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#0B1E3D"></div><div style="font-size:.72rem;color:#8FA3BD">Detected — fill details below</div></div></div>
+          </div>
+          <div class="form-grid">
+            <div class="fg"><label>Title <span class="req">*</span></label><input id="v-title" placeholder="e.g. How to Bleed Brake Lines — Full Guide"/></div>
+            <div class="fg"><label>Duration (e.g. 5:30)</label><input id="v-dur" placeholder="MM:SS"/></div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="v-desc" rows="2" placeholder="What will viewers learn?"></textarea></div>
+          <div class="fg"><label>Category</label><select id="v-cat"><option value="maintenance">Maintenance</option><option value="electrical">Electrical</option><option value="diagnostics">Diagnostics</option><option value="bodywork">Bodywork</option><option value="community">Community / Workshop</option></select></div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn btn-ghost" onclick="nav('videos')"><i class="bi bi-arrow-left"></i> Cancel</button>
+            <button class="btn btn-gold" onclick="saveVideo()"><i class="bi bi-send"></i> Publish Tutorial</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section" id="s-profile">
+      <div class="section-head"><h2>My Profile</h2><p>Your public mechanic profile as seen by customers.</p></div>
+      <div id="profile-body"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="s-settings">
+      <div class="section-head"><h2>Settings</h2></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="bi bi-bell-fill"></i> Notifications</h3></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;border-bottom:1px solid #EEF2F8"><div><div style="font-weight:600;font-size:.9rem">New Bookings</div><div style="font-size:.78rem;color:#5E7490">Get notified when a customer books a service</div></div><input type="checkbox" checked style="accent-color:#E8A020;width:18px;height:18px"/></label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;border-bottom:1px solid #EEF2F8"><div><div style="font-weight:600;font-size:.9rem">New Messages</div><div style="font-size:.78rem;color:#5E7490">Notifications for customer chat messages</div></div><input type="checkbox" checked style="accent-color:#E8A020;width:18px;height:18px"/></label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0"><div><div style="font-weight:600;font-size:.9rem">Weekly Summary</div><div style="font-size:.78rem;color:#5E7490">Email summary of your bookings and revenue</div></div><input type="checkbox" style="accent-color:#E8A020;width:18px;height:18px"/></label>
+          </div>
+          <button class="btn btn-navy" style="margin-top:16px" onclick="showToast('Settings saved!','success')"><i class="bi bi-check-circle"></i> Save Settings</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-head"><h3><i class="bi bi-person-fill"></i> Account Details</h3></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>First Name</label><input id="set-fname"/></div>
+            <div class="fg"><label>Last Name</label><input id="set-lname"/></div>
+            <div class="fg"><label>Business / Workshop Name</label><input id="set-biz"/></div>
+            <div class="fg"><label>Phone</label><input id="set-phone"/></div>
+          </div>
+          <button class="btn btn-gold" onclick="saveProfile()"><i class="bi bi-check-circle"></i> Save Profile</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-wrap" id="modal-bk">
+  <div class="modal">
+    <div class="modal-head"><h3><i class="bi bi-calendar-check-fill"></i> Booking Details</h3><button class="modal-x" onclick="closeModal('modal-bk')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body" id="modal-bk-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-bk')">Close</button>
+      <button class="btn btn-gold btn-sm" id="modal-confirm-btn" onclick="confirmBk()"><i class="bi bi-check-circle"></i> Confirm Booking</button>
+      <button class="btn btn-navy btn-sm" id="modal-done-btn" onclick="completeBk()"><i class="bi bi-check-all"></i> Mark Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"><i class="bi bi-check-circle-fill" style="color:#E8A020;flex-shrink:0"></i><span id="toast-msg"></span></div>
+
+<script>
+/* ===== SESSION ===== */
+const SESSION_KEY = 'ta_session';
+let S = null;
+try { S = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e){ S=null; }
+if (!S) { window.location.href='login.html'; throw new Error('No session'); }
+if (S.role !== 'mechanic') { window.location.href='index.html'; throw new Error('Wrong role'); }
+
+const mechDisplayName = S.businessName && S.businessName.trim() ? S.businessName : (S.firstName+' '+S.lastName).trim() || 'Mechanic';
+const mechFirstName = S.firstName || '';
+const mechLastName  = S.lastName  || '';
+const mechInitials  = (mechFirstName.charAt(0)+mechLastName.charAt(0)).toUpperCase() || 'ME';
+
+const SKEY = 'ta_svc_'+S.id;
+const BKEY = 'ta_bk_m_'+S.id;
+const VKEY = 'ta_vid_m_'+S.id;
+const CKEY = 'ta_chat_m_'+S.id;
+const AKEY = 'ta_avail_'+S.id;
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let activeChatId = null, activeBkId = null;
+
+/* ===== DB HELPERS ===== */
+const DB = {
+  get(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch{return [];}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v));},
+  add(k,item){const a=this.get(k);a.unshift(item);this.set(k,a);},
+  upd(k,item){this.set(k,this.get(k).map(x=>x.id===item.id?item:x));},
+  del(k,id){this.set(k,this.get(k).filter(x=>x.id!==id));},
+  find(k,id){return this.get(k).find(x=>x.id===id)||null;},
+  uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+};
+
+/* ===== VID HELPERS ===== */
+const VID = {
+  ytId(u){const m=(u||'').match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;},
+  vmId(u){const m=(u||'').match(/vimeo\.com\/(\d+)/);return m?m[1]:null;},
+  isValid(u){return !!(VID.ytId(u)||VID.vmId(u));},
+  thumb(u){const y=VID.ytId(u);if(y)return`https://img.youtube.com/vi/${y}/hqdefault.jpg`;const v=VID.vmId(u);if(v)return`https://vumbnail.com/${v}.jpg`;return'';},
+  platform(u){if(VID.ytId(u))return'YouTube';if(VID.vmId(u))return'Vimeo';return'';},
+  embedUrl(u){const y=VID.ytId(u);if(y)return`https://www.youtube.com/embed/${y}?autoplay=1`;const v=VID.vmId(u);if(v)return`https://player.vimeo.com/video/${v}?autoplay=1`;return'';}
+};
+
+function init(){
+  const hr=new Date().getHours();
+  document.getElementById('greet-title').textContent=(hr<12?'Good morning':hr<17?'Good afternoon':'Good evening')+', '+(S.businessName||S.firstName)+'! 👋';
+  document.getElementById('top-av').textContent=mechInitials;
+  document.getElementById('top-name').textContent=mechDisplayName;
+  document.getElementById('sb-av').textContent=mechInitials;
+  document.getElementById('sb-name').textContent=mechDisplayName;
+  document.getElementById('set-fname').value=mechFirstName;
+  document.getElementById('set-lname').value=mechLastName;
+  document.getElementById('set-biz').value=S.businessName||'';
+  document.getElementById('set-phone').value=S.phone||'';
+  seedDemo();
+  renderDashStats();buildCharts();renderServices();renderBookings();renderChatList();renderSchedule();renderVideos();renderProfile();
+}
+
+function seedDemo(){
+  if(DB.get(SKEY).length)return;
+  [{id:DB.uid(),name:'Full Engine Oil Change',cat:'general',ptype:'fixed',price:'150',dur:'45 min',desc:'Includes oil filter replacement and fluid top-up.',bookings:28},
+   {id:DB.uid(),name:'Battery Replacement & Charging Test',cat:'electrical',ptype:'fixed',price:'80',dur:'30 min',desc:'New battery installation with charging system diagnostics.',bookings:14},
+   {id:DB.uid(),name:'Full Vehicle Diagnosis (OBD)',cat:'diagnostic',ptype:'free',price:'0',dur:'1 hour',desc:'Free OBD2 scan with written fault code report.',bookings:42},
+   {id:DB.uid(),name:'AC Recharge & Leak Check',cat:'aircon',ptype:'negotiable',price:'200',dur:'1–2 hours',desc:'Full AC gas recharge with leak detection.',bookings:19},
+   {id:DB.uid(),name:'Brake Pads & Disc Replacement',cat:'general',ptype:'negotiable',price:'350',dur:'2 hours',desc:'Front or rear brake replacement including test drive.',bookings:11}
+  ].forEach(s=>DB.add(SKEY,s));
+  syncServices();
+  [{id:DB.uid(),cust:'Kwame Asante',custInit:'KA',phone:'+233 24 111 0001',svc:'Full Engine Oil Change',date:'2026-03-28',time:'10:00 AM',price:'150',status:'pending',notes:'Toyota Corolla 2019'},
+   {id:DB.uid(),cust:'Abena Mensah', custInit:'AM',phone:'+233 30 222 0002',svc:'Battery Replacement',   date:'2026-03-28',time:'02:00 PM',price:'80',status:'confirmed',notes:'Honda Civic 2018'},
+   {id:DB.uid(),cust:'Fiifi Acquah', custInit:'FA',phone:'+233 31 333 0003',svc:'Vehicle Diagnosis',     date:'2026-03-29',time:'09:00 AM',price:'0', status:'pending',notes:'Nissan Sentra 2017'},
+   {id:DB.uid(),cust:'Yaw Darko',    custInit:'YD',phone:'+233 20 444 0004',svc:'Brake Pads Replacement',date:'2026-03-22',time:'11:00 AM',price:'350',status:'completed',notes:'Toyota Camry 2016'}
+  ].forEach(b=>DB.add(BKEY,b));
+  DB.set(CKEY,[
+    {id:'cm1',custName:'Kwame Asante',custInit:'KA',unread:2,msgs:[
+      {type:'recv',text:'Hello, I booked the oil change for tomorrow. Is 10am still available?',ts:new Date(Date.now()-7200000).toISOString()},
+      {type:'sent',text:'Yes Kwame, we are good for 10am. Please arrive by 9:50.',ts:new Date(Date.now()-5400000).toISOString()},
+      {type:'recv',text:'Perfect, thank you!',ts:new Date(Date.now()-3600000).toISOString()}
+    ]},
+    {id:'cm2',custName:'Abena Mensah',custInit:'AM',unread:0,msgs:[
+      {type:'recv',text:'How much for a battery replacement on a Honda Civic 2018?',ts:new Date(Date.now()-18000000).toISOString()},
+      {type:'sent',text:'That will be GHS 80 all inclusive. We have genuine batteries in stock.',ts:new Date(Date.now()-14400000).toISOString()}
+    ]}
+  ]);
+}
+
+function syncServices(){
+  const all=DB.get('ta_mechanic_services').filter(s=>s.mechanicId!==S.id);
+  DB.get(SKEY).forEach(s=>all.push({...s,mechanicId:S.id,mechanicName:mechDisplayName,region:S.region||''}));
+  DB.set('ta_mechanic_services',all);
+}
+
+function renderDashStats(){
+  const svcs=DB.get(SKEY),bks=DB.get(BKEY),vids=DB.get(VKEY);
+  const completed=bks.filter(b=>b.status==='completed').length;
+  const pending=bks.filter(b=>b.status==='pending').length;
+  const revenue=bks.filter(b=>b.status==='completed').reduce((s,b)=>s+Number(b.price||0),0);
+  const chatU=DB.get(CKEY).reduce((s,c)=>s+(c.unread||0),0);
+  document.getElementById('badge-svcs').textContent=svcs.length;
+  document.getElementById('badge-bk').textContent=pending||'';
+  document.getElementById('badge-chat').textContent=chatU||'';
+  document.getElementById('dash-stats').innerHTML=[
+    {label:'Services Offered',num:svcs.length,delta:'catalogue items',up:true,icon:'bi-tools',bg:'rgba(232,160,32,.12)',ic:'#E8A020'},
+    {label:'Total Bookings', num:bks.length, delta:pending+' pending',up:true, icon:'bi-calendar-check-fill',bg:'rgba(26,75,140,.1)',ic:'#1A4B8C'},
+    {label:'Completed Jobs', num:completed,  delta:'this season',    up:true, icon:'bi-check-circle-fill',  bg:'rgba(26,122,58,.1)',ic:'#1A7A3A'},
+    {label:'Revenue (GHS)',  num:revenue.toLocaleString(),delta:'from completed',up:true,icon:'bi-graph-up-arrow',bg:'rgba(11,30,61,.08)',ic:'#0B1E3D'},
+    {label:'Videos Posted',  num:vids.length,delta:'on Learning Hub', up:true, icon:'bi-play-circle-fill',  bg:'rgba(232,160,32,.08)',ic:'#E8A020'}
+  ].map(c=>`<div class="stat-card"><div class="stat-ic" style="background:${c.bg}"><i class="bi ${c.icon}" style="color:${c.ic}"></i></div>
+    <div><div class="stat-num">${c.num}</div><div class="stat-lbl">${c.label}</div><div class="stat-delta ${c.up?'up':'down'}"><i class="bi bi-arrow-${c.up?'up':'down'}-right"></i>${c.delta}</div></div></div>`).join('');
+
+  const SB={pending:'<span class="badge bg-pending">Pending</span>',confirmed:'<span class="badge bg-active">Confirmed</span>',completed:'<span class="badge bg-done">Done</span>',cancelled:'<span class="badge bg-cancelled">Cancelled</span>'};
+  const upcoming=DB.get(BKEY).filter(b=>b.status!=='completed'&&b.status!=='cancelled').slice(0,3);
+  document.getElementById('overview-bk').innerHTML=upcoming.length?upcoming.map(b=>`<div class="booking-card">
+    <div class="bk-av">${b.custInit}</div>
+    <div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.92rem;color:#0B1E3D">${b.cust} ${SB[b.status]||''}</div>
+    <div style="font-size:.82rem;color:#5E7490">${b.svc}</div>
+    <div style="font-size:.76rem;color:#8FA3BD;margin-top:3px"><i class="bi bi-calendar3" style="margin-right:4px"></i>${b.date} at ${b.time}${b.notes?' · '+b.notes:''}</div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      ${b.status==='pending'?`<button class="btn btn-gold btn-sm" onclick="quickConfirm('${b.id}')"><i class="bi bi-check-circle"></i> Confirm</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="viewBk('${b.id}')"><i class="bi bi-eye"></i> Details</button>
+    </div></div>
+    <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${b.price==='0'?'#1A7A3A':'#E8A020'}">${b.price==='0'?'FREE':'GHS '+b.price}</div>
+  </div>`).join(''):'<p style="font-size:.84rem;color:#8FA3BD;text-align:center;padding:14px">No upcoming bookings.</p>';
+
+  document.getElementById('overview-msgs').innerHTML=DB.get(CKEY).slice(0,2).map(c=>{
+    const last=c.msgs[c.msgs.length-1];
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF2F8;cursor:pointer" onclick="openChat('${c.id}');nav('chat')">
+      <div class="chat-av">${c.custInit}</div>
+      <div style="flex:1;min-width:0"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${c.custName}</div>
+      <div style="font-size:.78rem;color:#5E7490;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last?.text||''}</div></div>
+      ${c.unread?`<span class="sb-badge">${c.unread}</span>`:''}
+    </div>`;
+  }).join('')||'<p style="font-size:.84rem;color:#8FA3BD;text-align:center;padding:14px">No messages yet.</p>';
+}
+
+let bkChart,pieChart;
+function buildCharts(){
+  bkChart=new Chart(document.getElementById('chart-bookings'),{type:'line',data:{labels:['W1','W2','W3','W4','W5','W6','W7','W8'],datasets:[
+    {label:'Bookings',data:[4,7,5,9,11,8,13,10],borderColor:'#E8A020',backgroundColor:'rgba(232,160,32,.08)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#E8A020'},
+    {label:'Revenue ÷10',data:[6,9,7,12,15,10,18,14],borderColor:'#1A4B8C',backgroundColor:'rgba(26,75,140,.06)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1A4B8C'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Barlow Condensed',size:12}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(11,30,61,.05)'}},x:{grid:{display:false}}}}});
+  const svcs=DB.get(SKEY).slice(0,5);
+  pieChart=new Chart(document.getElementById('chart-svc-pie'),{type:'doughnut',data:{labels:svcs.map(s=>s.name.slice(0,18)),datasets:[{data:svcs.map(s=>s.bookings||Math.floor(Math.random()*15)+5),backgroundColor:['#E8A020','#1A4B8C','#1A7A3A','#0B1E3D','#8FA3BD'],borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Barlow Condensed',size:11}}}}}});
+}
+
+function renderServices(){
+  const PT={fixed:'<span class="badge bg-fixed">Fixed</span>',negotiable:'<span class="badge bg-neg">Neg.</span>',free:'<span class="badge bg-free">Free</span>'};
+  document.getElementById('svcs-tbody').innerHTML=DB.get(SKEY).map(s=>`<tr>
+    <td style="font-weight:600">${s.name}</td>
+    <td style="font-size:.78rem;color:#5E7490;text-transform:capitalize">${s.cat||'–'}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">${s.ptype==='free'?'FREE':'GHS '+Number(s.price||0).toLocaleString()}</td>
+    <td>${PT[s.ptype]||''}</td><td style="font-size:.82rem">${s.dur||'–'}</td>
+    <td style="color:#1A4B8C;font-weight:600">${s.bookings||0}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="btn btn-ghost btn-sm" onclick="editSvc('${s.id}')"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="delSvc('${s.id}')"><i class="bi bi-trash3"></i></button>
+    </div></td>
+  </tr>`).join('')||'<tr><td colspan="7" class="empty-td">No services yet. Add your first service!</td></tr>';
+}
+
+function saveSvc(){
+  const id=document.getElementById('edit-svc-id').value;
+  const name=document.getElementById('s-name').value.trim(),cat=document.getElementById('s-cat').value;
+  if(!name||!cat){showToast('Name and category are required.','error');return;}
+  const svc={id:id||DB.uid(),name,cat,ptype:document.getElementById('s-ptype').value,price:document.getElementById('s-price').value,dur:document.getElementById('s-dur').value.trim(),desc:document.getElementById('s-desc').value.trim(),bookings:id?DB.find(SKEY,id)?.bookings||0:0};
+  if(id){DB.upd(SKEY,svc);showToast('Service updated!','success');}else{DB.add(SKEY,svc);showToast('Service added — live on your profile!','success');}
+  syncServices();clearSvcForm();renderServices();renderDashStats();nav('services');
+}
+function editSvc(id){const s=DB.find(SKEY,id);if(!s)return;document.getElementById('edit-svc-id').value=id;document.getElementById('s-name').value=s.name||'';document.getElementById('s-cat').value=s.cat||'';document.getElementById('s-ptype').value=s.ptype||'fixed';document.getElementById('s-price').value=s.price||'';document.getElementById('s-dur').value=s.dur||'';document.getElementById('s-desc').value=s.desc||'';document.getElementById('svc-form-h').textContent='Edit Service';document.getElementById('svc-save-lbl').textContent='Update Service';nav('add-service');}
+function delSvc(id){if(!confirm('Delete this service?'))return;DB.del(SKEY,id);syncServices();renderServices();renderDashStats();showToast('Service deleted.');}
+function clearSvcForm(){['edit-svc-id','s-name','s-price','s-dur','s-desc'].forEach(x=>document.getElementById(x).value='');document.getElementById('s-cat').value='';document.getElementById('s-ptype').value='fixed';document.getElementById('svc-form-h').textContent='Add Service';document.getElementById('svc-save-lbl').textContent='Save Service';}
+
+function renderBookings(){
+  const filt=document.getElementById('bk-filter')?.value||'';
+  let rows=DB.get(BKEY);if(filt)rows=rows.filter(b=>b.status===filt);
+  const SB={pending:'<span class="badge bg-pending">Pending</span>',confirmed:'<span class="badge bg-active">Confirmed</span>',completed:'<span class="badge bg-done">Done</span>',cancelled:'<span class="badge bg-cancelled">Cancelled</span>'};
+  document.getElementById('bk-tbody').innerHTML=rows.length?rows.map(b=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="bk-av" style="width:32px;height:32px;font-size:.78rem">${b.custInit}</div><div><div style="font-weight:600;font-size:.85rem">${b.cust}</div><div style="font-size:.72rem;color:#8FA3BD">${b.phone||''}</div></div></div></td>
+    <td style="font-size:.82rem">${b.svc}</td><td style="font-size:.8rem">${b.date} · ${b.time}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">${b.price==='0'?'FREE':'GHS '+b.price}</td>
+    <td>${SB[b.status]||''}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="viewBk('${b.id}')"><i class="bi bi-eye"></i> Manage</button></td>
+  </tr>`).join(''):'<tr><td colspan="6" class="empty-td">No bookings yet.</td></tr>';
+}
+
+function viewBk(id){
+  const b=DB.find(BKEY,id);if(!b)return;activeBkId=id;
+  document.getElementById('modal-bk-body').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+    ${[['Customer',b.cust+(b.phone?`<br><span style="font-size:.8rem;color:#5E7490">${b.phone}</span>`:'')],['Service',b.svc],['Date &amp; Time',b.date+' at '+b.time],['Price',`<span style="font-family:'Bebas Neue',cursive;font-size:1.3rem;color:#E8A020">${b.price==='0'?'FREE':'GHS '+b.price}</span>`],['Vehicle / Notes',b.notes||'–']].map(([l,v],i)=>`<div style="${i===4?'grid-column:1/-1':''}"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#8FA3BD;margin-bottom:3px">${l}</div><div style="font-size:.9rem;font-weight:600">${v}</div></div>`).join('')}
+  </div>`;
+  document.getElementById('modal-confirm-btn').style.display=b.status==='pending'?'flex':'none';
+  document.getElementById('modal-done-btn').style.display=b.status==='confirmed'?'flex':'none';
+  document.getElementById('modal-bk').classList.add('open');
+}
+function quickConfirm(id){const bks=DB.get(BKEY);const b=bks.find(x=>x.id===id);if(b){b.status='confirmed';DB.set(BKEY,bks);}renderDashStats();renderBookings();showToast('Booking confirmed!','success');}
+function confirmBk(){const bks=DB.get(BKEY);const b=bks.find(x=>x.id===activeBkId);if(b){b.status='confirmed';DB.set(BKEY,bks);}closeModal('modal-bk');renderBookings();renderDashStats();showToast('Booking confirmed! Customer notified.','success');}
+function completeBk(){const bks=DB.get(BKEY);const b=bks.find(x=>x.id===activeBkId);if(b){b.status='completed';DB.set(BKEY,bks);}closeModal('modal-bk');renderBookings();renderDashStats();showToast('Job marked as completed!','success');}
+
+function renderChatList(){
+  const chats=DB.get(CKEY);
+  document.getElementById('chat-list-body').innerHTML=chats.map(c=>{const last=c.msgs[c.msgs.length-1];return`<div class="chat-item${c.id===activeChatId?' active':''}" onclick="openChat('${c.id}')">
+    <div class="chat-av">${c.custInit}</div>
+    <div style="flex:1;min-width:0"><div class="chat-name">${c.custName}</div><div class="chat-preview">${last?.text||''}</div></div>
+    ${c.unread>0?`<span class="chat-unread">${c.unread}</span>`:''}
+  </div>`;}).join('')||'<div style="padding:20px;text-align:center;color:#8FA3BD;font-size:.84rem">No conversations yet.</div>';
+}
+
+function openChat(id){
+  activeChatId=id;const chats=DB.get(CKEY);const c=chats.find(x=>x.id===id);if(!c)return;
+  c.unread=0;DB.set(CKEY,chats);
+  document.getElementById('cw-av').textContent=c.custInit;
+  document.getElementById('cw-name').textContent=c.custName;
+  document.getElementById('cw-sub').textContent='Service Query';
+  document.getElementById('chat-input-area').style.display='flex';
+  const box=document.getElementById('chat-msgs');
+  box.innerHTML=c.msgs.map(m=>`<div class="msg ${m.type}"><div class="msg-bubble">${m.text}</div><div class="msg-time">${new Date(m.ts).toLocaleTimeString('en-GH',{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
+  box.scrollTop=box.scrollHeight;renderChatList();
+  const replies=['I will be there on time!','Can you send me your location?','What should I bring with me?','Is parking available at your workshop?','Thank you for the quick reply!'];
+  setTimeout(()=>{const r=replies[Math.floor(Math.random()*replies.length)];const cn=DB.get(CKEY);const cv=cn.find(x=>x.id===id);if(cv&&activeChatId===id){cv.msgs.push({type:'recv',text:r,ts:new Date().toISOString()});DB.set(CKEY,cn);box.innerHTML+=`<div class="msg recv"><div class="msg-bubble">${r}</div><div class="msg-time">Just now</div></div>`;box.scrollTop=box.scrollHeight;}},3000+Math.random()*4000);
+}
+
+function sendMsg(){
+  if(!activeChatId)return;
+  const inp=document.getElementById('chat-msg-input'),text=inp.value.trim();if(!text)return;
+  const chats=DB.get(CKEY),c=chats.find(x=>x.id===activeChatId);if(!c)return;
+  c.msgs.push({type:'sent',text,ts:new Date().toISOString()});DB.set(CKEY,chats);inp.value='';
+  const box=document.getElementById('chat-msgs');
+  box.innerHTML+=`<div class="msg sent"><div class="msg-bubble">${text}</div><div class="msg-time">Just now</div></div>`;
+  box.scrollTop=box.scrollHeight;renderChatList();
+}
+
+function renderSchedule(){
+  const saved=DB.get(AKEY);
+  const avail=DAYS.map((day,i)=>saved.find(a=>a.day===day)||{day,open:i<5,from:'08:00',to:'17:00'});
+  document.getElementById('avail-body').innerHTML=avail.map(a=>`<div class="avail-row">
+    <div class="toggle${a.open?' on':''}" id="tog-${a.day}" onclick="togDay('${a.day}')"><div class="toggle-knob"></div></div>
+    <label style="min-width:110px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${a.day}</label>
+    <div id="times-${a.day}" style="display:flex;align-items:center;gap:8px;${a.open?'':'opacity:.4;pointer-events:none'}">
+      <input type="time" value="${a.from}" id="from-${a.day}" style="padding:7px 10px;border:1.5px solid #DDE4EF;border-radius:7px;font-family:'Barlow',sans-serif;font-size:.86rem;outline:none"/>
+      <span style="color:#8FA3BD;font-size:.8rem">to</span>
+      <input type="time" value="${a.to}" id="to-${a.day}" style="padding:7px 10px;border:1.5px solid #DDE4EF;border-radius:7px;font-family:'Barlow',sans-serif;font-size:.86rem;outline:none"/>
+    </div>
+    ${!a.open?'<span style="font-size:.76rem;color:#8FA3BD;font-family:\'Barlow Condensed\',sans-serif;font-weight:700">CLOSED</span>':''}
+  </div>`).join('')+'<button class="btn btn-gold" style="margin-top:18px" onclick="saveSchedule()"><i class="bi bi-check-circle"></i> Save Schedule</button>';
+}
+function togDay(d){const tog=document.getElementById('tog-'+d),times=document.getElementById('times-'+d);const on=tog.classList.contains('on');tog.classList.toggle('on',!on);times.style.opacity=on?'0.4':'1';times.style.pointerEvents=on?'none':'all';}
+function saveSchedule(){DB.set(AKEY,DAYS.map(d=>({day:d,open:document.getElementById('tog-'+d)?.classList.contains('on')||false,from:document.getElementById('from-'+d)?.value||'08:00',to:document.getElementById('to-'+d)?.value||'17:00'})));showToast('Schedule saved!','success');}
+
+function renderVideos(){
+  const vids=DB.get(VKEY),grid=document.getElementById('vids-grid');
+  if(!vids.length){grid.innerHTML='<p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No tutorials yet. Post your first tutorial!</p>';return;}
+  grid.innerHTML=vids.map(v=>{const th=VID.thumb(v.url);return`<div class="vid-card">
+    <div class="vid-thumb" onclick="playVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')">
+      ${th?`<img src="${th}" loading="lazy"/>`:''}
+      <div class="vid-play"><div class="vid-play-btn"><i class="bi bi-play-fill"></i></div></div>
+      ${v.duration?`<span class="vid-dur">${v.duration}</span>`:''}
+    </div>
+    <div class="vid-body"><div class="vid-title" title="${v.title}">${v.title||'Untitled'}</div><div class="vid-meta">${v.desc||''}</div>
+    <div class="vid-actions">
+      <button class="btn btn-ghost btn-sm" onclick="playVideo('${v.url}','${(v.title||'').replace(/'/g,"\\'")}')"><i class="bi bi-play-circle"></i> Watch</button>
+      <button class="btn btn-danger btn-sm" onclick="delVideo('${v.id}')"><i class="bi bi-trash3"></i></button>
+    </div></div></div>`;}).join('');
+}
+function saveVideo(){
+  const url=document.getElementById('v-url').value.trim(),title=document.getElementById('v-title').value.trim();
+  if(!url||!title){showToast('URL and title are required.','error');return;}
+  if(!VID.isValid(url)){showToast('Enter a valid YouTube or Vimeo URL.','error');return;}
+  const v={id:'mv-'+DB.uid(),url,title,desc:document.getElementById('v-desc').value.trim(),category:document.getElementById('v-cat').value,duration:document.getElementById('v-dur').value.trim(),thumbnail:VID.thumb(url),poster:mechDisplayName,role:'mechanic',views:0,postedAt:new Date().toISOString(),new:true,featured:false,mechanicId:S.id};
+  DB.add(VKEY,v);const g=DB.get('ta_videos');g.unshift(v);DB.set('ta_videos',g);
+  ['v-url','v-title','v-desc','v-dur'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('v-preview').classList.remove('show');
+  renderVideos();renderDashStats();showToast('Tutorial published on Learning Hub!','success');nav('videos');
+}
+function delVideo(id){if(!confirm('Delete this tutorial?'))return;DB.del(VKEY,id);DB.set('ta_videos',DB.get('ta_videos').filter(v=>v.id!==id));renderVideos();renderDashStats();showToast('Video deleted.');}
+function playVideo(url,title){
+  const embed=VID.embedUrl(url);if(!embed){showToast('Cannot play this URL.','error');return;}
+  let lb=document.getElementById('vid-lightbox');
+  if(!lb){lb=document.createElement('div');lb.id='vid-lightbox';lb.style.cssText='position:fixed;inset:0;background:rgba(6,15,30,.93);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';lb.innerHTML=`<div style="width:100%;max-width:900px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span id="vlt" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span><button onclick="document.getElementById('vid-lightbox').style.display='none';document.getElementById('vli').src='';document.body.style.overflow=''" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="bi bi-x-lg"></i></button></div><div style="position:relative;padding-top:56.25%;background:#000;border-radius:12px;overflow:hidden"><iframe id="vli" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay;fullscreen"></iframe></div></div>`;lb.addEventListener('click',e=>{if(e.target===lb){lb.style.display='none';document.getElementById('vli').src='';document.body.style.overflow='';}});document.body.appendChild(lb);}
+  document.getElementById('vlt').textContent=title||'';document.getElementById('vli').src=embed;lb.style.display='flex';document.body.style.overflow='hidden';
+}
+
+function renderProfile(){
+  const svcs=DB.get(SKEY),bks=DB.get(BKEY),vids=DB.get(VKEY);
+  const completed=bks.filter(b=>b.status==='completed').length;
+  const avail=DB.get(AKEY);const openDays=avail.filter(a=>a.open).map(a=>a.day.slice(0,3)).join(', ')||'Mon–Fri';
+  document.getElementById('profile-body').innerHTML=`
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-body" style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#E8A020,#F5C05A);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:#0B1E3D;flex-shrink:0">${mechInitials}</div>
+      <div style="flex:1">
+        <div style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:.04em;color:#0B1E3D">${mechFirstName} ${mechLastName}</div>
+        ${S.businessName?`<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#E8A020;margin-bottom:4px">${S.businessName}</div>`:''}
+        <div style="font-size:.82rem;color:#5E7490;margin-bottom:6px">${S.email||''} · ${S.phone||''}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px"><i class="bi bi-geo-alt-fill" style="color:#E8A020"></i>${S.region||'Ghana'}</span>
+          <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px"><i class="bi bi-clock" style="color:#E8A020"></i>${openDays}</span>
+          <span style="font-size:.78rem;color:#1A7A3A;font-weight:600;display:flex;align-items:center;gap:4px"><i class="bi bi-patch-check-fill"></i> Verified Mechanic</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        ${[['Services',svcs.length,'#E8A020'],['Jobs Done',completed,'#1A7A3A'],['Tutorials',vids.length,'#1A4B8C']].map(([l,n,c])=>`<div style="text-align:center;background:#F4F7FB;border-radius:9px;padding:14px"><div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:${c}">${n}</div><div style="font-size:.7rem;color:#5E7490;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase">${l}</div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3><i class="bi bi-tools"></i> My Services</h3></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:18px">
+      ${svcs.map(s=>`<div style="background:#FFFBF0;border:1px solid rgba(232,160,32,.25);border-radius:9px;padding:13px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;color:#0B1E3D;margin-bottom:4px">${s.name}</div>
+        <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#E8A020">${s.ptype==='free'?'FREE':'GHS '+Number(s.price||0).toLocaleString()}</div>
+        ${s.dur?`<div style="font-size:.72rem;color:#8FA3BD;margin-top:3px"><i class="bi bi-clock" style="margin-right:3px"></i>${s.dur}</div>`:''}
+      </div>`).join('')||'<p style="color:#8FA3BD;font-size:.84rem;grid-column:1/-1">No services added yet.</p>'}
+    </div>
+  </div>`;
+}
+
+function saveProfile(){
+  S.firstName=document.getElementById('set-fname').value.trim()||mechFirstName;
+  S.lastName=document.getElementById('set-lname').value.trim()||mechLastName;
+  S.businessName=document.getElementById('set-biz').value.trim()||S.businessName;
+  S.phone=document.getElementById('set-phone').value.trim()||S.phone;
+  localStorage.setItem(SESSION_KEY,JSON.stringify(S));
+  const newIni=(S.firstName.charAt(0)+S.lastName.charAt(0)).toUpperCase();
+  const newDisplay=S.businessName&&S.businessName.trim()?S.businessName:(S.firstName+' '+S.lastName).trim();
+  document.getElementById('top-av').textContent=newIni;document.getElementById('top-name').textContent=newDisplay;
+  document.getElementById('sb-av').textContent=newIni;document.getElementById('sb-name').textContent=newDisplay;
+  renderProfile();showToast('Profile updated!','success');
+}
+
+function nav(key){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+key)?.classList.add('active');
+  document.querySelector(`.sb-item[data-s="${key}"]`)?.classList.add('active');
+  if(key==='add-service')clearSvcForm();
+  document.querySelector('.main').scrollTo(0,0);
+}
+function prevVid(url){const p=document.getElementById('v-preview');if(!VID.isValid(url)){p.classList.remove('show');return;}document.getElementById('v-thumb').src=VID.thumb(url);document.getElementById('v-plat').textContent=VID.platform(url)+' video detected';p.classList.add('show');}
+function closeModal(id){document.getElementById(id)?.classList.remove('open');}
+function portalLogout(){if(confirm('Log out of the Mechanic Dashboard?')){showToast('Logged out successfully.','success');localStorage.removeItem(SESSION_KEY);setTimeout(()=>{window.location.href='login.html';},1200);}}
+function showToast(msg,type='info'){const t=document.getElementById('toast'),s=document.getElementById('toast-msg');s.textContent=msg;t.className='show '+(type==='error'?'error':type==='success'?'success':'');clearTimeout(window._toastTT);window._toastTT=setTimeout(()=>{t.className='';},3200);}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-wrap'))e.target.classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-wrap.open').forEach(m=>m.classList.remove('open'));const lb=document.getElementById('vid-lightbox');if(lb){lb.style.display='none';const f=document.getElementById('vli');if(f)f.src='';document.body.style.overflow='';}}});
+init();
+</script>
+</body>
+</html>

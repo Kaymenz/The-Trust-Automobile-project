@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — Trust Automobile Ghana</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Barlow',sans-serif;color:#1C2B40;background:#F4F7FB;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── HEADER ── */
+.reg-header{background:#0B1E3D;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;}
+.reg-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:36px;height:36px;background:#E8A020;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#0B1E3D;}
+.logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;letter-spacing:.06em;line-height:1.1;}
+.logo-text small{display:block;font-size:.6rem;font-weight:400;color:#8FA3BD;letter-spacing:.14em;}
+.reg-header-link{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.08em;color:rgba(255,255,255,.65);text-decoration:none;transition:color .2s;}
+.reg-header-link:hover{color:#E8A020;}
+
+/* ── PAGE WRAP ── */
+.reg-page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+
+/* ── CARD ── */
+.reg-card{background:#FFFFFF;border-radius:16px;box-shadow:0 8px 48px rgba(11,30,61,.14);width:100%;max-width:580px;overflow:hidden;border:1px solid #DDE4EF;}
+
+/* Progress bar */
+.reg-progress{height:4px;background:#EEF2F8;}
+.reg-progress-fill{height:4px;background:linear-gradient(90deg,#1A4B8C,#E8A020);transition:width .4s ease;border-radius:0 4px 4px 0;}
+
+/* Card header */
+.reg-card-head{padding:28px 32px 0;}
+.step-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#E8A020;margin-bottom:6px;}
+.reg-card-head h2{font-family:'Bebas Neue',cursive;font-size:1.9rem;letter-spacing:.04em;color:#0B1E3D;line-height:1;margin-bottom:8px;}
+.reg-card-head p{font-size:.88rem;color:#5E7490;line-height:1.6;margin-bottom:0;}
+
+/* Divider */
+.reg-divider{height:1px;background:#EEF2F8;margin:20px 0;}
+
+/* ── STEPS ── */
+.step{display:none;padding:20px 32px 32px;}
+.step.active{display:block;}
+
+/* ── PATH SELECTOR (Step 1) ── */
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;}
+.path-card{border:2px solid #DDE4EF;border-radius:12px;padding:22px 18px;cursor:pointer;transition:all .25s;text-align:center;background:#FAFBFD;}
+.path-card:hover{border-color:#1A4B8C;background:#F0F5FF;transform:translateY(-2px);}
+.path-card.active{border-color:#E8A020;background:rgba(232,160,32,.04);}
+.path-card i{font-size:2rem;display:block;margin-bottom:12px;color:#8FA3BD;transition:color .25s;}
+.path-card:hover i,.path-card.active i{color:#E8A020;}
+.path-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.06em;color:#0B1E3D;margin-bottom:5px;}
+.path-card p{font-size:.78rem;color:#5E7490;line-height:1.5;}
+
+/* ── ROLE SELECTOR (Step 2 — for Work With Us) ── */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.role-card{border:2px solid #DDE4EF;border-radius:10px;padding:16px 14px;cursor:pointer;transition:all .22s;background:#FAFBFD;position:relative;}
+.role-card:hover{border-color:#1A4B8C;background:#F0F5FF;}
+.role-card.active{border-color:#E8A020;background:rgba(232,160,32,.04);}
+.role-card.disabled{opacity:.45;cursor:not-allowed;pointer-events:none;}
+.role-card i{font-size:1.5rem;color:#8FA3BD;margin-bottom:8px;display:block;transition:color .22s;}
+.role-card:hover i,.role-card.active i{color:#E8A020;}
+.role-card h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.05em;color:#0B1E3D;margin-bottom:3px;}
+.role-card p{font-size:.74rem;color:#5E7490;line-height:1.45;}
+.role-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;border:1.5px solid #DDE4EF;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;background:#fff;transition:all .2s;}
+.role-card.active .role-check{background:#E8A020;border-color:#E8A020;}
+.approval-badge{display:inline-flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:100px;margin-top:6px;}
+.badge-approval{background:rgba(214,59,59,.1);color:#D63B3B;border:1px solid rgba(214,59,59,.25);}
+.badge-instant{background:rgba(26,122,58,.1);color:#1A7A3A;border:1px solid rgba(26,122,58,.25);}
+
+/* Multi-role notice */
+.multi-role-notice{display:none;background:rgba(232,160,32,.08);border:1px solid rgba(232,160,32,.3);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:.84rem;color:#7A5500;line-height:1.55;}
+.multi-role-notice i{color:#E8A020;margin-right:6px;}
+
+/* ── FORM FIELDS ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#5E7490;}
+.fg label .req{color:#D63B3B;}
+.fg input,.fg select,.fg textarea{padding:11px 14px;border:1.5px solid #DDE4EF;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.9rem;color:#1C2B40;background:#FFFFFF;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#1A4B8C;box-shadow:0 0 0 3px rgba(26,75,140,.08);}
+.fg input.error,.fg select.error{border-color:#D63B3B;box-shadow:0 0 0 3px rgba(214,59,59,.08);}
+.fg .err-msg{font-size:.74rem;color:#D63B3B;display:none;}
+.fg.has-error .err-msg{display:block;}
+.fg.has-error input,.fg.has-error select{border-color:#D63B3B;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:42px;}
+.pw-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8FA3BD;cursor:pointer;font-size:1rem;padding:2px;}
+.pw-strength{height:4px;background:#EEF2F8;border-radius:2px;margin-top:5px;overflow:hidden;}
+.pw-strength-fill{height:4px;border-radius:2px;transition:width .3s,background .3s;}
+
+/* File upload zone */
+.upload-zone{border:2px dashed #DDE4EF;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#FAFBFD;position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:#1A4B8C;background:#F0F5FF;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-zone i{font-size:1.8rem;color:#8FA3BD;display:block;margin-bottom:8px;}
+.upload-zone p{font-size:.82rem;color:#5E7490;line-height:1.5;}
+.upload-zone .uz-hint{font-size:.72rem;color:#8FA3BD;margin-top:4px;}
+.uploaded-files{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.uploaded-file{display:flex;align-items:center;gap:8px;background:#F4F7FB;border-radius:6px;padding:7px 10px;font-size:.8rem;color:#1C2B40;}
+.uploaded-file i{color:#1A4B8C;font-size:.9rem;}
+.uploaded-file .uf-remove{margin-left:auto;background:none;border:none;color:#8FA3BD;cursor:pointer;font-size:.9rem;transition:color .2s;}
+.uploaded-file .uf-remove:hover{color:#D63B3B;}
+
+/* Info box */
+.info-box{background:rgba(26,75,140,.05);border:1px solid rgba(26,75,140,.18);border-radius:8px;padding:12px 14px;font-size:.82rem;color:#1A4B8C;line-height:1.6;margin-bottom:14px;}
+.info-box i{margin-right:6px;}
+.warn-box{background:rgba(232,160,32,.07);border:1px solid rgba(232,160,32,.3);border-radius:8px;padding:12px 14px;font-size:.82rem;color:#7A5500;line-height:1.6;margin-bottom:14px;}
+.warn-box i{margin-right:6px;color:#E8A020;}
+
+/* Terms */
+.terms-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;}
+.terms-row input[type=checkbox]{accent-color:#0B1E3D;width:16px;height:16px;flex-shrink:0;margin-top:2px;}
+.terms-row label{font-size:.82rem;color:#5E7490;line-height:1.5;cursor:pointer;}
+.terms-row a{color:#1A4B8C;text-decoration:none;}
+.terms-row a:hover{text-decoration:underline;}
+
+/* Submit / Nav buttons */
+.btn-row{display:flex;gap:10px;margin-top:4px;}
+.btn-back{background:transparent;color:#5E7490;border:1.5px solid #DDE4EF;padding:12px 22px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.btn-back:hover{border-color:#0B1E3D;color:#0B1E3D;}
+.btn-next,.btn-submit{flex:1;background:#E8A020;color:#0B1E3D;border:none;padding:13px 22px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-next:hover,.btn-submit:hover{background:#F5C05A;}
+.btn-submit{background:#0B1E3D;color:#fff;}
+.btn-submit:hover{background:#1A4B8C;}
+
+/* Success panel */
+.success-panel{text-align:center;padding:16px 0 8px;}
+.success-icon{width:72px;height:72px;border-radius:50%;background:#E8F5ED;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#1A7A3A;margin:0 auto 16px;}
+.success-icon.pending{background:rgba(232,160,32,.12);color:#E8A020;}
+.success-panel h3{font-family:'Bebas Neue',cursive;font-size:1.7rem;letter-spacing:.04em;color:#0B1E3D;margin-bottom:8px;}
+.success-panel p{font-size:.88rem;color:#5E7490;line-height:1.65;margin-bottom:12px;}
+.success-ref{display:inline-block;background:#F4F7FB;border:1px solid #DDE4EF;border-radius:8px;padding:8px 20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.08em;color:#0B1E3D;margin:8px 0 16px;}
+
+/* ── SIDE PANEL (desktop) ── */
+.reg-layout{display:grid;grid-template-columns:1fr 380px;min-height:100vh;}
+.reg-side{background:linear-gradient(160deg,#060F1E 0%,#0B1E3D 55%,#1A4B8C 100%);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.reg-side::before{content:'';position:absolute;top:-20%;right:-15%;width:400px;height:400px;border-radius:50%;background:rgba(232,160,32,.05);pointer-events:none;}
+.reg-side::after{content:'';position:absolute;bottom:-10%;left:-10%;width:300px;height:300px;border-radius:50%;background:rgba(26,75,140,.12);pointer-events:none;}
+.reg-side-inner{position:relative;z-index:2;}
+.reg-side h1{font-family:'Bebas Neue',cursive;font-size:3rem;letter-spacing:.04em;color:#FFFFFF;line-height:.95;margin-bottom:20px;}
+.reg-side h1 span{color:#E8A020;}
+.reg-side p{font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:32px;}
+.side-features{display:flex;flex-direction:column;gap:14px;}
+.side-feature{display:flex;align-items:flex-start;gap:12px;}
+.sf-icon{width:36px;height:36px;border-radius:8px;background:rgba(232,160,32,.12);display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#E8A020;flex-shrink:0;}
+.sf-text h5{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.06em;color:#FFFFFF;margin-bottom:3px;}
+.sf-text p{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.5;}
+.reg-main{background:#F4F7FB;display:flex;align-items:center;justify-content:center;padding:40px 28px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:#0B1E3D;color:#fff;padding:12px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.04em;box-shadow:0 8px 28px rgba(11,30,61,.3);z-index:999;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:9px;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast i{color:#E8A020;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .reg-layout{grid-template-columns:1fr;}
+  .reg-side{display:none;}
+  .reg-main{padding:28px 16px;}
+  .reg-card{max-width:100%;}
+  .step{padding:16px 20px 24px;}
+  .reg-card-head{padding:20px 20px 0;}
+}
+@media(max-width:520px){
+  .path-grid,.role-grid,.form-row{grid-template-columns:1fr;}
+  .reg-card-head h2{font-size:1.6rem;}
+}
+  </style>
+</head>
+<body>
+
+<div class="reg-layout">
+
+  <!-- ── SIDE PANEL ── -->
+  <div class="reg-side">
+    <div class="reg-side-inner">
+      <a href="index.html" class="reg-logo" style="margin-bottom:40px;display:inline-flex;">
+        <div class="logo-mark">TA</div>
+        <div class="logo-text">Trust Automobile<small>Verified Marketplace</small></div>
+      </a>
+      <h1>Join<br><span>Ghana's</span><br>Auto Platform</h1>
+      <p>Whether you're buying your first car or building a business in the auto industry — Trust Automobile is your home.</p>
+      <div class="side-features">
+        <div class="side-feature"><div class="sf-icon"><i class="bi bi-shield-check"></i></div><div class="sf-text"><h5>Verified Accounts</h5><p>All sellers, mechanics and dealers go through our verification process.</p></div></div>
+        <div class="side-feature"><div class="sf-icon"><i class="bi bi-people-fill"></i></div><div class="sf-text"><h5>15,000+ Members</h5><p>A growing community of buyers, sellers and auto professionals across Ghana.</p></div></div>
+        <div class="side-feature"><div class="sf-icon"><i class="bi bi-lock-fill"></i></div><div class="sf-text"><h5>Secure & Private</h5><p>Your data is encrypted and never shared without your consent.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div class="reg-main">
+    <div class="reg-card">
+      <div class="reg-progress"><div class="reg-progress-fill" id="progress-fill" style="width:25%"></div></div>
+
+      <div class="reg-card-head">
+        <div class="step-label" id="step-label">Step 1 of 3</div>
+        <h2 id="card-title">Create Your Account</h2>
+        <p id="card-sub">Tell us why you're joining so we can set up the right account for you.</p>
+      </div>
+
+      <!-- ════ STEP 1 — PATH CHOICE ════ -->
+      <div class="step active" id="step-1">
+        <div class="reg-divider"></div>
+        <div class="path-grid">
+          <div class="path-card" id="path-customer" onclick="selectPath('customer')">
+            <i class="bi bi-person-fill"></i>
+            <h3>I'm a Customer</h3>
+            <p>Browse, buy, and book services. Instant access — no approval needed.</p>
+          </div>
+          <div class="path-card" id="path-partner" onclick="selectPath('partner')">
+            <i class="bi bi-briefcase-fill"></i>
+            <h3>Work With Us</h3>
+            <p>List cars, offer mechanic services, rent vehicles, or sell spare parts.</p>
+          </div>
+        </div>
+        <div style="margin-top:24px;">
+          <button class="btn-next" style="width:100%;" onclick="goStep2()">
+            Continue <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+        <p style="text-align:center;font-size:.82rem;color:#8FA3BD;margin-top:14px;">Already have an account? <a href="login.html" style="color:#1A4B8C;text-decoration:none;font-weight:600;">Sign In</a></p>
+      </div>
+
+      <!-- ════ STEP 2a — CUSTOMER FORM ════ -->
+      <div class="step" id="step-2-customer">
+        <div class="reg-divider"></div>
+        <div class="form-row">
+          <div class="fg"><label>First Name <span class="req">*</span></label><input type="text" id="c-fname" placeholder="Kofi" autocomplete="given-name"/><span class="err-msg">Required</span></div>
+          <div class="fg"><label>Last Name <span class="req">*</span></label><input type="text" id="c-lname" placeholder="Mensah" autocomplete="family-name"/><span class="err-msg">Required</span></div>
+        </div>
+        <div class="fg"><label>Email Address <span class="req">*</span></label><input type="email" id="c-email" placeholder="kofi@email.com" autocomplete="email"/><span class="err-msg">Enter a valid email address</span></div>
+        <div class="fg"><label>Phone Number <span class="req">*</span></label><input type="tel" id="c-phone" placeholder="+233 54 000 0000" autocomplete="tel"/><span class="err-msg">Required</span></div>
+        <div class="fg"><label>Password <span class="req">*</span></label>
+          <div class="pw-wrap"><input type="password" id="c-pw" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this,'c-strength')"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('c-pw',this)"><i class="bi bi-eye-slash"></i></button></div>
+          <div class="pw-strength"><div class="pw-strength-fill" id="c-strength" style="width:0%;background:#DDE4EF;"></div></div>
+          <span class="err-msg">Min. 8 characters</span>
+        </div>
+        <div class="fg"><label>Confirm Password <span class="req">*</span></label>
+          <div class="pw-wrap"><input type="password" id="c-pw2" placeholder="Repeat password" autocomplete="new-password"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('c-pw2',this)"><i class="bi bi-eye-slash"></i></button></div>
+          <span class="err-msg">Passwords do not match</span>
+        </div>
+        <div class="terms-row"><input type="checkbox" id="c-terms"/><label for="c-terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>.</label></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="backTo1()"><i class="bi bi-arrow-left"></i> Back</button>
+          <button class="btn-submit" onclick="submitCustomer()"><i class="bi bi-check-circle"></i> Create Account</button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 2b — ROLE SELECTOR (Work With Us) ════ -->
+      <div class="step" id="step-2-partner">
+        <div class="reg-divider"></div>
+        <p style="font-size:.84rem;color:#5E7490;margin-bottom:14px;">Select your role. You can only register under <strong>one role</strong> at a time.</p>
+        <div class="role-grid">
+          <div class="role-card" id="role-seller" onclick="selectRole('seller')">
+            <div class="role-check"><i class="bi bi-check"></i></div>
+            <i class="bi bi-car-front-fill"></i>
+            <h4>Car Seller</h4>
+            <p>List and sell used or new vehicles on the platform.</p>
+            <span class="approval-badge badge-approval"><i class="bi bi-clock"></i> Requires Approval</span>
+          </div>
+          <div class="role-card" id="role-renter" onclick="selectRole('renter')">
+            <div class="role-check"><i class="bi bi-check"></i></div>
+            <i class="bi bi-key-fill"></i>
+            <h4>Car Renter</h4>
+            <p>Offer vehicles for short or long-term rental.</p>
+            <span class="approval-badge badge-approval"><i class="bi bi-clock"></i> Requires Approval</span>
+          </div>
+          <div class="role-card" id="role-mechanic" onclick="selectRole('mechanic')">
+            <div class="role-check"><i class="bi bi-check"></i></div>
+            <i class="bi bi-tools"></i>
+            <h4>Mechanic</h4>
+            <p>Offer repair and maintenance services to customers.</p>
+            <span class="approval-badge badge-approval"><i class="bi bi-clock"></i> Requires Approval</span>
+          </div>
+          <div class="role-card" id="role-parts" onclick="selectRole('parts')">
+            <div class="role-check"><i class="bi bi-check"></i></div>
+            <i class="bi bi-box-seam-fill"></i>
+            <h4>Spare Parts Dealer</h4>
+            <p>Sell genuine and aftermarket parts on AutoPartsPro.</p>
+            <span class="approval-badge badge-approval"><i class="bi bi-clock"></i> Requires Approval</span>
+          </div>
+        </div>
+        <div class="multi-role-notice" id="multi-role-notice">
+          <i class="bi bi-info-circle-fill"></i>
+          If you need to work with us in more than one capacity, please <a href="/cdn-cgi/l/email-protection#d4bcb1b8b8bb94a0a6a1a7a0b5a1a0bbb9bbb6bdb8b1fab3bc" style="color:#7A5500;font-weight:700;">contact the administrator</a>.
+        </div>
+        <div class="btn-row" style="margin-top:18px;">
+          <button class="btn-back" onclick="backTo1()"><i class="bi bi-arrow-left"></i> Back</button>
+          <button class="btn-next" onclick="goStep3()">Continue <i class="bi bi-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 3 — PARTNER FORM ════ -->
+      <div class="step" id="step-3-partner">
+        <div class="reg-divider"></div>
+
+        <!-- Seller / Renter fields -->
+        <div id="fields-seller-renter" style="display:none;">
+          <div class="warn-box"><i class="bi bi-clock-history"></i> Your account will be <strong>inactive</strong> until an admin reviews and approves your submitted documents. You'll receive an email notification once reviewed.</div>
+          <div class="form-row">
+            <div class="fg"><label>First Name <span class="req">*</span></label><input type="text" id="p-fname" placeholder="Kwame" autocomplete="given-name"/><span class="err-msg">Required</span></div>
+            <div class="fg"><label>Last Name <span class="req">*</span></label><input type="text" id="p-lname" placeholder="Asante" autocomplete="family-name"/><span class="err-msg">Required</span></div>
+          </div>
+          <div class="fg"><label>Business / Trading Name <span class="req">*</span></label><input type="text" id="p-biz" placeholder="e.g. Asante Motors Ltd"/><span class="err-msg">Required</span></div>
+          <div class="fg"><label>Email Address <span class="req">*</span></label><input type="email" id="p-email" placeholder="kwame@asantemotors.gh" autocomplete="email"/><span class="err-msg">Enter a valid email</span></div>
+          <div class="fg"><label>Phone Number <span class="req">*</span></label><input type="tel" id="p-phone" placeholder="+233 24 000 0000" autocomplete="tel"/><span class="err-msg">Required</span></div>
+          <div class="fg"><label>Business Location / Region <span class="req">*</span></label>
+            <select id="p-region"><option value="">Select Region</option><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Eastern</option><option>Central</option><option>Northern</option><option>Volta</option><option>Brong-Ahafo</option></select>
+            <span class="err-msg">Required</span>
+          </div>
+          <div class="info-box" id="doc-info"><i class="bi bi-file-earmark-text"></i> Please upload the following documents: <strong id="doc-list">–</strong>. Accepted formats: PDF, JPG, PNG (max 5MB each).</div>
+          <div class="fg"><label>Upload Documents <span class="req">*</span></label>
+            <div class="upload-zone" id="upload-zone" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+              <input type="file" id="doc-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFiles(this.files)"/>
+              <i class="bi bi-cloud-upload"></i>
+              <p>Drag & drop files here, or <strong style="color:#1A4B8C;">click to browse</strong></p>
+              <div class="uz-hint">PDF, JPG, PNG — max 5MB per file</div>
+            </div>
+            <div class="uploaded-files" id="uploaded-files"></div>
+            <span class="err-msg" id="upload-err" style="display:none;">Please upload at least one document</span>
+          </div>
+        </div>
+
+        <!-- Mechanic / Parts fields -->
+        <div id="fields-mechanic-parts" style="display:none;">
+          <div class="warn-box"><i class="bi bi-clock-history"></i> Your account will be reviewed by an admin before activation. You'll be notified by email once approved.</div>
+          <div class="form-row">
+            <div class="fg"><label>First Name <span class="req">*</span></label><input type="text" id="m-fname" placeholder="Emmanuel" autocomplete="given-name"/><span class="err-msg">Required</span></div>
+            <div class="fg"><label>Last Name <span class="req">*</span></label><input type="text" id="m-lname" placeholder="Darko" autocomplete="family-name"/><span class="err-msg">Required</span></div>
+          </div>
+          <div class="fg"><label>Workshop / Shop Name <span class="req">*</span></label><input type="text" id="m-biz" placeholder="e.g. ProFix Auto Electricals"/><span class="err-msg">Required</span></div>
+          <div class="fg"><label>Email Address <span class="req">*</span></label><input type="email" id="m-email" placeholder="emmanuel@profix.gh" autocomplete="email"/><span class="err-msg">Enter a valid email</span></div>
+          <div class="fg"><label>Phone Number <span class="req">*</span></label><input type="tel" id="m-phone" placeholder="+233 55 000 0000" autocomplete="tel"/><span class="err-msg">Required</span></div>
+          <div class="fg"><label>Location / Region <span class="req">*</span></label>
+            <select id="m-region"><option value="">Select Region</option><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Eastern</option><option>Central</option><option>Northern</option><option>Volta</option><option>Brong-Ahafo</option></select>
+            <span class="err-msg">Required</span>
+          </div>
+          <div class="fg" id="mech-spec-fg" style="display:none;"><label>Specialisation</label>
+            <select id="m-spec"><option value="">Select speciality</option><option>General Repairs</option><option>Auto Electrical</option><option>Bodywork & Paint</option><option>Air Conditioning</option><option>Diagnostics</option><option>Transmission</option><option>Tyres & Alignment</option></select>
+          </div>
+          <div class="fg" id="parts-cat-fg" style="display:none;"><label>Parts Category</label>
+            <select id="m-parts-cat"><option value="">Select category</option><option>Engine Parts</option><option>Brakes</option><option>Electrical</option><option>Body Parts</option><option>Tyres & Wheels</option><option>Suspension</option><option>General / Mixed</option></select>
+          </div>
+          <div class="info-box"><i class="bi bi-file-earmark-text"></i> Upload a valid national ID or business registration document for verification. Accepted: PDF, JPG, PNG (max 5MB).</div>
+          <div class="fg"><label>Upload ID / Verification Doc <span class="req">*</span></label>
+            <div class="upload-zone" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop2(event)">
+              <input type="file" id="doc-files2" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFiles2(this.files)"/>
+              <i class="bi bi-cloud-upload"></i>
+              <p>Drag & drop or <strong style="color:#1A4B8C;">click to browse</strong></p>
+              <div class="uz-hint">PDF, JPG, PNG — max 5MB per file</div>
+            </div>
+            <div class="uploaded-files" id="uploaded-files2"></div>
+            <span class="err-msg" id="upload-err2" style="display:none;">Please upload at least one document</span>
+          </div>
+        </div>
+
+        <div class="fg"><label>Password <span class="req">*</span></label>
+          <div class="pw-wrap"><input type="password" id="p-pw" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this,'p-strength')"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('p-pw',this)"><i class="bi bi-eye-slash"></i></button></div>
+          <div class="pw-strength"><div class="pw-strength-fill" id="p-strength" style="width:0%;background:#DDE4EF;"></div></div>
+          <span class="err-msg">Min. 8 characters</span>
+        </div>
+        <div class="fg"><label>Confirm Password <span class="req">*</span></label>
+          <div class="pw-wrap"><input type="password" id="p-pw2" placeholder="Repeat password" autocomplete="new-password"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('p-pw2',this)"><i class="bi bi-eye-slash"></i></button></div>
+          <span class="err-msg">Passwords do not match</span>
+        </div>
+        <div class="terms-row"><input type="checkbox" id="p-terms"/><label for="p-terms">I agree to the <a href="#">Terms & Conditions</a>, <a href="#">Privacy Policy</a>, and understand my account requires admin approval before activation.</label></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep2Partner()"><i class="bi bi-arrow-left"></i> Back</button>
+          <button class="btn-submit" onclick="submitPartner()"><i class="bi bi-send"></i> Submit Application</button>
+        </div>
+      </div>
+
+      <!-- ════ SUCCESS ════ -->
+      <div class="step" id="step-success">
+        <div class="reg-divider"></div>
+        <div class="success-panel">
+          <div class="success-icon" id="success-icon"><i class="bi bi-check-circle-fill"></i></div>
+          <h3 id="success-title">Account Created!</h3>
+          <p id="success-msg">Welcome to Trust Automobile Ghana. You can now sign in and start using the platform.</p>
+          <div class="success-ref" id="success-ref">–</div>
+          <p style="font-size:.76rem;color:#8FA3BD;" id="success-note">–</p>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
+            <a href="login.html" style="background:#0B1E3D;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:none;">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+            <a href="index.html" style="background:transparent;color:#0B1E3D;border:1.5px solid #DDE4EF;padding:11px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:none;">
+              <i class="bi bi-house"></i> Home
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /reg-card -->
+  </div><!-- /reg-main -->
+
+</div><!-- /reg-layout -->
+
+<div class="toast" id="toast"><i class="bi bi-exclamation-circle-fill"></i><span id="toast-msg"></span></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let selectedPath = null; // 'customer' | 'partner'
+let selectedRole = null; // 'seller' | 'renter' | 'mechanic' | 'parts'
+let uploadedDocs  = [];  // files for seller/renter
+let uploadedDocs2 = [];  // files for mechanic/parts
+
+/* ═══════════════════════════════════════
+   STEP NAVIGATION
+═══════════════════════════════════════ */
+const ROLE_DOCS = {
+  seller:   'Business Registration Certificate, National ID, and recent utility bill',
+  renter:   'Business Registration Certificate, National ID, Vehicle Ownership Documents, and Insurance Certificate',
+  mechanic: 'National ID or Driver Licence, and Business/Workshop Registration (if applicable)',
+  parts:    'National ID, Business Registration Certificate, and a list of primary suppliers',
+};
+const ROLE_LABELS = {
+  seller:'Car Seller', renter:'Car Renter', mechanic:'Mechanic', parts:'Spare Parts Dealer'
+};
+
+function updateHeader(step, title, sub, progress) {
+  document.getElementById('step-label').textContent = step;
+  document.getElementById('card-title').textContent = title;
+  document.getElementById('card-sub').textContent   = sub;
+  document.getElementById('progress-fill').style.width = progress + '%';
+}
+
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectPath(path) {
+  selectedPath = path;
+  document.querySelectorAll('.path-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('path-' + path).classList.add('active');
+}
+
+function goStep2() {
+  if (!selectedPath) { showToast('Please select an option to continue.'); return; }
+  if (selectedPath === 'customer') {
+    showStep('step-2-customer');
+    updateHeader('Step 2 of 3','Create Your Account','Fill in your details to get started right away.', 60);
+  } else {
+    showStep('step-2-partner');
+    updateHeader('Step 2 of 3','Choose Your Role','Select how you want to work with Trust Automobile.', 50);
+  }
+}
+
+function backTo1() {
+  showStep('step-1');
+  updateHeader('Step 1 of 3','Create Your Account','Tell us why you\'re joining so we can set up the right account for you.', 25);
+}
+
+function selectRole(role) {
+  // Only allow one role
+  selectedRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('role-' + role).classList.add('active');
+  document.getElementById('multi-role-notice').style.display = 'none';
+}
+
+function goStep3() {
+  if (!selectedRole) { showToast('Please select your role to continue.'); return; }
+  showStep('step-3-partner');
+  updateHeader('Step 3 of 3', 'Complete Your Application', ROLE_LABELS[selectedRole] + ' registration', 85);
+
+  // Show correct field set
+  const isApproval = ['seller','renter'].includes(selectedRole);
+  document.getElementById('fields-seller-renter').style.display = isApproval ? 'block' : 'none';
+  document.getElementById('fields-mechanic-parts').style.display = isApproval ? 'none' : 'block';
+
+  // Mechanic vs Parts extra fields
+  document.getElementById('mech-spec-fg').style.display   = selectedRole === 'mechanic' ? 'block' : 'none';
+  document.getElementById('parts-cat-fg').style.display   = selectedRole === 'parts'    ? 'block' : 'none';
+
+  // Doc list text
+  if (isApproval) {
+    document.getElementById('doc-list').textContent = ROLE_DOCS[selectedRole];
+  }
+}
+
+function goStep2Partner() {
+  showStep('step-2-partner');
+  updateHeader('Step 2 of 3','Choose Your Role','Select how you want to work with Trust Automobile.', 50);
+}
+
+/* ═══════════════════════════════════════
+   FILE UPLOADS
+═══════════════════════════════════════ */
+function handleFiles(files) {
+  [...files].forEach(f => addFile(f, uploadedDocs, 'uploaded-files'));
+}
+function handleFiles2(files) {
+  [...files].forEach(f => addFile(f, uploadedDocs2, 'uploaded-files2'));
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+}
+function handleDrop2(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag');
+  handleFiles2(e.dataTransfer.files);
+}
+
+function addFile(file, arr, listId) {
+  const valid = ['application/pdf','image/jpeg','image/png'].includes(file.type);
+  const small  = file.size <= 5 * 1024 * 1024;
+  if (!valid) { showToast('Invalid file type. Use PDF, JPG or PNG.'); return; }
+  if (!small)  { showToast('File too large. Max 5MB per file.'); return; }
+  if (arr.find(f => f.name === file.name)) return;
+  arr.push(file);
+  const list = document.getElementById(listId);
+  const div  = document.createElement('div');
+  div.className = 'uploaded-file';
+  div.id = 'uf-' + file.name.replace(/\W/g,'');
+  div.innerHTML = `<i class="bi bi-file-earmark-check-fill"></i><span>${file.name}</span><span style="font-size:.72rem;color:#8FA3BD;margin-left:4px;">${(file.size/1024).toFixed(0)} KB</span><button class="uf-remove" onclick="removeFile('${file.name}','${arr===uploadedDocs?'1':'2'}',this.closest('.uploaded-file').id)"><i class="bi bi-x-lg"></i></button>`;
+  list.appendChild(div);
+}
+
+function removeFile(name, which, divId) {
+  const arr = which === '1' ? uploadedDocs : uploadedDocs2;
+  const idx = arr.findIndex(f => f.name === name);
+  if (idx !== -1) arr.splice(idx, 1);
+  document.getElementById(divId)?.remove();
+}
+
+/* ═══════════════════════════════════════
+   PASSWORD HELPERS
+═══════════════════════════════════════ */
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.querySelector('i').className = show ? 'bi bi-eye' : 'bi bi-eye-slash';
+}
+
+function checkStrength(input, barId) {
+  const v = input.value;
+  const bar = document.getElementById(barId);
+  let score = 0;
+  if (v.length >= 8)  score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const colours = ['#D63B3B','#E8A020','#1A7A3A','#1A7A3A'];
+  bar.style.width  = (score * 25) + '%';
+  bar.style.background = colours[score - 1] || '#DDE4EF';
+}
+
+/* ═══════════════════════════════════════
+   VALIDATION
+═══════════════════════════════════════ */
+function validate(fields) {
+  let ok = true;
+  fields.forEach(({ id, type, match }) => {
+    const el  = document.getElementById(id);
+    const fg  = el.closest('.fg');
+    const val = el.value.trim();
+    let pass  = true;
+    if (type === 'required') pass = val.length > 0;
+    if (type === 'email')    pass = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    if (type === 'pw')       pass = val.length >= 8;
+    if (type === 'pw-match') pass = val === document.getElementById(match).value;
+    if (type === 'select')   pass = val !== '';
+    fg.classList.toggle('has-error', !pass);
+    if (!pass) ok = false;
+  });
+  return ok;
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT CUSTOMER
+═══════════════════════════════════════ */
+function submitCustomer() {
+  const ok = validate([
+    { id:'c-fname',  type:'required' },
+    { id:'c-lname',  type:'required' },
+    { id:'c-email',  type:'email'    },
+    { id:'c-phone',  type:'required' },
+    { id:'c-pw',     type:'pw'       },
+    { id:'c-pw2',    type:'pw-match', match:'c-pw' },
+  ]);
+  if (!ok) { showToast('Please fix the errors above.'); return; }
+  if (!document.getElementById('c-terms').checked) { showToast('Please agree to the Terms & Conditions.'); return; }
+
+  const user = {
+    id:         'CU-' + Date.now().toString(36).toUpperCase(),
+    role:       'customer',
+    status:     'active',
+    firstName:  document.getElementById('c-fname').value.trim(),
+    lastName:   document.getElementById('c-lname').value.trim(),
+    email:      document.getElementById('c-email').value.trim(),
+    phone:      document.getElementById('c-phone').value.trim(),
+    password:   document.getElementById('c-pw').value,
+    createdAt:  new Date().toISOString(),
+    documents:  [],
+  };
+  saveUser(user);
+  showSuccess('active', user.id);
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT PARTNER
+═══════════════════════════════════════ */
+function submitPartner() {
+  const isApproval = ['seller','renter'].includes(selectedRole);
+  let ok = false;
+
+  if (isApproval) {
+    ok = validate([
+      { id:'p-fname',  type:'required' },
+      { id:'p-lname',  type:'required' },
+      { id:'p-biz',    type:'required' },
+      { id:'p-email',  type:'email'    },
+      { id:'p-phone',  type:'required' },
+      { id:'p-region', type:'select'   },
+      { id:'p-pw',     type:'pw'       },
+      { id:'p-pw2',    type:'pw-match', match:'p-pw' },
+    ]);
+    if (uploadedDocs.length === 0) {
+      document.getElementById('upload-err').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('upload-err').style.display = 'none';
+    }
+  } else {
+    ok = validate([
+      { id:'m-fname',  type:'required' },
+      { id:'m-lname',  type:'required' },
+      { id:'m-biz',    type:'required' },
+      { id:'m-email',  type:'email'    },
+      { id:'m-phone',  type:'required' },
+      { id:'m-region', type:'select'   },
+      { id:'p-pw',     type:'pw'       },
+      { id:'p-pw2',    type:'pw-match', match:'p-pw' },
+    ]);
+    if (uploadedDocs2.length === 0) {
+      document.getElementById('upload-err2').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('upload-err2').style.display = 'none';
+    }
+  }
+
+  if (!ok) { showToast('Please fix the errors above.'); return; }
+  if (!document.getElementById('p-terms').checked) { showToast('Please agree to the Terms & Conditions.'); return; }
+
+  const fName  = isApproval ? document.getElementById('p-fname').value.trim() : document.getElementById('m-fname').value.trim();
+  const lName  = isApproval ? document.getElementById('p-lname').value.trim() : document.getElementById('m-lname').value.trim();
+  const email  = isApproval ? document.getElementById('p-email').value.trim() : document.getElementById('m-email').value.trim();
+  const phone  = isApproval ? document.getElementById('p-phone').value.trim() : document.getElementById('m-phone').value.trim();
+  const biz    = isApproval ? document.getElementById('p-biz').value.trim()   : document.getElementById('m-biz').value.trim();
+  const region = isApproval ? document.getElementById('p-region').value       : document.getElementById('m-region').value;
+  const docs   = isApproval ? uploadedDocs : uploadedDocs2;
+
+  const user = {
+    id:           'PA-' + Date.now().toString(36).toUpperCase(),
+    role:         selectedRole,
+    status:       'pending',
+    firstName:    fName,
+    lastName:     lName,
+    email,
+    phone,
+    password:     document.getElementById('p-pw').value,
+    businessName: biz,
+    region,
+    createdAt:    new Date().toISOString(),
+    documents:    docs.map(f => ({ name: f.name, size: f.size, type: f.type })),
+    notes:        '',
+  };
+  saveUser(user);
+  showSuccess('pending', user.id);
+}
+
+/* ═══════════════════════════════════════
+   STORAGE (localStorage as DB substitute)
+═══════════════════════════════════════ */
+function saveUser(user) {
+  const all = JSON.parse(localStorage.getItem('ta_users') || '[]');
+  // Check for duplicate email
+  if (all.find(u => u.email === user.email)) {
+    showToast('An account with this email already exists.'); return false;
+  }
+  all.push(user);
+  localStorage.setItem('ta_users', JSON.stringify(all));
+  return true;
+}
+
+/* ═══════════════════════════════════════
+   SUCCESS
+═══════════════════════════════════════ */
+function showSuccess(type, id) {
+  showStep('step-success');
+  updateHeader('Complete','You\'re all set!','', 100);
+  const icon  = document.getElementById('success-icon');
+  const title = document.getElementById('success-title');
+  const msg   = document.getElementById('success-msg');
+  const ref   = document.getElementById('success-ref');
+  const note  = document.getElementById('success-note');
+
+  ref.textContent = 'Reference: ' + id;
+
+  if (type === 'active') {
+    icon.className  = 'success-icon';
+    icon.innerHTML  = '<i class="bi bi-check-circle-fill"></i>';
+    title.textContent = 'Account Created!';
+    msg.textContent   = 'Welcome to Trust Automobile Ghana. Your account is active and ready to use.';
+    note.textContent  = 'Save your reference number for support queries.';
+  } else {
+    icon.className  = 'success-icon pending';
+    icon.innerHTML  = '<i class="bi bi-hourglass-split"></i>';
+    title.textContent = 'Application Submitted!';
+    msg.textContent   = 'Your application is under review. Our admin team will verify your documents and notify you by email once approved. This usually takes 1–3 business days.';
+    note.textContent  = 'You will not be able to sign in until your account is approved.';
+  }
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Prevent multi-role hint (show if user tries to click another role)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.role-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const alreadySelected = document.querySelector('.role-card.active');
+      if (alreadySelected && alreadySelected !== card) {
+        document.getElementById('multi-role-notice').style.display = 'block';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

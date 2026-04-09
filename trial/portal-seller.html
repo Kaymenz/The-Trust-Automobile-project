@@ -1,0 +1,3242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Seller Dashboard — Trust Automobile Ghana</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&family=Barlow+Condensed:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Barlow", sans-serif;
+        color: #1c2b40;
+        background: #f0f3f8;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .portal-shell {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        flex: 1;
+        min-height: 0;
+      }
+      .topbar {
+        background: #0b1e3d;
+        padding: 0 24px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+      }
+      .topbar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .lm {
+        width: 32px;
+        height: 32px;
+        background: #e8a020;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.1rem;
+        color: #0b1e3d;
+        flex-shrink: 0;
+      }
+      .lt {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        letter-spacing: 0.06em;
+        line-height: 1.1;
+      }
+      .lt small {
+        display: block;
+        font-size: 0.56rem;
+        font-weight: 400;
+        color: #8fa3bd;
+        letter-spacing: 0.14em;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .topbar-notif {
+        position: relative;
+        cursor: pointer;
+      }
+      .notif-dot {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d63b3b;
+        border: 1.5px solid #0b1e3d;
+      }
+      .topbar-user {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+      }
+      .user-av {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a4b8c, #e8a020);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 0.9rem;
+        color: #fff;
+      }
+      .user-info {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.2;
+      }
+      .user-info small {
+        display: block;
+        font-size: 0.62rem;
+        color: rgba(255, 255, 255, 0.4);
+        font-weight: 400;
+      }
+      .btn-topbar {
+        background: rgba(214, 59, 59, 0.18);
+        color: #ff8080;
+        border: none;
+        padding: 7px 13px;
+        border-radius: 6px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .btn-topbar:hover {
+        background: #d63b3b;
+        color: #fff;
+      }
+      .sidebar {
+        background: #fff;
+        border-right: 1px solid #dde4ef;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .sb-profile {
+        padding: 20px 18px;
+        border-bottom: 1px solid #eef2f8;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .sb-av {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0b1e3d, #1a4b8c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.1rem;
+        color: #e8a020;
+        flex-shrink: 0;
+      }
+      .sb-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #0b1e3d;
+        line-height: 1.2;
+      }
+      .sb-role {
+        font-size: 0.7rem;
+        color: #1a7a3a;
+        font-weight: 600;
+        font-family: "Barlow Condensed", sans-serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sb-section {
+        padding: 10px 18px 4px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #8fa3bd;
+        margin-top: 6px;
+      }
+      .sb-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.86rem;
+        letter-spacing: 0.04em;
+        color: #5e7490;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+        position: relative;
+      }
+      .sb-item:hover {
+        color: #0b1e3d;
+        background: #f4f7fb;
+      }
+      .sb-item.active {
+        color: #0b1e3d;
+        background: #f4f7fb;
+        border-left-color: #e8a020;
+        font-weight: 700;
+      }
+      .sb-item i {
+        font-size: 0.95rem;
+        width: 18px;
+        text-align: center;
+      }
+      .sb-badge {
+        margin-left: auto;
+        background: #d63b3b;
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 100px;
+      }
+      .sb-item.active .sb-badge {
+        background: #e8a020;
+        color: #0b1e3d;
+      }
+      .sb-footer {
+        margin-top: auto;
+        padding: 14px 18px;
+        border-top: 1px solid #eef2f8;
+      }
+      .sb-footer a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: #8fa3bd;
+        text-decoration: none;
+        padding: 6px 0;
+        transition: color 0.2s;
+      }
+      .sb-footer a:hover {
+        color: #0b1e3d;
+      }
+      .main {
+        padding: 28px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+      .section-head {
+        margin-bottom: 22px;
+      }
+      .section-head h2 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.9rem;
+        letter-spacing: 0.04em;
+        color: #0b1e3d;
+        margin-bottom: 3px;
+      }
+      .section-head p {
+        font-size: 0.86rem;
+        color: #5e7490;
+        line-height: 1.6;
+      }
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: #fff;
+        border-radius: 11px;
+        border: 1px solid #dde4ef;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: all 0.2s;
+      }
+      .stat-card:hover {
+        box-shadow: 0 6px 20px rgba(11, 30, 61, 0.08);
+        transform: translateY(-1px);
+      }
+      .stat-ic {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+      .stat-num {
+        font-family: "Bebas Neue", cursive;
+        font-size: 2rem;
+        color: #0b1e3d;
+        letter-spacing: 0.04em;
+        line-height: 1;
+      }
+      .stat-lbl {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #5e7490;
+        margin-top: 2px;
+      }
+      .stat-delta {
+        font-size: 0.72rem;
+        margin-top: 3px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .stat-delta.up {
+        color: #1a7a3a;
+      }
+      .stat-delta.down {
+        color: #d63b3b;
+      }
+      .chart-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #dde4ef;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .card-head {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eef2f8;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .card-head h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.84rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #0b1e3d;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .card-head h3 i {
+        color: #e8a020;
+      }
+      .card-body {
+        padding: 18px;
+      }
+      .chart-wrap {
+        position: relative;
+        height: 240px;
+      }
+      .tbl-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead tr {
+        background: #f4f7fb;
+      }
+      th {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5e7490;
+        padding: 10px 14px;
+        text-align: left;
+        white-space: nowrap;
+      }
+      td {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+        color: #1c2b40;
+        border-bottom: 1px solid #eef2f8;
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #fafbfd;
+      }
+      .empty-td {
+        text-align: center;
+        color: #8fa3bd;
+        padding: 40px 14px;
+        font-size: 0.86rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 9px;
+        border-radius: 100px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.67rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .bg-active {
+        background: rgba(26, 122, 58, 0.1);
+        color: #1a7a3a;
+      }
+      .bg-pending {
+        background: rgba(232, 160, 32, 0.12);
+        color: #8a5a00;
+      }
+      .bg-sold {
+        background: rgba(26, 75, 140, 0.1);
+        color: #1a4b8c;
+      }
+      .bg-draft {
+        background: #f4f7fb;
+        color: #8fa3bd;
+        border: 1px solid #dde4ef;
+      }
+      .btn {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 8px 15px;
+        border-radius: 7px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+        border: none;
+      }
+      .btn-gold {
+        background: #e8a020;
+        color: #0b1e3d;
+      }
+      .btn-gold:hover {
+        background: #f5c05a;
+      }
+      .btn-navy {
+        background: #0b1e3d;
+        color: #fff;
+      }
+      .btn-navy:hover {
+        background: #1a4b8c;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #5e7490;
+        border: 1.5px solid #dde4ef;
+      }
+      .btn-ghost:hover {
+        border-color: #0b1e3d;
+        color: #0b1e3d;
+      }
+      .btn-danger {
+        background: rgba(214, 59, 59, 0.08);
+        color: #d63b3b;
+        border: 1.5px solid rgba(214, 59, 59, 0.2);
+      }
+      .btn-danger:hover {
+        background: #d63b3b;
+        color: #fff;
+        border-color: #d63b3b;
+      }
+      .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .fg {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 14px;
+      }
+      .fg label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5e7490;
+      }
+      .fg label .req {
+        color: #d63b3b;
+      }
+      .fg input,
+      .fg select,
+      .fg textarea {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 8px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.88rem;
+        color: #1c2b40;
+        background: #fff;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .fg input:focus,
+      .fg select:focus,
+      .fg textarea:focus {
+        border-color: #1a4b8c;
+        box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.08);
+      }
+      .fg textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .image-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #dde4ef;
+        background: #f4f7fb;
+      }
+      .image-item img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        display: block;
+      }
+      .image-item button {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(214, 59, 59, 0.9);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+      }
+      .image-item button:hover {
+        background: #d63b3b;
+      }
+      .add-image-btn {
+        margin-top: 8px;
+        background: #f4f7fb;
+        border: 1px dashed #dde4ef;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .add-image-btn:hover {
+        background: #eef2f8;
+        border-color: #1a4b8c;
+      }
+      .add-image-btn i {
+        font-size: 1.2rem;
+        color: #1a4b8c;
+      }
+      .chat-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        height: 560px;
+        border: 1px solid #dde4ef;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .chat-list {
+        border-right: 1px solid #dde4ef;
+        overflow-y: auto;
+      }
+      .chat-list-head {
+        padding: 14px 16px;
+        border-bottom: 1px solid #eef2f8;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #0b1e3d;
+      }
+      .chat-item {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #eef2f8;
+        transition: background 0.15s;
+      }
+      .chat-item:hover,
+      .chat-item.active {
+        background: #f4f7fb;
+      }
+      .chat-av {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #0b1e3d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Bebas Neue", cursive;
+        font-size: 0.9rem;
+        color: #e8a020;
+        flex-shrink: 0;
+      }
+      .chat-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.86rem;
+        color: #0b1e3d;
+      }
+      .chat-preview {
+        font-size: 0.74rem;
+        color: #8fa3bd;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+      }
+      .chat-time {
+        font-size: 0.68rem;
+        color: #8fa3bd;
+        margin-left: auto;
+        white-space: nowrap;
+      }
+      .chat-unread {
+        background: #d63b3b;
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 100px;
+        margin-left: auto;
+      }
+      .chat-window {
+        display: flex;
+        flex-direction: column;
+      }
+      .chat-win-head {
+        padding: 13px 18px;
+        border-bottom: 1px solid #eef2f8;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #f4f7fb;
+      }
+      .chat-win-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #0b1e3d;
+      }
+      .chat-win-sub {
+        font-size: 0.74rem;
+        color: #5e7490;
+      }
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f0f3f8;
+      }
+      .msg {
+        max-width: 72%;
+        display: flex;
+        flex-direction: column;
+      }
+      .msg.sent {
+        align-self: flex-end;
+        align-items: flex-end;
+      }
+      .msg.recv {
+        align-self: flex-start;
+        align-items: flex-start;
+      }
+      .msg-bubble {
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 0.86rem;
+        line-height: 1.5;
+        word-break: break-word;
+      }
+      .msg.sent .msg-bubble {
+        background: #0b1e3d;
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .msg.recv .msg-bubble {
+        background: #fff;
+        color: #1c2b40;
+        border: 1px solid #dde4ef;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 4px rgba(11, 30, 61, 0.06);
+      }
+      .msg-time {
+        font-size: 0.66rem;
+        color: #8fa3bd;
+        margin-top: 3px;
+      }
+      .msg.sent .msg-time {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .chat-input-area {
+        padding: 12px 14px;
+        background: #fff;
+        border-top: 1px solid #dde4ef;
+        display: flex;
+        gap: 9px;
+        align-items: flex-end;
+      }
+      .chat-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1.5px solid #dde4ef;
+        border-radius: 22px;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.88rem;
+        color: #1c2b40;
+        outline: none;
+        resize: none;
+        min-height: 42px;
+        max-height: 100px;
+        transition: border-color 0.2s;
+        background: #f4f7fb;
+      }
+      .chat-input:focus {
+        border-color: #1a4b8c;
+        background: #fff;
+      }
+      .chat-send {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e8a020;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #0b1e3d;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .chat-send:hover {
+        background: #f5c05a;
+        transform: scale(1.08);
+      }
+      .chat-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #8fa3bd;
+        gap: 10px;
+      }
+      .chat-empty i {
+        font-size: 2.5rem;
+      }
+      .vid-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .vid-card {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #dde4ef;
+        overflow: hidden;
+        transition: all 0.2s;
+      }
+      .vid-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(11, 30, 61, 0.1);
+      }
+      .vid-thumb {
+        position: relative;
+        padding-top: 56.25%;
+        background: #0b1e3d;
+        cursor: pointer;
+      }
+      .vid-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .vid-play {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 30, 61, 0.4);
+      }
+      .vid-play-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(232, 160, 32, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0b1e3d;
+        font-size: 1rem;
+      }
+      .vid-dur {
+        position: absolute;
+        bottom: 7px;
+        right: 8px;
+        background: rgba(11, 30, 61, 0.8);
+        color: #fff;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+      }
+      .vid-body {
+        padding: 11px 13px;
+      }
+      .vid-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #0b1e3d;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .vid-meta {
+        font-size: 0.72rem;
+        color: #8fa3bd;
+      }
+      .vid-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 9px;
+      }
+      .vid-url-hint {
+        display: none;
+        background: #f4f7fb;
+        border: 1px solid #dde4ef;
+        border-radius: 7px;
+        padding: 9px 12px;
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: #5e7490;
+        align-items: center;
+        gap: 10px;
+      }
+      .vid-url-hint.show {
+        display: flex;
+      }
+      .vid-url-hint img {
+        width: 72px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .modal-wrap {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 30, 61, 0.55);
+        backdrop-filter: blur(6px);
+        z-index: 900;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+      }
+      .modal-wrap.open {
+        display: flex;
+      }
+      .modal {
+        background: #fff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 600px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(11, 30, 61, 0.2);
+        animation: mIn 0.25s ease;
+        margin: auto;
+      }
+      @keyframes mIn {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .modal-head {
+        background: linear-gradient(135deg, #0b1e3d, #1a4b8c);
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal-head h3 {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.2rem;
+        letter-spacing: 0.06em;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .modal-head h3 i {
+        color: #e8a020;
+      }
+      .modal-x {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .modal-x:hover {
+        color: #fff;
+      }
+      .modal-body {
+        padding: 22px;
+        max-height: 68vh;
+        overflow-y: auto;
+      }
+      .modal-foot {
+        padding: 13px 22px;
+        background: #f4f7fb;
+        border-top: 1px solid #dde4ef;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .video-modal-iframe {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border: none;
+        border-radius: 4px;
+      }
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0b1e3d;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 0.86rem;
+        box-shadow: 0 8px 28px rgba(11, 30, 61, 0.3);
+        z-index: 9999;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.35s;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 340px;
+      }
+      #toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      #toast.error {
+        background: #d63b3b;
+      }
+      #toast.success {
+        background: #1a7a3a;
+      }
+      @media (max-width: 960px) {
+        .portal-shell {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .stat-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .chart-row {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .stat-row {
+          grid-template-columns: 1fr;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .chat-layout {
+          grid-template-columns: 1fr;
+        }
+        .chat-list {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a href="index.html" class="topbar-logo">
+        <div class="lm">TA</div>
+        <div class="lt">Trust Automobile<small>Seller Dashboard</small></div>
+      </a>
+      <div class="topbar-right">
+        <div
+          class="topbar-notif"
+          onclick="showToast('No new notifications','info')"
+        >
+          <i
+            class="bi bi-bell-fill"
+            style="color: rgba(255, 255, 255, 0.65); font-size: 1.1rem"
+          ></i>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="topbar-user">
+          <div class="user-av" id="top-av">–</div>
+          <div class="user-info">
+            <span id="top-name">–</span><small>Car Seller</small>
+          </div>
+        </div>
+        <button class="btn-topbar" onclick="portalLogout()">
+          <i class="bi bi-box-arrow-left"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <div class="portal-shell">
+      <div class="sidebar">
+        <div class="sb-profile">
+          <div class="sb-av" id="sb-av">–</div>
+          <div>
+            <div class="sb-name" id="sb-name">–</div>
+            <div class="sb-role">✓ Verified Seller</div>
+          </div>
+        </div>
+        <div class="sb-section">Overview</div>
+        <div class="sb-item active" onclick="nav('overview')" data-s="overview">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </div>
+        <div class="sb-section">Listings</div>
+        <div class="sb-item" onclick="nav('listings')" data-s="listings">
+          <i class="bi bi-car-front-fill"></i> My Listings
+          <span class="sb-badge" id="badge-listings">0</span>
+        </div>
+        <div class="sb-item" onclick="nav('add-listing')" data-s="add-listing">
+          <i class="bi bi-plus-circle-fill"></i> Add Listing
+        </div>
+        <div class="sb-section">Communication</div>
+        <div class="sb-item" onclick="nav('chat')" data-s="chat">
+          <i class="bi bi-chat-dots-fill"></i> Buyer Messages
+          <span class="sb-badge" id="badge-chat">0</span>
+        </div>
+        <div class="sb-item" onclick="nav('enquiries')" data-s="enquiries">
+          <i class="bi bi-envelope-fill"></i> Enquiries
+          <span class="sb-badge" id="badge-enq">0</span>
+        </div>
+        <div class="sb-section">Content</div>
+        <div class="sb-item" onclick="nav('videos')" data-s="videos">
+          <i class="bi bi-play-circle-fill"></i> My Videos
+        </div>
+        <div class="sb-item" onclick="nav('add-video')" data-s="add-video">
+          <i class="bi bi-camera-video-fill"></i> Post Video
+        </div>
+        <div class="sb-section">Analytics</div>
+        <div class="sb-item" onclick="nav('analytics')" data-s="analytics">
+          <i class="bi bi-bar-chart-fill"></i> Sales Analytics
+        </div>
+        <div class="sb-section">Account</div>
+        <div class="sb-item" onclick="nav('profile')" data-s="profile">
+          <i class="bi bi-person-circle"></i> My Profile
+        </div>
+        <div class="sb-item" onclick="nav('settings')" data-s="settings">
+          <i class="bi bi-gear-fill"></i> Settings
+        </div>
+        <div class="sb-footer">
+          <a href="sell.html" target="_blank"
+            ><i class="bi bi-globe"></i> View Public Page</a
+          >
+          <a href="index.html"><i class="bi bi-house"></i> Back to Site</a>
+        </div>
+      </div>
+
+      <div class="main" id="main">
+        <!-- OVERVIEW -->
+        <div class="section active" id="s-overview">
+          <div class="section-head">
+            <h2 id="greet-title">Good day! 👋</h2>
+            <p>Here's what's happening with your listings today.</p>
+          </div>
+          <div class="stat-row" id="dash-stats"></div>
+          <div class="chart-row">
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-head">
+                <h3>
+                  <i class="bi bi-graph-up-arrow"></i> Views &amp; Enquiries
+                </h3>
+                <select
+                  id="chart-range"
+                  onchange="updateChart()"
+                  style="
+                    padding: 5px 10px;
+                    border: 1px solid #dde4ef;
+                    border-radius: 6px;
+                    font-family: 'Barlow Condensed', sans-serif;
+                    font-weight: 600;
+                    font-size: 0.76rem;
+                    color: #5e7490;
+                    outline: none;
+                  "
+                >
+                  <option value="7">Last 7 Days</option>
+                  <option value="30">Last 30 Days</option>
+                  <option value="90">Last 90 Days</option>
+                </select>
+              </div>
+              <div class="card-body">
+                <div class="chart-wrap"><canvas id="chart-views"></canvas></div>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-head">
+                <h3><i class="bi bi-pie-chart-fill"></i> Listing Status</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-wrap">
+                  <canvas id="chart-status"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-car-front-fill"></i> Recent Listings</h3>
+              <button class="btn btn-gold btn-sm" onclick="nav('add-listing')">
+                <i class="bi bi-plus"></i> Add New
+              </button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Vehicle</th>
+                    <th>Price</th>
+                    <th>Views</th>
+                    <th>Status</th>
+                    <th>Posted</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="overview-listings"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-chat-dots-fill"></i> Recent Messages</h3>
+              <button class="btn btn-ghost btn-sm" onclick="nav('chat')">
+                View All
+              </button>
+            </div>
+            <div
+              id="overview-msgs"
+              style="
+                padding: 14px 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+              "
+            ></div>
+          </div>
+        </div>
+
+        <!-- LISTINGS -->
+        <div class="section" id="s-listings">
+          <div class="section-head">
+            <h2>My Listings</h2>
+            <p>
+              Manage your car listings. All changes are live on the public Cars
+              for Sale page instantly.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-car-front-fill"></i> All Listings</h3>
+              <div style="display: flex; gap: 8px; align-items: center">
+                <input
+                  id="lst-search"
+                  placeholder="Search…"
+                  style="
+                    padding: 7px 12px;
+                    border: 1.5px solid #dde4ef;
+                    border-radius: 7px;
+                    font-family: 'Barlow', sans-serif;
+                    font-size: 0.84rem;
+                    outline: none;
+                    width: 160px;
+                  "
+                  oninput="renderListings()"
+                />
+                <select
+                  id="lst-filter"
+                  onchange="renderListings()"
+                  style="
+                    padding: 7px 12px;
+                    border: 1.5px solid #dde4ef;
+                    border-radius: 7px;
+                    font-family: 'Barlow Condensed', sans-serif;
+                    font-weight: 600;
+                    font-size: 0.78rem;
+                    color: #5e7490;
+                    outline: none;
+                    background: #fff;
+                  "
+                >
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="sold">Sold</option>
+                  <option value="draft">Draft</option>
+                </select>
+                <button
+                  class="btn btn-gold btn-sm"
+                  onclick="nav('add-listing')"
+                >
+                  <i class="bi bi-plus-circle"></i> Add Listing
+                </button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Vehicle</th>
+                    <th>Year</th>
+                    <th>Price</th>
+                    <th>Condition</th>
+                    <th>Views</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="listings-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD / EDIT LISTING -->
+        <div class="section" id="s-add-listing">
+          <div class="section-head">
+            <h2 id="listing-form-h">Add New Listing</h2>
+            <p>
+              Your listing goes live on Cars for Sale immediately after saving.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-pencil-fill"></i> Vehicle Details</h3>
+            </div>
+            <div class="card-body">
+              <input type="hidden" id="edit-id" />
+              <div class="form-grid">
+                <div class="fg">
+                  <label>Make <span class="req">*</span></label
+                  ><input id="l-make" placeholder="Toyota" />
+                </div>
+                <div class="fg">
+                  <label>Model <span class="req">*</span></label
+                  ><input id="l-model" placeholder="Corolla" />
+                </div>
+                <div class="fg">
+                  <label>Year <span class="req">*</span></label
+                  ><input
+                    id="l-year"
+                    type="number"
+                    min="1990"
+                    max="2026"
+                    placeholder="2020"
+                  />
+                </div>
+                <div class="fg">
+                  <label>Price (GHS) <span class="req">*</span></label
+                  ><input id="l-price" type="number" placeholder="45000" />
+                </div>
+                <div class="fg">
+                  <label>Mileage (km)</label
+                  ><input id="l-mileage" type="number" placeholder="52000" />
+                </div>
+                <div class="fg">
+                  <label>Fuel Type</label
+                  ><select id="l-fuel">
+                    <option value="">Select</option>
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>Hybrid</option>
+                    <option>Electric</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Transmission</label
+                  ><select id="l-trans">
+                    <option value="">Select</option>
+                    <option>Automatic</option>
+                    <option>Manual</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Condition <span class="req">*</span></label
+                  ><select id="l-cond">
+                    <option value="">Select</option>
+                    <option>Brand New</option>
+                    <option>Foreign Used</option>
+                    <option>Local Used</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Colour</label
+                  ><input id="l-colour" placeholder="Silver" />
+                </div>
+                <div class="fg">
+                  <label>Region</label
+                  ><select id="l-region">
+                    <option value="">Select</option>
+                    <option>Greater Accra</option>
+                    <option>Ashanti</option>
+                    <option>Western</option>
+                    <option>Eastern</option>
+                    <option>Central</option>
+                    <option>Northern</option>
+                    <option>Volta</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Price Type</label
+                  ><select id="l-ptype">
+                    <option value="fixed">Fixed</option>
+                    <option value="negotiable">Negotiable</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Status</label
+                  ><select id="l-status">
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="sold">Sold</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Vehicle Photos <span class="req">*</span></label>
+                <input type="hidden" id="l-images" />
+                <div id="image-preview-container" class="images-grid"></div>
+                <div class="add-image-btn" id="add-image-btn">
+                  <i class="bi bi-plus-circle"></i> Add Photo
+                </div>
+              </div>
+              <div class="fg">
+                <label>Description</label
+                ><textarea
+                  id="l-desc"
+                  rows="3"
+                  placeholder="Vehicle condition, service history, extras included…"
+                ></textarea>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 6px">
+                <button class="btn btn-ghost" onclick="nav('listings')">
+                  <i class="bi bi-arrow-left"></i> Cancel
+                </button>
+                <button class="btn btn-gold" onclick="saveListing()">
+                  <i class="bi bi-check-circle"></i>
+                  <span id="l-save-lbl">Save Listing</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="section" id="s-chat">
+          <div class="section-head">
+            <h2>Buyer Messages</h2>
+            <p>
+              Chat with potential buyers directly. Conversations are kept
+              private and secure.
+            </p>
+          </div>
+          <div class="chat-layout">
+            <div class="chat-list">
+              <div class="chat-list-head">Conversations</div>
+              <div id="chat-list-body"></div>
+            </div>
+            <div class="chat-window">
+              <div class="chat-win-head">
+                <div class="chat-av" id="cw-av">–</div>
+                <div>
+                  <div class="chat-win-name" id="cw-name">
+                    Select a conversation
+                  </div>
+                  <div class="chat-win-sub" id="cw-sub"></div>
+                </div>
+              </div>
+              <div class="chat-messages" id="chat-msgs">
+                <div class="chat-empty">
+                  <i class="bi bi-chat-dots"></i>
+                  <p>Select a conversation to start messaging</p>
+                </div>
+              </div>
+              <div
+                class="chat-input-area"
+                id="chat-input-area"
+                style="display: none"
+              >
+                <textarea
+                  class="chat-input"
+                  id="chat-msg-input"
+                  placeholder="Type a message…"
+                  rows="1"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+                ></textarea>
+                <button class="chat-send" onclick="sendMsg()">
+                  <i class="bi bi-send-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ENQUIRIES -->
+        <div class="section" id="s-enquiries">
+          <div class="section-head">
+            <h2>Enquiries</h2>
+            <p>Formal enquiries from potential buyers about your listings.</p>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-envelope-fill"></i> All Enquiries</h3>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Buyer</th>
+                    <th>Car</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="enq-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEOS -->
+        <div class="section" id="s-videos">
+          <div class="section-head">
+            <h2>My Videos</h2>
+            <p>
+              Educational content and car walkarounds. Visible on the public
+              Learning Hub and your seller profile.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-play-circle-fill"></i> Posted Videos</h3>
+              <button class="btn btn-gold btn-sm" onclick="nav('add-video')">
+                <i class="bi bi-plus-circle"></i> Post Video
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="vid-grid" id="vids-grid">
+                <p
+                  style="color: #8fa3bd; font-size: 0.86rem; grid-column: 1/-1"
+                >
+                  No videos yet.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POST VIDEO -->
+        <div class="section" id="s-add-video">
+          <div class="section-head">
+            <h2>Post a Video</h2>
+            <p>
+              Share car walkarounds, buying guides or tips. Paste a YouTube or
+              Vimeo link.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-camera-video-fill"></i> Video Details</h3>
+            </div>
+            <div class="card-body">
+              <div class="fg">
+                <label
+                  >Video URL <span class="req">*</span> (YouTube or
+                  Vimeo)</label
+                >
+                <input
+                  id="v-url"
+                  placeholder="https://www.youtube.com/watch?v=…"
+                  oninput="prevVid(this.value)"
+                />
+                <div class="vid-url-hint" id="v-preview">
+                  <img id="v-thumb" src="" />
+                  <div>
+                    <div
+                      id="v-plat"
+                      style="
+                        font-family: 'Barlow Condensed', sans-serif;
+                        font-weight: 700;
+                        font-size: 0.78rem;
+                        color: #0b1e3d;
+                      "
+                    ></div>
+                    <div style="font-size: 0.72rem; color: #8fa3bd">
+                      Video detected — fill in details below
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="fg">
+                  <label>Title <span class="req">*</span></label
+                  ><input
+                    id="v-title"
+                    placeholder="e.g. 2022 Toyota Corolla — Full Walkaround"
+                  />
+                </div>
+                <div class="fg">
+                  <label>Duration (e.g. 5:30)</label
+                  ><input id="v-dur" placeholder="MM:SS" />
+                </div>
+              </div>
+              <div class="fg">
+                <label>Description</label
+                ><textarea
+                  id="v-desc"
+                  rows="2"
+                  placeholder="What will viewers learn from this video?"
+                ></textarea>
+              </div>
+              <div class="fg">
+                <label>Category</label>
+                <select id="v-cat">
+                  <option value="community">Car Walkaround / Review</option>
+                  <option value="buying">Buying Tips</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="bodywork">Bodywork</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 4px">
+                <button class="btn btn-ghost" onclick="nav('videos')">
+                  <i class="bi bi-arrow-left"></i> Cancel
+                </button>
+                <button class="btn btn-gold" onclick="saveVideo()">
+                  <i class="bi bi-send"></i> Publish Video
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div class="section" id="s-analytics">
+          <div class="section-head">
+            <h2>Sales Analytics</h2>
+            <p>
+              Track your listing performance, views, and enquiry trends over
+              time.
+            </p>
+          </div>
+          <div class="stat-row" id="analytics-stats"></div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-graph-up-arrow"></i> Monthly Views</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap" style="height: 280px">
+                <canvas id="chart-monthly"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-head">
+                <h3><i class="bi bi-pie-chart-fill"></i> Enquiries by Car</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-wrap">
+                  <canvas id="chart-by-car"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom: 0">
+              <div class="card-head">
+                <h3><i class="bi bi-bar-chart-fill"></i> Price Distribution</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-wrap"><canvas id="chart-price"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="section" id="s-profile">
+          <div class="section-head">
+            <h2>My Profile</h2>
+            <p>
+              Your public seller information. Buyers see this on your listings.
+            </p>
+          </div>
+          <div id="profile-body"></div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="section" id="s-settings">
+          <div class="section-head"><h2>Settings</h2></div>
+          <div class="card">
+            <div class="card-head">
+              <h3><i class="bi bi-bell-fill"></i> Notifications</h3>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 14px">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    cursor: pointer;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eef2f8;
+                  "
+                  ><div>
+                    <div style="font-weight: 600; font-size: 0.9rem">
+                      New Enquiries
+                    </div>
+                    <div style="font-size: 0.78rem; color: #5e7490">
+                      Get notified when a buyer sends an enquiry
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: #0b1e3d; width: 18px; height: 18px"
+                /></label>
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    cursor: pointer;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eef2f8;
+                  "
+                  ><div>
+                    <div style="font-weight: 600; font-size: 0.9rem">
+                      New Messages
+                    </div>
+                    <div style="font-size: 0.78rem; color: #5e7490">
+                      Notifications for buyer chat messages
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: #0b1e3d; width: 18px; height: 18px"
+                /></label>
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    cursor: pointer;
+                    padding: 10px 0;
+                  "
+                  ><div>
+                    <div style="font-weight: 600; font-size: 0.9rem">
+                      Weekly Report
+                    </div>
+                    <div style="font-size: 0.78rem; color: #5e7490">
+                      Email summary of your listing performance
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    style="accent-color: #0b1e3d; width: 18px; height: 18px"
+                /></label>
+              </div>
+              <button
+                class="btn btn-navy"
+                style="margin-top: 16px"
+                onclick="showToast('Settings saved!','success')"
+              >
+                <i class="bi bi-check-circle"></i> Save Settings
+              </button>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 16px">
+            <div class="card-head">
+              <h3><i class="bi bi-person-fill"></i> Account</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="fg">
+                  <label>First Name</label><input id="s-fname" />
+                </div>
+                <div class="fg">
+                  <label>Last Name</label><input id="s-lname" />
+                </div>
+                <div class="fg">
+                  <label>Business Name</label><input id="s-biz" />
+                </div>
+                <div class="fg"><label>Phone</label><input id="s-phone" /></div>
+              </div>
+              <button class="btn btn-gold" onclick="saveProfile()">
+                <i class="bi bi-check-circle"></i> Save Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENQUIRY MODAL -->
+    <div class="modal-wrap" id="modal-enquiry">
+      <div class="modal">
+        <div class="modal-head">
+          <h3><i class="bi bi-envelope-fill"></i> Enquiry Details</h3>
+          <button class="modal-x" onclick="closeModal('modal-enquiry')">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-enq-body"></div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal('modal-enquiry')">
+            Close</button
+          ><button class="btn btn-navy" onclick="replyToEnquiry()">
+            <i class="bi bi-reply-fill"></i> Reply in Chat
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div class="modal-wrap" id="modal-video">
+      <div class="modal" style="max-width: 800px">
+        <div class="modal-head">
+          <h3>
+            <i class="bi bi-play-circle-fill"></i
+            ><span id="vid-modal-title">Video</span>
+          </h3>
+          <button class="modal-x" onclick="closeVideoModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 0">
+          <iframe
+            id="vid-modal-iframe"
+            class="video-modal-iframe"
+            src=""
+            allowfullscreen
+            allow="autoplay"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast">
+      <i
+        class="bi bi-check-circle-fill"
+        style="color: #e8a020; flex-shrink: 0"
+      ></i
+      ><span id="toast-msg"></span>
+    </div>
+
+    <script>
+      /* ── SESSION ── */
+      const SESSION_KEY = "ta_session";
+      let S = null;
+      try {
+        S = JSON.parse(localStorage.getItem(SESSION_KEY));
+      } catch (e) {
+        S = null;
+      }
+      if (!S) {
+        window.location.href = "login.html";
+        throw new Error("No session");
+      }
+      if (S.role !== "seller") {
+        window.location.href = "index.html";
+        throw new Error("Wrong role");
+      }
+
+      const sellerDisplayName =
+        S.businessName && S.businessName.trim()
+          ? S.businessName
+          : (S.firstName + " " + S.lastName).trim() || "Seller";
+      const sellerFirstName = S.firstName || "";
+      const sellerLastName = S.lastName || "";
+      const sellerInitials =
+        (
+          (sellerFirstName[0] || "") + (sellerLastName[0] || "")
+        ).toUpperCase() || "TA";
+
+      /* Per-seller keys */
+      const LKEY = "ta_listing_" + S.id; // this seller's listings
+      const VKEY = "ta_video_s_" + S.id; // this seller's videos (private list)
+      const CKEY = "ta_chat_s_" + S.id;
+      const EKEY = "ta_enq_s_" + S.id;
+      /* Shared public keys — read by public pages via ta-live-sync.js */
+      const SHARED_LISTINGS_KEY = "ta_listing_" + S.id; // already per-seller, sync script scans all ta_listing_* keys
+      const SHARED_VIDEOS_KEY = "ta_videos"; // ← FIXED: all videos go here so education.html sees them
+
+      let activeChatId = null;
+
+      /* ── DB HELPERS ── */
+      const DB = {
+        get(k) {
+          try {
+            return JSON.parse(localStorage.getItem(k) || "[]");
+          } catch {
+            return [];
+          }
+        },
+        set(k, v) {
+          localStorage.setItem(k, JSON.stringify(v));
+        },
+        add(k, item) {
+          const a = this.get(k);
+          a.unshift(item);
+          this.set(k, a);
+        },
+        upd(k, item) {
+          this.set(
+            k,
+            this.get(k).map((x) => (x.id === item.id ? item : x))
+          );
+        },
+        del(k, id) {
+          this.set(
+            k,
+            this.get(k).filter((x) => x.id !== id)
+          );
+        },
+        find(k, id) {
+          return this.get(k).find((x) => x.id === id) || null;
+        },
+        uid() {
+          return (
+            Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
+          );
+        },
+      };
+
+      /* ── VIDEO HELPERS ── */
+      const VID = {
+        ytId(u) {
+          const m = (u || "").match(
+            /(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/
+          );
+          return m ? m[1] : null;
+        },
+        vmId(u) {
+          const m = (u || "").match(/vimeo\.com\/(\d+)/);
+          return m ? m[1] : null;
+        },
+        isValid(u) {
+          return !!(VID.ytId(u) || VID.vmId(u));
+        },
+        thumb(u) {
+          const y = VID.ytId(u);
+          if (y) return `https://img.youtube.com/vi/${y}/hqdefault.jpg`;
+          const v = VID.vmId(u);
+          if (v) return `https://vumbnail.com/${v}.jpg`;
+          return "";
+        },
+        platform(u) {
+          if (VID.ytId(u)) return "YouTube";
+          if (VID.vmId(u)) return "Vimeo";
+          return "";
+        },
+        embedUrl(u) {
+          const y = VID.ytId(u);
+          if (y) return `https://www.youtube.com/embed/${y}?autoplay=1`;
+          const v = VID.vmId(u);
+          if (v) return `https://player.vimeo.com/video/${v}?autoplay=1`;
+          return "";
+        },
+      };
+
+      /* ── IMAGE UPLOADER ── */
+      let currentImages = [];
+      const MAX_IMAGES = 12;
+
+      function renderImagePreviews() {
+        const c = document.getElementById("image-preview-container");
+        if (!c) return;
+        c.innerHTML = currentImages
+          .map(
+            (img, i) => `
+    <div class="image-item">
+      <img src="${img}" alt="Car photo ${i + 1}"/>
+      <button type="button" onclick="removeImage(${i})" title="Remove"><i class="bi bi-x-lg"></i></button>
+    </div>`
+          )
+          .join("");
+        document.getElementById("l-images").value =
+          JSON.stringify(currentImages);
+      }
+      function addImageFromFile(file) {
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          showToast("Only image files are allowed", "error");
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          showToast("Image must be under 10 MB", "error");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (currentImages.length >= MAX_IMAGES) {
+            showToast(`Max ${MAX_IMAGES} images allowed`, "error");
+            return;
+          }
+          currentImages.push(e.target.result);
+          renderImagePreviews();
+          showToast("Image added", "success");
+        };
+        reader.readAsDataURL(file);
+      }
+      function removeImage(i) {
+        if (i >= 0 && i < currentImages.length) {
+          currentImages.splice(i, 1);
+          renderImagePreviews();
+        }
+      }
+      function clearImages() {
+        currentImages = [];
+        renderImagePreviews();
+      }
+      function setupMultiImageUpload() {
+        const btn = document.getElementById("add-image-btn");
+        if (!btn) return;
+        const fi = document.createElement("input");
+        fi.type = "file";
+        fi.accept = "image/*";
+        fi.multiple = false;
+        fi.style.display = "none";
+        document.body.appendChild(fi);
+        fi.onchange = (e) => {
+          if (e.target.files && e.target.files[0])
+            addImageFromFile(e.target.files[0]);
+          fi.value = "";
+        };
+        btn.addEventListener("click", () => fi.click());
+      }
+
+      /* ── INIT ── */
+      function init() {
+        const hr = new Date().getHours();
+        document.getElementById("greet-title").textContent =
+          (hr < 12
+            ? "Good morning"
+            : hr < 17
+            ? "Good afternoon"
+            : "Good evening") +
+          ", " +
+          (S.businessName || sellerFirstName || "Seller") +
+          "! 👋";
+        document.getElementById("top-av").textContent = sellerInitials;
+        document.getElementById("top-name").textContent = sellerDisplayName;
+        document.getElementById("sb-av").textContent = sellerInitials;
+        document.getElementById("sb-name").textContent = sellerDisplayName;
+        document.getElementById("s-fname").value = sellerFirstName;
+        document.getElementById("s-lname").value = sellerLastName;
+        document.getElementById("s-biz").value = S.businessName || "";
+        document.getElementById("s-phone").value = S.phone || "";
+        setupMultiImageUpload();
+        seedDemo();
+        renderDashStats();
+        buildCharts();
+        renderListings();
+        renderChatList();
+        renderEnquiries();
+        renderVideos();
+        renderProfile();
+        renderAnalytics();
+      }
+
+      /* ── DEMO SEED ── */
+      function seedDemo() {
+        if (DB.get(LKEY).length) return;
+        const imgs = [
+          "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&q=70",
+          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=70",
+          "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=70",
+        ];
+        [
+          {
+            make: "Toyota",
+            model: "Corolla",
+            year: "2019",
+            price: "42000",
+            mileage: "58000",
+            fuel: "Petrol",
+            trans: "Automatic",
+            cond: "Foreign Used",
+            colour: "Silver",
+            region: "Greater Accra",
+            images: [imgs[0], imgs[1]],
+            desc: "Clean Toyota Corolla in excellent condition.",
+            ptype: "negotiable",
+            status: "active",
+            views: 148,
+            days: 8,
+          },
+          {
+            make: "Honda",
+            model: "CR-V",
+            year: "2020",
+            price: "78000",
+            mileage: "32000",
+            fuel: "Petrol",
+            trans: "Automatic",
+            cond: "Foreign Used",
+            colour: "Black",
+            region: "Ashanti",
+            images: [imgs[1]],
+            desc: "Honda CR-V, single owner, well maintained.",
+            ptype: "fixed",
+            status: "active",
+            views: 93,
+            days: 14,
+          },
+          {
+            make: "Toyota",
+            model: "Camry",
+            year: "2017",
+            price: "35000",
+            mileage: "88000",
+            fuel: "Petrol",
+            trans: "Automatic",
+            cond: "Local Used",
+            colour: "White",
+            region: "Greater Accra",
+            images: [imgs[2]],
+            desc: "Toyota Camry 2017, serviced regularly.",
+            ptype: "negotiable",
+            status: "sold",
+            views: 210,
+            days: 30,
+          },
+        ].forEach((l) => {
+          DB.add(LKEY, {
+            id: DB.uid(),
+            sellerId: S.id,
+            sellerName: sellerDisplayName,
+            make: l.make,
+            model: l.model,
+            year: l.year,
+            price: l.price,
+            mileage: l.mileage,
+            fuel: l.fuel,
+            trans: l.trans,
+            condition: l.cond,
+            colour: l.colour,
+            region: l.region,
+            images: l.images,
+            desc: l.desc,
+            priceType: l.ptype,
+            status: l.status,
+            views: l.views,
+            createdAt: new Date(Date.now() - l.days * 86400000).toISOString(),
+            updatedAt: new Date(Date.now() - l.days * 86400000).toISOString(),
+          });
+        });
+        DB.set(EKEY, [
+          {
+            id: DB.uid(),
+            buyerName: "Kwame Asante",
+            buyerPhone: "+233 24 111 0001",
+            carTitle: "Toyota Corolla 2019",
+            msg: "Is the Corolla still available? Can I come for a test drive this Saturday?",
+            date: new Date(Date.now() - 86400000).toISOString(),
+            read: false,
+          },
+          {
+            id: DB.uid(),
+            buyerName: "Abena Mensah",
+            buyerPhone: "+233 30 222 0002",
+            carTitle: "Honda CR-V 2020",
+            msg: "Hi, is there any room for negotiation on the CR-V price?",
+            date: new Date(Date.now() - 3 * 86400000).toISOString(),
+            read: true,
+          },
+        ]);
+        DB.set(CKEY, [
+          {
+            id: "ch1",
+            buyerName: "Kwame Asante",
+            buyerInitials: "KA",
+            carTitle: "Toyota Corolla",
+            unread: 2,
+            msgs: [
+              {
+                type: "recv",
+                text: "Hello, I am interested in the Corolla. Is it still available?",
+                ts: new Date(Date.now() - 2 * 3600000).toISOString(),
+              },
+              {
+                type: "sent",
+                text: "Yes it is! Feel free to come see it any day this week.",
+                ts: new Date(Date.now() - 1.5 * 3600000).toISOString(),
+              },
+              {
+                type: "recv",
+                text: "Great! Can we do Saturday at 10am?",
+                ts: new Date(Date.now() - 3600000).toISOString(),
+              },
+            ],
+          },
+          {
+            id: "ch2",
+            buyerName: "Kofi Boateng",
+            buyerInitials: "KB",
+            carTitle: "Honda CR-V",
+            unread: 1,
+            msgs: [
+              {
+                type: "recv",
+                text: "Is the CR-V available for a test drive?",
+                ts: new Date(Date.now() - 5 * 3600000).toISOString(),
+              },
+              {
+                type: "sent",
+                text: "Yes! Come to our showroom in East Legon anytime.",
+                ts: new Date(Date.now() - 4 * 3600000).toISOString(),
+              },
+            ],
+          },
+          {
+            id: "ch3",
+            buyerName: "Ama Owusu",
+            buyerInitials: "AO",
+            carTitle: "Toyota Camry",
+            unread: 0,
+            msgs: [
+              {
+                type: "recv",
+                text: "Is the Camry sold already?",
+                ts: new Date(Date.now() - 2 * 86400000).toISOString(),
+              },
+              {
+                type: "sent",
+                text: "Yes, the Camry has been sold. We have other great options though!",
+                ts: new Date(Date.now() - 2 * 86400000 + 3600000).toISOString(),
+              },
+            ],
+          },
+        ]);
+      }
+
+      /* ── STATS ── */
+      function renderDashStats() {
+        const listings = DB.get(LKEY);
+        const active = listings.filter((l) => l.status === "active").length;
+        const sold = listings.filter((l) => l.status === "sold").length;
+        const views = listings.reduce((s, l) => s + (l.views || 0), 0);
+        const enqs = DB.get(EKEY).length;
+        const unread = DB.get(EKEY).filter((e) => !e.read).length;
+        const videos = DB.get(VKEY).length;
+        const chatU = DB.get(CKEY).reduce((s, c) => s + (c.unread || 0), 0);
+
+        document.getElementById("badge-listings").textContent = active || "";
+        document.getElementById("badge-enq").textContent = unread || "";
+        document.getElementById("badge-chat").textContent = chatU || "";
+
+        document.getElementById("dash-stats").innerHTML = [
+          {
+            label: "Active Listings",
+            num: active,
+            delta: "+2 this month",
+            up: true,
+            icon: "bi-car-front-fill",
+            bg: "rgba(26,75,140,.1)",
+            ic: "#1A4B8C",
+          },
+          {
+            label: "Cars Sold",
+            num: sold,
+            delta: "+1 this week",
+            up: true,
+            icon: "bi-check-circle-fill",
+            bg: "rgba(26,122,58,.1)",
+            ic: "#1A7A3A",
+          },
+          {
+            label: "Total Views",
+            num: views,
+            delta: "+48 today",
+            up: true,
+            icon: "bi-eye-fill",
+            bg: "rgba(232,160,32,.12)",
+            ic: "#E8A020",
+          },
+          {
+            label: "Enquiries",
+            num: enqs,
+            delta: unread + " unread",
+            up: false,
+            icon: "bi-envelope-fill",
+            bg: "rgba(11,30,61,.08)",
+            ic: "#0B1E3D",
+          },
+          {
+            label: "Videos Posted",
+            num: videos,
+            delta: "on Learning Hub",
+            up: true,
+            icon: "bi-play-circle-fill",
+            bg: "rgba(26,122,58,.08)",
+            ic: "#1A7A3A",
+          },
+        ]
+          .map(
+            (
+              c
+            ) => `<div class="stat-card"><div class="stat-ic" style="background:${
+              c.bg
+            }"><i class="bi ${c.icon}" style="color:${c.ic}"></i></div>
+    <div><div class="stat-num">${c.num}</div><div class="stat-lbl">${
+              c.label
+            }</div>
+    <div class="stat-delta ${c.up ? "up" : "down"}"><i class="bi bi-arrow-${
+              c.up ? "up" : "down"
+            }-right"></i>${c.delta}</div></div></div>`
+          )
+          .join("");
+
+        const SB = {
+          active: '<span class="badge bg-active">Active</span>',
+          sold: '<span class="badge bg-sold">Sold</span>',
+          draft: '<span class="badge bg-draft">Draft</span>',
+        };
+        document.getElementById("overview-listings").innerHTML =
+          listings
+            .slice(0, 5)
+            .map(
+              (l) => `<tr>
+    <td style="font-weight:600">${l.make} ${l.model}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(
+      l.price || 0
+    ).toLocaleString()}</td>
+    <td>${l.views || 0}</td><td>${SB[l.status] || ""}</td>
+    <td style="font-size:.76rem;color:#8FA3BD">${timeAgo(l.createdAt)}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="editListing('${
+      l.id
+    }')"><i class="bi bi-pencil"></i></button></td>
+  </tr>`
+            )
+            .join("") ||
+          '<tr><td colspan="6" class="empty-td">No listings yet</td></tr>';
+
+        document.getElementById("overview-msgs").innerHTML =
+          DB.get(CKEY)
+            .slice(0, 3)
+            .map((c) => {
+              const last = c.msgs[c.msgs.length - 1];
+              return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF2F8;cursor:pointer" onclick="openChat('${
+                c.id
+              }');nav('chat')">
+      <div class="chat-av">${c.buyerInitials}</div>
+      <div style="flex:1;min-width:0"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${
+        c.buyerName
+      } <span style="font-size:.72rem;color:#8FA3BD">re: ${
+                c.carTitle
+              }</span></div>
+      <div style="font-size:.78rem;color:#5E7490;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${
+        last?.text || ""
+      }</div></div>
+      ${
+        c.unread
+          ? `<span class="sb-badge" style="background:#D63B3B">${c.unread}</span>`
+          : ""
+      }
+    </div>`;
+            })
+            .join("") ||
+          '<p style="font-size:.84rem;color:#8FA3BD;text-align:center;padding:14px">No messages yet</p>';
+      }
+
+      /* ── CHARTS ── */
+      let viewsChart, statusChart, monthlyChart, byCarChart, priceChart;
+      function buildCharts() {
+        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        viewsChart = new Chart(document.getElementById("chart-views"), {
+          type: "line",
+          data: {
+            labels: days,
+            datasets: [
+              {
+                label: "Views",
+                data: [28, 45, 32, 60, 88, 72, 54],
+                borderColor: "#1A4B8C",
+                backgroundColor: "rgba(26,75,140,.08)",
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: "#1A4B8C",
+              },
+              {
+                label: "Enquiries",
+                data: [2, 5, 3, 7, 10, 8, 6],
+                borderColor: "#E8A020",
+                backgroundColor: "rgba(232,160,32,.08)",
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: "#E8A020",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { font: { family: "Barlow Condensed", size: 12 } },
+              },
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { color: "rgba(11,30,61,.05)" } },
+              x: { grid: { display: false } },
+            },
+          },
+        });
+        const l = DB.get(LKEY);
+        statusChart = new Chart(document.getElementById("chart-status"), {
+          type: "doughnut",
+          data: {
+            labels: ["Active", "Sold", "Draft"],
+            datasets: [
+              {
+                data: [
+                  l.filter((x) => x.status === "active").length || 2,
+                  l.filter((x) => x.status === "sold").length || 1,
+                  l.filter((x) => x.status === "draft").length || 0,
+                ],
+                backgroundColor: ["#1A7A3A", "#1A4B8C", "#DDE4EF"],
+                borderWidth: 0,
+                hoverOffset: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "68%",
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { font: { family: "Barlow Condensed", size: 12 } },
+              },
+            },
+          },
+        });
+      }
+      function updateChart() {
+        const range = parseInt(document.getElementById("chart-range").value);
+        const labels =
+          range === 7
+            ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+            : range === 30
+            ? Array.from({ length: 30 }, (_, i) => "D" + (i + 1))
+            : [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ];
+        viewsChart.data.labels = labels;
+        viewsChart.data.datasets[0].data = labels.map(
+          () => Math.floor(Math.random() * 100) + 20
+        );
+        viewsChart.data.datasets[1].data = labels.map(
+          () => Math.floor(Math.random() * 15) + 2
+        );
+        viewsChart.update();
+      }
+      function renderAnalytics() {
+        const listings = DB.get(LKEY);
+        const totalViews = listings.reduce((s, l) => s + (l.views || 0), 0);
+        const enqs = DB.get(EKEY).length;
+        document.getElementById("analytics-stats").innerHTML = [
+          {
+            label: "Total Views",
+            num: totalViews,
+            icon: "bi-eye-fill",
+            bg: "rgba(26,75,140,.1)",
+            ic: "#1A4B8C",
+          },
+          {
+            label: "Avg Views/Listing",
+            num: listings.length ? Math.round(totalViews / listings.length) : 0,
+            icon: "bi-bar-chart-fill",
+            bg: "rgba(232,160,32,.12)",
+            ic: "#E8A020",
+          },
+          {
+            label: "Total Enquiries",
+            num: enqs,
+            icon: "bi-envelope-fill",
+            bg: "rgba(26,122,58,.1)",
+            ic: "#1A7A3A",
+          },
+          {
+            label: "Conversion Rate",
+            num:
+              "~" +
+              (enqs && totalViews
+                ? ((enqs / totalViews) * 100).toFixed(1)
+                : 0) +
+              "%",
+            icon: "bi-percent",
+            bg: "rgba(11,30,61,.08)",
+            ic: "#0B1E3D",
+          },
+        ]
+          .map(
+            (s) =>
+              `<div class="stat-card"><div class="stat-ic" style="background:${s.bg}"><i class="bi ${s.icon}" style="color:${s.ic}"></i></div><div><div class="stat-num">${s.num}</div><div class="stat-lbl">${s.label}</div></div></div>`
+          )
+          .join("");
+        if (!monthlyChart) {
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          monthlyChart = new Chart(document.getElementById("chart-monthly"), {
+            type: "bar",
+            data: {
+              labels: months,
+              datasets: [
+                {
+                  label: "Page Views",
+                  data: months.map(() => Math.floor(Math.random() * 200) + 40),
+                  backgroundColor: "rgba(26,75,140,.7)",
+                  borderRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, grid: { color: "rgba(11,30,61,.05)" } },
+                x: { grid: { display: false } },
+              },
+            },
+          });
+        }
+        if (!byCarChart) {
+          const names = listings
+            .slice(0, 5)
+            .map((l) => l.make + " " + l.model.slice(0, 5));
+          byCarChart = new Chart(document.getElementById("chart-by-car"), {
+            type: "pie",
+            data: {
+              labels: names.length ? names : ["No data"],
+              datasets: [
+                {
+                  data: names.length
+                    ? names.map(() => Math.floor(Math.random() * 10) + 1)
+                    : [1],
+                  backgroundColor: [
+                    "#1A4B8C",
+                    "#E8A020",
+                    "#1A7A3A",
+                    "#8FA3BD",
+                    "#0B1E3D",
+                  ],
+                  borderWidth: 0,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: { font: { family: "Barlow Condensed", size: 11 } },
+                },
+              },
+            },
+          });
+        }
+        if (!priceChart) {
+          priceChart = new Chart(document.getElementById("chart-price"), {
+            type: "bar",
+            data: {
+              labels: ["<20k", "20-40k", "40-60k", "60-80k", "80k+"],
+              datasets: [
+                {
+                  label: "Listings",
+                  data: [1, 3, 8, 5, 2],
+                  backgroundColor: "rgba(232,160,32,.75)",
+                  borderRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, grid: { color: "rgba(11,30,61,.05)" } },
+                x: { grid: { display: false } },
+              },
+            },
+          });
+        }
+      }
+
+      /* ── LISTINGS CRUD ── */
+      function renderListings() {
+        const q =
+          document.getElementById("lst-search")?.value.toLowerCase() || "";
+        const filt = document.getElementById("lst-filter")?.value || "";
+        let rows = DB.get(LKEY);
+        if (q)
+          rows = rows.filter((l) =>
+            (l.make + " " + l.model).toLowerCase().includes(q)
+          );
+        if (filt) rows = rows.filter((l) => l.status === filt);
+        const SB = {
+          active: '<span class="badge bg-active">Active</span>',
+          sold: '<span class="badge bg-sold">Sold</span>',
+          draft: '<span class="badge bg-draft">Draft</span>',
+        };
+        document.getElementById("listings-tbody").innerHTML = rows.length
+          ? rows
+              .map(
+                (l) => `<tr>
+    <td><div style="display:flex;align-items:center;gap:6px;">
+      <img src="${
+        l.images && l.images[0] ? l.images[0] : ""
+      }" style="width:54px;height:36px;object-fit:cover;border-radius:5px;background:#F4F7FB;" onerror="this.style.display='none'"/>
+      ${
+        l.images && l.images.length > 1
+          ? `<span style="font-size:.7rem;color:#1A4B8C;">+${
+              l.images.length - 1
+            }</span>`
+          : ""
+      }
+    </div></td>
+    <td style="font-weight:600">${l.make} ${l.model}</td>
+    <td>${l.year || "–"}</td>
+    <td style="font-family:'Bebas Neue',cursive;font-size:1rem">GHS ${Number(
+      l.price || 0
+    ).toLocaleString()}</td>
+    <td>${l.condition || "–"}</td>
+    <td style="color:#1A4B8C;font-weight:600">${l.views || 0}</td>
+    <td>${SB[l.status] || ""}</td>
+    <td><div style="display:flex;gap:5px;">
+      <button class="btn btn-ghost btn-sm" onclick="editListing('${
+        l.id
+      }')"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="delListing('${
+        l.id
+      }')"><i class="bi bi-trash3"></i></button>
+    </div></td>
+  </tr>`
+              )
+              .join("")
+          : '<tr><td colspan="8" class="empty-td">No listings found.</td></tr>';
+      }
+
+      function saveListing() {
+        const id = document.getElementById("edit-id").value;
+        const make = document.getElementById("l-make").value.trim();
+        const model = document.getElementById("l-model").value.trim();
+        const year = document.getElementById("l-year").value;
+        const price = document.getElementById("l-price").value;
+        const cond = document.getElementById("l-cond").value;
+
+        /* Validation */
+        if (!make || !model || !year || !price || !cond) {
+          showToast(
+            "Please fill in all required fields (Make, Model, Year, Price, Condition).",
+            "error"
+          );
+          return;
+        }
+        if (Number(price) <= 0) {
+          showToast("Price must be greater than 0.", "error");
+          return;
+        }
+        if (!currentImages.length) {
+          showToast("Please upload at least one vehicle photo.", "error");
+          return;
+        }
+
+        const listing = {
+          id: id || DB.uid(),
+          sellerId: S.id,
+          sellerName: sellerDisplayName,
+          region:
+            S.region || document.getElementById("l-region").value || "Ghana",
+          make,
+          model,
+          year,
+          price,
+          mileage: document.getElementById("l-mileage").value,
+          fuel: document.getElementById("l-fuel").value,
+          trans: document.getElementById("l-trans").value,
+          condition: cond,
+          colour: document.getElementById("l-colour").value,
+          images: [...currentImages],
+          desc: document.getElementById("l-desc").value,
+          priceType: document.getElementById("l-ptype").value,
+          status: document.getElementById("l-status").value,
+          views: id ? DB.find(LKEY, id)?.views || 0 : 0,
+          createdAt: id
+            ? DB.find(LKEY, id)?.createdAt || new Date().toISOString()
+            : new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        if (id) {
+          DB.upd(LKEY, listing);
+          showToast("Listing updated!", "success");
+        } else {
+          DB.add(LKEY, listing);
+          showToast("Listing saved — now live on Cars for Sale!", "success");
+        }
+
+        clearListingForm();
+        renderListings();
+        renderDashStats();
+        nav("listings");
+      }
+
+      function editListing(id) {
+        const l = DB.find(LKEY, id);
+        if (!l) return;
+        document.getElementById("edit-id").value = id;
+        document.getElementById("l-make").value = l.make || "";
+        document.getElementById("l-model").value = l.model || "";
+        document.getElementById("l-year").value = l.year || "";
+        document.getElementById("l-price").value = l.price || "";
+        document.getElementById("l-mileage").value = l.mileage || "";
+        document.getElementById("l-fuel").value = l.fuel || "";
+        document.getElementById("l-trans").value = l.trans || "";
+        document.getElementById("l-cond").value = l.condition || "";
+        document.getElementById("l-colour").value = l.colour || "";
+        document.getElementById("l-region").value = l.region || "";
+        document.getElementById("l-desc").value = l.desc || "";
+        document.getElementById("l-ptype").value = l.priceType || "fixed";
+        document.getElementById("l-status").value = l.status || "active";
+        currentImages = l.images ? [...l.images] : [];
+        renderImagePreviews();
+        document.getElementById("listing-form-h").textContent = "Edit Listing";
+        document.getElementById("l-save-lbl").textContent = "Update Listing";
+        nav("add-listing");
+      }
+
+      function delListing(id) {
+        if (!confirm("Delete this listing? This cannot be undone.")) return;
+        DB.del(LKEY, id);
+        renderListings();
+        renderDashStats();
+        showToast("Listing deleted.");
+      }
+
+      function clearListingForm() {
+        document.getElementById("edit-id").value = "";
+        [
+          "l-make",
+          "l-model",
+          "l-year",
+          "l-price",
+          "l-mileage",
+          "l-colour",
+          "l-desc",
+        ].forEach((x) => (document.getElementById(x).value = ""));
+        ["l-fuel", "l-trans", "l-cond", "l-region"].forEach(
+          (x) => (document.getElementById(x).value = "")
+        );
+        document.getElementById("l-ptype").value = "fixed";
+        document.getElementById("l-status").value = "active";
+        clearImages();
+        document.getElementById("listing-form-h").textContent =
+          "Add New Listing";
+        document.getElementById("l-save-lbl").textContent = "Save Listing";
+      }
+
+      /* ── CHAT ── */
+      function renderChatList() {
+        document.getElementById("chat-list-body").innerHTML =
+          DB.get(CKEY)
+            .map((c) => {
+              const last = c.msgs[c.msgs.length - 1];
+              return `<div class="chat-item${
+                c.id === activeChatId ? " active" : ""
+              }" onclick="openChat('${c.id}')">
+      <div class="chat-av">${c.buyerInitials}</div>
+      <div style="flex:1;min-width:0"><div class="chat-name">${
+        c.buyerName
+      }</div>
+      <div class="chat-preview">${last?.text || ""}</div>
+      <div style="font-size:.68rem;color:#8FA3BD">${c.carTitle}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="chat-time">${timeAgo(last?.ts)}</div>
+        ${c.unread > 0 ? `<span class="chat-unread">${c.unread}</span>` : ""}
+      </div>
+    </div>`;
+            })
+            .join("") ||
+          '<div style="padding:20px;text-align:center;color:#8FA3BD;font-size:.84rem">No conversations yet.</div>';
+      }
+
+      function openChat(id) {
+        activeChatId = id;
+        const chats = DB.get(CKEY),
+          c = chats.find((x) => x.id === id);
+        if (!c) return;
+        c.unread = 0;
+        DB.set(CKEY, chats);
+        document.getElementById("cw-av").textContent = c.buyerInitials;
+        document.getElementById("cw-name").textContent = c.buyerName;
+        document.getElementById("cw-sub").textContent = "Re: " + c.carTitle;
+        document.getElementById("chat-input-area").style.display = "flex";
+        const box = document.getElementById("chat-msgs");
+        box.innerHTML = c.msgs
+          .map(
+            (m) =>
+              `<div class="msg ${m.type}"><div class="msg-bubble">${
+                m.text
+              }</div><div class="msg-time">${new Date(m.ts).toLocaleTimeString(
+                "en-GH",
+                { hour: "2-digit", minute: "2-digit" }
+              )}</div></div>`
+          )
+          .join("");
+        box.scrollTop = box.scrollHeight;
+        renderChatList();
+        /* Simulated reply */
+        const replies = [
+          "Thanks for the quick reply!",
+          "Can you share more photos?",
+          "What is the final price?",
+          "Is there any warranty?",
+          "Are you available this weekend?",
+        ];
+        setTimeout(() => {
+          const r = replies[Math.floor(Math.random() * replies.length)];
+          const cn = DB.get(CKEY),
+            cv = cn.find((x) => x.id === id);
+          if (cv && activeChatId === id) {
+            cv.msgs.push({
+              type: "recv",
+              text: r,
+              ts: new Date().toISOString(),
+            });
+            DB.set(CKEY, cn);
+            box.innerHTML += `<div class="msg recv"><div class="msg-bubble">${r}</div><div class="msg-time">Just now</div></div>`;
+            box.scrollTop = box.scrollHeight;
+          }
+        }, 3000 + Math.random() * 4000);
+      }
+
+      function sendMsg() {
+        if (!activeChatId) return;
+        const inp = document.getElementById("chat-msg-input"),
+          text = inp.value.trim();
+        if (!text) return;
+        const chats = DB.get(CKEY),
+          c = chats.find((x) => x.id === activeChatId);
+        if (!c) return;
+        c.msgs.push({ type: "sent", text, ts: new Date().toISOString() });
+        DB.set(CKEY, chats);
+        inp.value = "";
+        const box = document.getElementById("chat-msgs");
+        box.innerHTML += `<div class="msg sent"><div class="msg-bubble">${text}</div><div class="msg-time">Just now</div></div>`;
+        box.scrollTop = box.scrollHeight;
+        renderChatList();
+      }
+
+      /* ── ENQUIRIES ── */
+      function renderEnquiries() {
+        const rows = DB.get(EKEY);
+        document.getElementById("enq-tbody").innerHTML = rows.length
+          ? rows
+              .map(
+                (e) => `<tr>
+    <td style="font-weight:600">${e.buyerName} ${
+                  !e.read
+                    ? '<span class="badge" style="background:#D63B3B;color:#fff;font-size:.58rem">NEW</span>'
+                    : ""
+                }</td>
+    <td style="font-size:.82rem;color:#5E7490">${e.carTitle}</td>
+    <td style="font-size:.82rem;color:#5E7490;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${
+      e.msg
+    }</td>
+    <td style="font-size:.76rem;color:#8FA3BD">${timeAgo(e.date)}</td>
+    <td><button class="btn btn-navy btn-sm" onclick="viewEnquiry('${
+      e.id
+    }')"><i class="bi bi-eye"></i> View</button></td>
+  </tr>`
+              )
+              .join("")
+          : '<tr><td colspan="5" class="empty-td">No enquiries yet.</td></tr>';
+      }
+
+      let activeEnqId = null;
+      function viewEnquiry(id) {
+        activeEnqId = id;
+        const enqs = DB.get(EKEY),
+          e = enqs.find((x) => x.id === id);
+        if (!e) return;
+        e.read = true;
+        DB.set(EKEY, enqs);
+        document.getElementById("modal-enq-body").innerHTML = `
+    <div style="background:#F4F7FB;border-radius:8px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-bottom:3px">From</div>
+      <div style="font-weight:600;font-size:.95rem">${e.buyerName}</div>
+      <div style="font-size:.8rem;color:#5E7490">${
+        e.buyerPhone || "Phone not provided"
+      }</div>
+    </div>
+    <div style="margin-bottom:12px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-bottom:4px">Regarding</div><div style="font-weight:600">${
+      e.carTitle
+    }</div></div>
+    <div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#5E7490;margin-bottom:6px">Message</div><div style="font-size:.9rem;line-height:1.65;color:#1C2B40">${
+      e.msg
+    }</div></div>
+    <div style="font-size:.74rem;color:#8FA3BD;margin-top:12px">${new Date(
+      e.date
+    ).toLocaleString("en-GH")}</div>`;
+        document.getElementById("modal-enquiry").classList.add("open");
+        renderEnquiries();
+        renderDashStats();
+      }
+      function replyToEnquiry() {
+        closeModal("modal-enquiry");
+        nav("chat");
+      }
+
+      /* ── VIDEOS ──
+   FIX: saves to BOTH the seller's private key (VKEY) AND the shared 'ta_videos'
+   key so education.html / ta-live-sync.js picks it up automatically.
+*/
+      function renderVideos() {
+        const vids = DB.get(VKEY),
+          grid = document.getElementById("vids-grid");
+        if (!vids.length) {
+          grid.innerHTML =
+            '<p style="color:#8FA3BD;font-size:.86rem;grid-column:1/-1">No videos yet. Post your first video!</p>';
+          return;
+        }
+        grid.innerHTML = vids
+          .map((v) => {
+            const thumb = VID.thumb(v.url);
+            return `<div class="vid-card">
+      <div class="vid-thumb" onclick="playPortalVideo('${v.url}','${(
+              v.title || ""
+            ).replace(/'/g, "\\'")}')">
+        ${thumb ? `<img src="${thumb}" loading="lazy"/>` : ""}
+        <div class="vid-play"><div class="vid-play-btn"><i class="bi bi-play-fill"></i></div></div>
+        ${v.duration ? `<span class="vid-dur">${v.duration}</span>` : ""}
+      </div>
+      <div class="vid-body">
+        <div class="vid-title" title="${v.title}">${v.title || "Untitled"}</div>
+        <div class="vid-meta">${v.desc || ""}</div>
+        <div class="vid-actions">
+          <button class="btn btn-ghost btn-sm" onclick="playPortalVideo('${
+            v.url
+          }','${(v.title || "").replace(
+              /'/g,
+              "\\'"
+            )}')"><i class="bi bi-play-circle"></i> Watch</button>
+          <button class="btn btn-danger btn-sm" onclick="delVideo('${
+            v.id
+          }')"><i class="bi bi-trash3"></i></button>
+        </div>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function saveVideo() {
+        const url = document.getElementById("v-url").value.trim();
+        const title = document.getElementById("v-title").value.trim();
+        if (!url || !title) {
+          showToast("URL and title are required.", "error");
+          return;
+        }
+        if (!VID.isValid(url)) {
+          showToast("Enter a valid YouTube or Vimeo URL.", "error");
+          return;
+        }
+
+        const v = {
+          id: "sv-" + DB.uid(),
+          url,
+          title,
+          desc: document.getElementById("v-desc").value.trim(),
+          category: document.getElementById("v-cat").value,
+          duration: document.getElementById("v-dur").value.trim(),
+          thumbnail: VID.thumb(url),
+          poster: sellerDisplayName,
+          role: "seller" /* ← role flag used by education.html badge */,
+          sellerId: S.id,
+          views: 0,
+          postedAt: new Date().toISOString(),
+          new: true,
+          featured: false,
+        };
+
+        /* Save to seller's private list */
+        DB.add(VKEY, v);
+
+        /* ── KEY FIX ──
+     Also write to the shared 'ta_videos' key so:
+     • education.html (via ta-live-sync.js) shows the video
+     • Other dashboards that read ta_videos also see it
+  */
+        const shared = DB.get(SHARED_VIDEOS_KEY);
+        /* Remove any previous version of this video (in case of re-save) */
+        const updated = shared.filter((x) => x.id !== v.id);
+        updated.unshift(v);
+        DB.set(SHARED_VIDEOS_KEY, updated);
+
+        /* Clear form */
+        ["v-url", "v-title", "v-desc", "v-dur"].forEach(
+          (id) => (document.getElementById(id).value = "")
+        );
+        document.getElementById("v-preview").classList.remove("show");
+
+        renderVideos();
+        renderDashStats();
+        showToast("Video published — now live on the Learning Hub!", "success");
+        nav("videos");
+      }
+
+      function delVideo(id) {
+        if (!confirm("Delete this video?")) return;
+        DB.del(VKEY, id);
+        /* Also remove from shared ta_videos */
+        DB.set(
+          SHARED_VIDEOS_KEY,
+          DB.get(SHARED_VIDEOS_KEY).filter((v) => v.id !== id)
+        );
+        renderVideos();
+        renderDashStats();
+        showToast("Video deleted.");
+      }
+
+      function playPortalVideo(url, title) {
+        document.getElementById("vid-modal-title").textContent =
+          title || "Video";
+        document.getElementById("vid-modal-iframe").src = VID.embedUrl(url);
+        document.getElementById("modal-video").classList.add("open");
+      }
+      function closeVideoModal() {
+        document.getElementById("vid-modal-iframe").src = "";
+        document.getElementById("modal-video").classList.remove("open");
+      }
+
+      /* ── PROFILE ── */
+      function renderProfile() {
+        const listings = DB.get(LKEY);
+        const sold = listings.filter((l) => l.status === "sold").length;
+        document.getElementById("profile-body").innerHTML = `
+  <div class="card" style="margin-bottom:16px"><div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0B1E3D,#1A4B8C);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:#E8A020;flex-shrink:0;">${sellerInitials}</div>
+    <div style="flex:1">
+      <div style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:.04em;color:#0B1E3D">${sellerFirstName} ${sellerLastName}</div>
+      ${
+        S.businessName
+          ? `<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#1A4B8C;margin-bottom:4px">${S.businessName}</div>`
+          : ""
+      }
+      <div style="font-size:.82rem;color:#5E7490">${S.email || ""} · ${
+          S.phone || ""
+        }</div>
+      <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px"><i class="bi bi-geo-alt-fill" style="color:#E8A020"></i>${
+          S.region || "Ghana"
+        }</span>
+        <span style="font-size:.78rem;color:#5E7490;display:flex;align-items:center;gap:4px"><i class="bi bi-car-front-fill" style="color:#E8A020"></i>${
+          listings.length
+        } listings</span>
+        <span style="font-size:.78rem;color:#1A7A3A;display:flex;align-items:center;gap:4px;font-weight:600"><i class="bi bi-patch-check-fill"></i> Verified Seller</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="text-align:center;background:#F4F7FB;border-radius:9px;padding:14px;"><div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#E8A020">${
+        listings.length
+      }</div><div style="font-size:.7rem;color:#5E7490;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;">Listings</div></div>
+      <div style="text-align:center;background:#F4F7FB;border-radius:9px;padding:14px;"><div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;color:#1A7A3A">${sold}</div><div style="font-size:.7rem;color:#5E7490;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;">Cars Sold</div></div>
+    </div>
+  </div></div>
+  <div class="card"><div class="card-head"><h3><i class="bi bi-car-front-fill"></i> Your Live Listings</h3></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:18px;">
+    ${
+      listings
+        .filter((l) => l.status === "active")
+        .slice(0, 6)
+        .map(
+          (l) => `
+      <div style="border:1px solid #DDE4EF;border-radius:9px;overflow:hidden;cursor:pointer" onclick="editListing('${
+        l.id
+      }')">
+        <div style="height:120px;background:#F4F7FB;overflow:hidden"><img src="${
+          l.images && l.images[0] ? l.images[0] : ""
+        }" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/></div>
+        <div style="padding:10px 12px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#0B1E3D">${
+          l.year
+        } ${l.make} ${l.model}</div>
+        <div style="font-family:'Bebas Neue',cursive;font-size:1rem;color:#E8A020">GHS ${Number(
+          l.price || 0
+        ).toLocaleString()}</div></div>
+      </div>`
+        )
+        .join("") ||
+      '<p style="color:#8FA3BD;font-size:.84rem;grid-column:1/-1">No active listings.</p>'
+    }
+  </div></div>`;
+      }
+
+      function saveProfile() {
+        S.firstName =
+          document.getElementById("s-fname").value.trim() || sellerFirstName;
+        S.lastName =
+          document.getElementById("s-lname").value.trim() || sellerLastName;
+        S.businessName =
+          document.getElementById("s-biz").value.trim() || S.businessName;
+        S.phone = document.getElementById("s-phone").value.trim() || S.phone;
+        localStorage.setItem(SESSION_KEY, JSON.stringify(S));
+        const newDisplay =
+          S.businessName && S.businessName.trim()
+            ? S.businessName
+            : (S.firstName + " " + S.lastName).trim();
+        const newIni = (S.firstName[0] + S.lastName[0]).toUpperCase();
+        document.getElementById("top-av").textContent = newIni;
+        document.getElementById("top-name").textContent = newDisplay;
+        document.getElementById("sb-av").textContent = newIni;
+        document.getElementById("sb-name").textContent = newDisplay;
+        renderProfile();
+        showToast("Profile updated!", "success");
+      }
+
+      /* ── NAV ── */
+      function nav(key) {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".sb-item")
+          .forEach((n) => n.classList.remove("active"));
+        document.getElementById("s-" + key)?.classList.add("active");
+        document
+          .querySelector(`.sb-item[data-s="${key}"]`)
+          ?.classList.add("active");
+        if (key === "add-listing") clearListingForm();
+        document.querySelector(".main").scrollTo(0, 0);
+      }
+
+      /* ── UTILS ── */
+      function prevVid(url) {
+        const p = document.getElementById("v-preview");
+        if (!VID.isValid(url)) {
+          p.classList.remove("show");
+          return;
+        }
+        document.getElementById("v-thumb").src = VID.thumb(url);
+        document.getElementById("v-plat").textContent =
+          VID.platform(url) + " video detected";
+        p.classList.add("show");
+      }
+      function timeAgo(iso) {
+        if (!iso) return "–";
+        const d = Date.now() - new Date(iso).getTime();
+        const dd = Math.floor(d / 86400000),
+          hh = Math.floor(d / 3600000),
+          mm = Math.floor(d / 60000);
+        return dd > 0
+          ? dd + "d ago"
+          : hh > 0
+          ? hh + "h ago"
+          : mm > 0
+          ? mm + "m ago"
+          : "Just now";
+      }
+      function closeModal(id) {
+        document.getElementById(id)?.classList.remove("open");
+      }
+      function showToast(msg, type = "info") {
+        const t = document.getElementById("toast"),
+          s = document.getElementById("toast-msg");
+        s.textContent = msg;
+        t.className =
+          "show " +
+          (type === "error" ? "error" : type === "success" ? "success" : "");
+        clearTimeout(window._tT);
+        window._tT = setTimeout(() => {
+          t.className = "";
+        }, 3200);
+      }
+      function portalLogout() {
+        if (confirm("Log out of the Seller Dashboard?")) {
+          showToast("Logged out successfully.", "success");
+          localStorage.removeItem(SESSION_KEY);
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1200);
+        }
+      }
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("modal-wrap"))
+          e.target.classList.remove("open");
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          document
+            .querySelectorAll(".modal-wrap.open")
+            .forEach((m) => m.classList.remove("open"));
+          closeVideoModal();
+        }
+      });
+
+      init();
+    </script>
+  </body>
+</html>
