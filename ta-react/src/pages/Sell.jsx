@@ -1,0 +1,84 @@
+import { Link } from 'react-router-dom';
+import Layout from '../components/Layout';
+import { CARS, MAKES } from '../data/cars';
+
+export default function Sell() {
+  return (
+    <Layout activePage="sell">
+      <section className="hero">
+        <div className="hero-bg"></div>
+        <div className="hero-grid"></div>
+        <div className="hero-content">
+          <div className="hero-badge">
+            <span className="hero-badge-dot"></span>
+            Sell Your Car — Free & Verified
+          </div>
+          <h1>Sell Your Car <em>Fast</em></h1>
+          <p className="hero-sub">
+            Reach thousands of verified buyers across Ghana. Post your ad for free and sell with confidence.
+          </p>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Link to="/post-ad" className="btn-primary"><i className="bi bi-plus-circle"></i> Post Free Ad</Link>
+            <Link to="/search" className="btn-secondary" style={{ borderColor: '#8FA3BD', color: '#8FA3BD' }}>Browse Cars</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-header">
+          <div>
+            <div className="section-title">How It <span>Works</span></div>
+            <div className="section-subtitle">Three simple steps to sell your car</div>
+          </div>
+        </div>
+        <div className="feature-grid">
+          <div className="feature-card">
+            <div className="feature-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+            <h3>1. Post Your Ad</h3>
+            <p>Fill in your car details, upload photos, and publish your listing for free.</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon gold"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div>
+            <h3>2. Get Verified</h3>
+            <p>Our team verifies your listing to build trust with potential buyers.</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+            <h3>3. Close the Deal</h3>
+            <p>Connect with serious buyers, negotiate, and complete the sale securely.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ background: '#fff' }}>
+        <div className="section-header">
+          <div>
+            <div className="section-title">Seller <span>Benefits</span></div>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 800 }}>
+          {[
+            { icon: 'bi-eye-fill', title: 'Maximum Visibility', desc: 'Your listing reaches thousands of active buyers daily' },
+            { icon: 'bi-shield-check', title: 'Verified Badge', desc: 'Stand out with our trust verification seal' },
+            { icon: 'bi-graph-up', title: 'Analytics', desc: 'Track views, inquiries, and engagement on your ads' },
+            { icon: 'bi-chat-dots', title: 'Direct Messaging', desc: 'Communicate with buyers through our secure platform' },
+          ].map(b => (
+            <div key={b.title} style={{ display: 'flex', gap: 14, padding: 20, background: '#F4F7FB', borderRadius: 12 }}>
+              <i className={b.icon} style={{ fontSize: 24, color: '#1A4B8C' }}></i>
+              <div>
+                <div style={{ fontWeight: 600, color: '#0B1E3D', marginBottom: 4 }}>{b.title}</div>
+                <div style={{ fontSize: 13, color: '#8FA3BD' }}>{b.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" style={{ background: '#0B1E3D', textAlign: 'center' }}>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Ready to Sell?</h2>
+        <p style={{ color: '#8FA3BD', fontSize: 16, marginBottom: 28 }}>Post your ad in minutes — it's completely free.</p>
+        <Link to="/post-ad" className="btn-primary">Post Your Ad Now</Link>
+      </section>
+    </Layout>
+  );
+}
