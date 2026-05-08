@@ -1,0 +1,17 @@
+export const CARS = [
+  { id:1, make:'Toyota', model:'Land Cruiser Prado', year:2020, price:320000, mileage:42000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'Featured', desc:'Excellent condition. Full service history. Leather seats, sunroof, reverse camera. No accidents.' },
+  { id:2, make:'Honda', model:'CR-V EX', year:2023, price:148000, mileage:8200, fuel:'Petrol', transmission:'Automatic', location:'Kumasi', condition:'New', badge:'New', desc:'Brand new import. Factory warranty. Apple CarPlay, Android Auto. Available for test drive.' },
+  { id:3, make:'Mercedes-Benz', model:'C200 AMG', year:2021, price:320000, mileage:31000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'Featured', desc:'AMG Sport package. Panoramic roof. Heated seats. Full spec. Serious buyers only.' },
+  { id:4, make:'Hyundai', model:'Tucson GLS', year:2019, price:88000, mileage:72000, fuel:'Diesel', transmission:'Manual', location:'Takoradi', condition:'Used', badge:'', desc:'Family SUV in great shape. New tyres. Cold AC. Clean interior. No hidden faults.' },
+  { id:5, make:'Toyota', model:'Corolla LE', year:2020, price:65000, mileage:45000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'Featured', desc:'Single owner. Clean title. Just serviced. Fuel efficient city car. Available for viewing.' },
+  { id:6, make:'BMW', model:'X5 xDrive', year:2022, price:420000, mileage:15000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'', desc:'Full options. HUD display. Harman Kardon audio. 360 camera. Serious enquiries only.' },
+  { id:7, make:'Ford', model:'Ranger Wildtrak', year:2021, price:175000, mileage:38000, fuel:'Diesel', transmission:'Automatic', location:'Kumasi', condition:'Used', badge:'', desc:'4x4. Bi-turbo diesel. Hard tonneau cover. Spotless interior. Workhorse and weekend warrior.' },
+  { id:8, make:'Kia', model:'Sportage GT', year:2022, price:110000, mileage:22000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'', desc:'GT-Line spec. Full panoramic roof. Heated and cooled seats. Low mileage, immaculate condition.' },
+  { id:9, make:'Nissan', model:'X-Trail', year:2018, price:72000, mileage:91000, fuel:'Petrol', transmission:'CVT', location:'Cape Coast', condition:'Used', badge:'', desc:'7-seater. Family owned. All services done at dealership. New brake pads and battery.' },
+  { id:10, make:'Volkswagen', model:'Tiguan TSI', year:2021, price:195000, mileage:28000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'', desc:'Imported from Germany. One owner. DSG gearbox. Full VW service history. Beautiful condition.' },
+  { id:11, make:'Toyota', model:'Hilux GD6', year:2022, price:220000, mileage:19000, fuel:'Diesel', transmission:'Manual', location:'Tamale', condition:'Used', badge:'', desc:'Double cab. Canopy included. Lightly used fleet vehicle. Excellent working condition.' },
+  { id:12, make:'Honda', model:'Accord Sport', year:2020, price:95000, mileage:55000, fuel:'Petrol', transmission:'Automatic', location:'Accra', condition:'Used', badge:'', desc:'Sport trim. Honda Sensing safety suite. Wireless CarPlay. Clean and well maintained.' },
+];
+
+export const MAKES = [...new Set(CARS.map(c => c.make))].sort();
+export const LOCATIONS = [...new Set(CARS.map(c => c.location))].sort();

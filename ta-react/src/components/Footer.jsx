@@ -1,0 +1,42 @@
+import { Link } from 'react-router-dom';
+
+export default function Footer() {
+  return (
+    <footer>
+      <div className="footer-top">
+        <div className="footer-brand">
+          <Link to="/" className="nav-logo">
+            <div className="nav-logo-icon"><span>TA</span></div>
+            <div className="nav-logo-text-wrap">
+              <span className="nav-logo-name">Trust Automobile</span>
+              <span className="nav-logo-sub">Verified Marketplace</span>
+            </div>
+          </Link>
+          <p>Ghana's most trusted online car marketplace. Buy and sell with confidence.</p>
+        </div>
+        <div className="footer-col"><h4>Explore</h4><ul>
+          <li><Link to="/search">All Cars</Link></li>
+          <li><Link to="/search?condition=New">New Cars</Link></li>
+          <li><Link to="/search?condition=Used">Used Cars</Link></li>
+          <li><Link to="/search">By Make</Link></li>
+        </ul></div>
+        <div className="footer-col"><h4>Account</h4><ul>
+          <li><Link to="/login">Sign In</Link></li>
+          <li><Link to="/register">Register</Link></li>
+          <li><Link to="/post-ad">Post an Ad</Link></li>
+          <li><Link to="/dashboard">My Dashboard</Link></li>
+        </ul></div>
+        <div className="footer-col"><h4>Company</h4><ul>
+          <li><a href="#">About TA</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul></div>
+      </div>
+      <div className="footer-bottom">
+        <p className="footer-copy">© 2026 <span>Trust Automobile Ghana</span>. All rights reserved.</p>
+        <p className="footer-copy">Built with ♥ for Ghana</p>
+      </div>
+    </footer>
+  );
+}
