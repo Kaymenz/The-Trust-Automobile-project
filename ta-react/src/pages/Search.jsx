@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CarCard from '../components/CarCard';
-import { CARS, MAKES, LOCATIONS } from '../data/cars';
+import { api } from '../utils/api';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,22 +14,70 @@ export default function Search() {
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
   const [sort, setSort] = useState('newest');
+  
+  // API data states
+  const [listings, setListings] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch listings from API
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        setLoading(true);
+        const filters = {};
+        if (make) filters.make = make;
+        if (location) filters.location = location;
+        if (condition) filters.condition = condition;
+        if (fuel) filters.fuelType = fuel;
+        if (transmission) filters.transmission = transmission;
+        if (priceMin) filters.minPrice = priceMin;
+        if (priceMax) filters.maxPrice = priceMax;
+        
+        const data = await api.getListings(filters);
+        setListings(data);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch listings:', err);
+        setError('Failed to load listings. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, [make, location, condition, fuel, transmission, priceMin, priceMax]);
+
+  // Fetch makes from API
+  useEffect(() => {
+    const fetchMakes = async () => {
+      try {
+        const data = await api.getCarMakes();
+        setMakes(data);
+      } catch (err) {
+        console.error('Failed to fetch makes:', err);
+      }
+    };
+    fetchMakes();
+  }, []);
+
+  // Extract unique locations from listings
+  useEffect(() => {
+    const uniqueLocations = [...new Set(listings.map(l => l.location).filter(Boolean))];
+    setLocations(uniqueLocations);
+  }, [listings]);
 
   const filtered = useMemo(() => {
-    let results = [...CARS];
-    if (make) results = results.filter(c => c.make === make);
-    if (location) results = results.filter(c => c.location === location);
-    if (condition) results = results.filter(c => c.condition === condition);
-    if (fuel) results = results.filter(c => c.fuel === fuel);
-    if (transmission) results = results.filter(c => c.transmission === transmission);
-    if (priceMin) results = results.filter(c => c.price >= Number(priceMin));
-    if (priceMax) results = results.filter(c => c.price <= Number(priceMax));
+    let results = [...listings];
+    // Server already filters, but we sort here
     if (sort === 'price-low') results.sort((a, b) => a.price - b.price);
     else if (sort === 'price-high') results.sort((a, b) => b.price - a.price);
     else if (sort === 'year-new') results.sort((a, b) => b.year - a.year);
-    else results.sort((a, b) => b.id - a.id);
+    else results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return results;
-  }, [make, location, condition, fuel, transmission, priceMin, priceMax, sort]);
+  }, [listings, sort]);
 
   const clearFilters = () => {
     setMake(''); setLocation(''); setCondition(''); setFuel('');
@@ -42,7 +90,7 @@ export default function Search() {
       <div className="page-header">
         <div className="page-header-content">
           <div className="breadcrumb">
-            <a href="/">Home</a><span className="breadcrumb-sep">›</span><span>Buy a Car</span>
+            <Link to="/">Home</Link><span className="breadcrumb-sep">›</span><span>Buy a Car</span>
           </div>
           <h1>Search Cars</h1>
           <p>Browse verified listings from trusted sellers across Ghana</p>
@@ -60,7 +108,7 @@ export default function Search() {
             <div className="filter-label">Make</div>
             <select value={make} onChange={e => setMake(e.target.value)}>
               <option value="">All Makes</option>
-              {MAKES.map(m => <option key={m}>{m}</option>)}
+              {makes.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </div>
 
@@ -68,7 +116,7 @@ export default function Search() {
             <div className="filter-label">Location</div>
             <select value={location} onChange={e => setLocation(e.target.value)}>
               <option value="">All Locations</option>
-              {LOCATIONS.map(l => <option key={l}>{l}</option>)}
+              {locations.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
           </div>
 
@@ -113,7 +161,9 @@ export default function Search() {
 
         <div>
           <div className="search-results-header">
-            <span className="search-results-count">{filtered.length} cars found</span>
+            <span className="search-results-count">
+              {loading ? 'Loading...' : `${filtered.length} cars found`}
+            </span>
             <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)}>
               <option value="newest">Newest First</option>
               <option value="price-low">Price: Low to High</option>
@@ -121,15 +171,35 @@ export default function Search() {
               <option value="year-new">Year: Newest</option>
             </select>
           </div>
-          <div className="cards-grid">
-            {filtered.map((car, i) => <CarCard key={car.id} car={car} delay={i * 0.05} />)}
-          </div>
-          {filtered.length === 0 && (
+          
+          {loading && (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8FA3BD' }}>
-              <i className="bi bi-search" style={{ fontSize: 40, display: 'block', marginBottom: 16 }}></i>
-              <p style={{ fontSize: 16, fontWeight: 600 }}>No cars match your filters</p>
-              <p style={{ fontSize: 14 }}>Try adjusting your search criteria</p>
+              <div className="spinner" style={{ marginBottom: 16 }}></div>
+              <p>Loading listings...</p>
             </div>
+          )}
+          
+          {error && (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#dc3545' }}>
+              <i className="bi bi-exclamation-circle" style={{ fontSize: 40, display: 'block', marginBottom: 16 }}></i>
+              <p style={{ fontSize: 16, fontWeight: 600 }}>{error}</p>
+              <button className="btn-primary" onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          )}
+          
+          {!loading && !error && (
+            <>
+              <div className="cards-grid">
+                {filtered.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.05} />)}
+              </div>
+              {filtered.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8FA3BD' }}>
+                  <i className="bi bi-search" style={{ fontSize: 40, display: 'block', marginBottom: 16 }}></i>
+                  <p style={{ fontSize: 16, fontWeight: 600 }}>No cars match your filters</p>
+                  <p style={{ fontSize: 14 }}>Try adjusting your search criteria</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CarCard from '../components/CarCard';
-import { CARS, MAKES } from '../data/cars';
-import { useEffect, useRef } from 'react';
+import { api } from '../utils/api';
+import { useEffect, useRef, useState } from 'react';
 
 const MAKE_ICONS = {
   Toyota: '🚗', Honda: '🏎️', 'Mercedes-Benz': '⭐', Hyundai: '🚙',
@@ -11,6 +11,14 @@ const MAKE_ICONS = {
 
 export default function Home() {
   const cardRef = useRef(null);
+  
+  // API data states
+  const [featured, setFeatured] = useState([]);
+  const [recent, setRecent] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [makeCounts, setMakeCounts] = useState({});
+  const [listingStats, setListingStats] = useState({ total: 0, active: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const obs = new IntersectionObserver(entries => {
@@ -26,8 +34,43 @@ export default function Home() {
     return () => obs.disconnect();
   }, []);
 
-  const featured = CARS.filter(c => c.badge === 'Featured').slice(0, 4);
-  const recent = CARS.slice(0, 8);
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch featured listings
+        const featuredData = await api.getFeaturedListings();
+        setFeatured(featuredData.slice(0, 4));
+        
+        // Fetch recent listings
+        const allListings = await api.getListings({});
+        setRecent(allListings.slice(0, 8));
+        
+        // Fetch makes
+        const makesData = await api.getCarMakes();
+        setMakes(makesData);
+        
+        // Count listings per make
+        const counts = {};
+        allListings.forEach(car => {
+          counts[car.make] = (counts[car.make] || 0) + 1;
+        });
+        setMakeCounts(counts);
+        
+        // Fetch listing stats
+        const stats = await api.getListingStats();
+        setListingStats(stats);
+      } catch (err) {
+        console.error('Failed to fetch home data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Layout activePage="home">
@@ -37,7 +80,6 @@ export default function Home() {
         <div className="hero-grid"></div>
         <div className="hero-content">
           <div className="hero-badge">
-            <span className="hero-badge-dot"></span>
             Ghana's #1 Verified Car Marketplace
           </div>
           <h1>Buy &amp; Sell Cars <em>With Trust</em></h1>
@@ -48,7 +90,7 @@ export default function Home() {
             <div className="search-row">
               <div className="form-group">
                 <label>Make</label>
-                <select><option value="">All Makes</option>{MAKES.map(m => <option key={m}>{m}</option>)}</select>
+                <select><option value="">All Makes</option>{makes.map(m => <option key={m} value={m}>{m}</option>)}</select>
               </div>
               <div className="form-group">
                 <label>Location</label>
@@ -68,11 +110,11 @@ export default function Home() {
 
       {/* Stats */}
       <div className="stats-pill">
-        <div className="stat-item"><div className="stat-num">2,400+</div><div className="stat-label">Cars Listed</div></div>
+        <div className="stat-item"><div className="stat-num">{listingStats.total?.toLocaleString() || '0'}+</div><div className="stat-label">Cars Listed</div></div>
         <div className="stat-divider"></div>
-        <div className="stat-item"><div className="stat-num">180+</div><div className="stat-label">Verified Dealers</div></div>
+        <div className="stat-item"><div className="stat-num">{Math.floor(listingStats.total / 10) || '0'}+</div><div className="stat-label">Verified Dealers</div></div>
         <div className="stat-divider"></div>
-        <div className="stat-item"><div className="stat-num">12</div><div className="stat-label">Regions Covered</div></div>
+        <div className="stat-item"><div className="stat-num">16</div><div className="stat-label">Regions Covered</div></div>
         <div className="stat-divider"></div>
         <div className="stat-item"><div className="stat-num">98%</div><div className="stat-label">Satisfaction Rate</div></div>
       </div>
@@ -87,7 +129,13 @@ export default function Home() {
           <Link to="/search" className="view-all">View All Cars →</Link>
         </div>
         <div className="cards-grid">
-          {featured.map((car, i) => <CarCard key={car.id} car={car} delay={i * 0.1} />)}
+          {loading ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#8FA3BD' }}>
+              Loading featured cars...
+            </div>
+          ) : (
+            featured.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.1} />)
+          )}
         </div>
       </section>
 
@@ -100,13 +148,13 @@ export default function Home() {
           </div>
         </div>
         <div className="make-grid">
-          {MAKES.map(make => (
+          {makes.slice(0, 8).map(make => (
             <Link to={`/search?make=${make}`} key={make} className="make-card">
               <div className="make-card-icon">
                   <span>{MAKE_ICONS[make] || '🚗'}</span>
                 </div>
               <div className="make-card-name">{make}</div>
-              <div className="make-card-count">{CARS.filter(c => c.make === make).length} cars</div>
+              <div className="make-card-count">{makeCounts[make] || 0} cars</div>
             </Link>
           ))}
         </div>
@@ -122,7 +170,13 @@ export default function Home() {
           <Link to="/search" className="view-all">View All →</Link>
         </div>
         <div className="cards-grid">
-          {recent.map((car, i) => <CarCard key={car.id} car={car} delay={i * 0.05} />)}
+          {loading ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#8FA3BD' }}>
+              Loading recent listings...
+            </div>
+          ) : (
+            recent.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.05} />)
+          )}
         </div>
       </section>
 

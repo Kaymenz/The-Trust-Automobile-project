@@ -1,24 +1,48 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-
-const MODELS = {
-  Toyota: ['Corolla', 'Camry', 'RAV4', 'Land Cruiser', 'Hilux', 'Yaris'],
-  Honda: ['Civic', 'Accord', 'CR-V', 'HR-V'],
-  Ford: ['Ranger', 'Explorer', 'EcoSport', 'F-150'],
-  'Mercedes-Benz': ['C-Class', 'E-Class', 'GLC', 'GLE', 'A-Class'],
-  BMW: ['3 Series', '5 Series', 'X3', 'X5'],
-  Hyundai: ['Tucson', 'Santa Fe', 'Elantra', 'Creta'],
-  Kia: ['Sportage', 'Seltos', 'Sorento', 'Cerato'],
-  Nissan: ['X-Trail', 'Patrol', 'Sentra', 'Kicks'],
-  Volkswagen: ['Tiguan', 'Golf', 'Polo', 'T-Roc'],
-};
+import { api } from '../utils/api';
 
 export default function PostAd() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({ make: '', model: '', year: '', condition: '', fuel: '', transmission: '', price: '', mileage: '', location: '', desc: '' });
   const [progress, setProgress] = useState(20);
   const [images, setImages] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const fileInputRef = useRef(null);
+
+  // Fetch makes on mount
+  useEffect(() => {
+    const fetchMakes = async () => {
+      try {
+        const makesData = await api.getCarMakes();
+        setMakes(makesData);
+      } catch (err) {
+        console.error('Failed to fetch makes:', err);
+      }
+    };
+    fetchMakes();
+  }, []);
+
+  // Fetch models when make changes
+  useEffect(() => {
+    const fetchModels = async () => {
+      if (!form.make) {
+        setModels([]);
+        return;
+      }
+      try {
+        const modelsData = await api.getCarModels(form.make);
+        setModels(modelsData);
+      } catch (err) {
+        console.error('Failed to fetch models:', err);
+      }
+    };
+    fetchModels();
+  }, [form.make]);
 
   useEffect(() => {
     const filled = Object.values(form).filter(v => v).length + images.length;
@@ -54,6 +78,40 @@ export default function PostAd() {
     setImages(prev => prev.filter(i => i.id !== id));
   };
 
+  const handlePublish = async () => {
+    if (!form.make || !form.model || !form.year || !form.price || !form.condition) {
+      setError('Please fill in all required fields (Make, Model, Year, Price, Condition)');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const listingData = {
+        make: form.make,
+        model: form.model,
+        year: Number(form.year),
+        price: Number(form.price),
+        mileage: Number(form.mileage) || 0,
+        condition: form.condition,
+        fuelType: form.fuel,
+        transmission: form.transmission,
+        location: form.location,
+        description: form.desc,
+        images: images.map(img => img.url), // Base64 images
+      };
+
+      await api.createListing(listingData);
+      navigate('/dashboard?tab=listings');
+    } catch (err) {
+      console.error('Failed to publish listing:', err);
+      setError(err.message || 'Failed to publish. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Layout activePage="post">
       <div className="page-header">
@@ -78,14 +136,14 @@ export default function PostAd() {
                 <label>Make *</label>
                 <select value={form.make} onChange={e => update('make', e.target.value)}>
                   <option value="">Select Make</option>
-                  {Object.keys(MODELS).map(m => <option key={m}>{m}</option>)}
+                  {makes.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
               <div className="form-group">
                 <label>Model *</label>
-                <select value={form.model} onChange={e => update('model', e.target.value)}>
-                  <option value="">Select Model</option>
-                  {form.make && MODELS[form.make]?.map(m => <option key={m}>{m}</option>)}
+                <select value={form.model} onChange={e => update('model', e.target.value)} disabled={!form.make || models.length === 0}>
+                  <option value="">{form.make ? (models.length > 0 ? 'Select Model' : 'No models found') : 'Select Make first'}</option>
+                  {models.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
             </div>
@@ -157,9 +215,17 @@ export default function PostAd() {
             </div>
           </div>
 
+          {error && <p style={{ color: 'var(--no-600)', fontSize: 13, marginBottom: 16 }}>{error}</p>}
           <div className="form-actions">
-            <button className="btn-primary" style={{ flex: 1 }}>Publish Ad</button>
-            <button className="btn-secondary">Save Draft</button>
+            <button 
+              className="btn-primary" 
+              style={{ flex: 1 }} 
+              disabled={loading || progress < 50}
+              onClick={handlePublish}
+            >
+              {loading ? 'Publishing...' : 'Publish Ad'}
+            </button>
+            <button className="btn-secondary" disabled={loading}>Save Draft</button>
           </div>
         </div>
 

@@ -1,33 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import DB from '../../utils/db';
-
-const CATEGORIES = ['All', 'Engine', 'Brakes', 'Suspension', 'Electrical', 'Body Parts', 'Filters', 'Tyres'];
-
-const SAMPLE_PARTS = [
-  { id: 1, name: 'Brake Pads (Front Set)', price: 180, category: 'Brakes', brand: 'Bosch', inStock: true },
-  { id: 2, name: 'Oil Filter - Toyota', price: 45, category: 'Filters', brand: 'Mann', inStock: true },
-  { id: 3, name: 'Alternator 12V', price: 850, category: 'Electrical', brand: 'Valeo', inStock: true },
-  { id: 4, name: 'Front Shock Absorber', price: 320, category: 'Suspension', brand: 'Sachs', inStock: false },
-  { id: 5, name: 'Timing Belt Kit', price: 450, category: 'Engine', brand: 'Gates', inStock: true },
-  { id: 6, name: 'Side Mirror (Left)', price: 120, category: 'Body Parts', brand: 'OEM', inStock: true },
-  { id: 7, name: 'Tyre 205/55R16', price: 380, category: 'Tyres', brand: 'Michelin', inStock: true },
-  { id: 8, name: 'Air Filter', price: 55, category: 'Filters', brand: 'K&N', inStock: true },
-];
+import { api } from '../../utils/api';
 
 export default function SpareParts() {
+  const [categories, setCategories] = useState(['All']);
   const [category, setCategory] = useState('All');
   const [search, setSearch] = useState('');
+  const [parts, setParts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem('ta_cart') || '[]'); } catch { return []; }
   });
 
-  const filtered = SAMPLE_PARTS.filter(p => {
-    if (category !== 'All' && p.category !== category) return false;
-    if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  });
+  useEffect(() => {
+    const fetchParts = async () => {
+      try {
+        setLoading(true);
+        const filters = {};
+        if (category !== 'All') filters.category = category;
+        if (search) filters.search = search;
+        
+        const data = await api.getSpareParts(filters);
+        setParts(data);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch spare parts:', err);
+        setError('Failed to load spare parts. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParts();
+  }, [category, search]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await api.getPartCategories();
+        setCategories(['All', ...(data || [])]);
+      } catch (err) {
+        console.error('Failed to fetch part categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const addToCart = (part) => {
     const next = [...cart, { ...part, qty: 1 }];
@@ -57,7 +76,7 @@ export default function SpareParts() {
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
-          {CATEGORIES.map(c => (
+          {categories.map(c => (
             <button key={c} onClick={() => setCategory(c)}
               style={{
                 padding: '8px 18px', borderRadius: 20, border: `1.5px solid ${category === c ? '#E8A020' : '#e2e8f0'}`,
@@ -69,11 +88,30 @@ export default function SpareParts() {
           ))}
         </div>
 
+        {loading && (
+          <div style={{ textAlign: 'center', padding: 60, color: '#8FA3BD' }}>
+            <div className="spinner" style={{ marginBottom: 16 }}></div>
+            <p>Loading spare parts...</p>
+          </div>
+        )}
+
+        {error && (
+          <div style={{ textAlign: 'center', padding: 60, color: '#dc3545' }}>
+            <p>{error}</p>
+            <button className="btn-primary" onClick={() => window.location.reload()} style={{ marginTop: 16 }}>Retry</button>
+          </div>
+        )}
+
+        {!loading && !error && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
-          {filtered.map(part => (
-            <div key={part.id} style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8edf5', overflow: 'hidden', transition: 'all 0.25s' }}>
+          {parts.map(part => (
+            <div key={part._id || part.id} style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8edf5', overflow: 'hidden', transition: 'all 0.25s' }}>
               <div style={{ height: 160, background: 'linear-gradient(135deg, #e8edf5, #d0daea)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="bi bi-box-seam" style={{ fontSize: 40, color: '#8FA3BD', opacity: 0.5 }}></i>
+                {part.image ? (
+                  <img src={part.image} alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <i className="bi bi-box-seam" style={{ fontSize: 40, color: '#8FA3BD', opacity: 0.5 }}></i>
+                )}
               </div>
               <div style={{ padding: 16 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: '#1A4B8C', marginBottom: 4 }}>{part.category}</div>
@@ -81,7 +119,7 @@ export default function SpareParts() {
                 <div style={{ fontSize: 12, color: '#8FA3BD', marginBottom: 8 }}>{part.brand}</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: '#0B1E3D' }}>GHS {part.price}</div>
-                  {part.inStock ? (
+                  {(part.status === 'active' || part.status === 'out_of_stock') && (part.stock || 0) > 0 ? (
                     <button className="btn-primary" style={{ padding: '6px 14px', fontSize: 12 }} onClick={() => addToCart(part)}>Add to Cart</button>
                   ) : (
                     <span className="badge badge-red">Out of Stock</span>
@@ -91,6 +129,7 @@ export default function SpareParts() {
             </div>
           ))}
         </div>
+        )}
       </section>
     </Layout>
   );

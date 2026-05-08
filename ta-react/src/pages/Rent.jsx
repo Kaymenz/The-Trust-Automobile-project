@@ -1,15 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { FLEET } from '../data/fleet';
+import { api } from '../utils/api';
 
 const TYPES = ['all', 'economy', 'compact', 'suv', 'luxury', 'electric', 'minivan'];
 
 export default function Rent() {
   const [filter, setFilter] = useState('all');
   const [visibleCount, setVisibleCount] = useState(6);
+  const [fleet, setFleet] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filtered = filter === 'all' ? FLEET : FLEET.filter(f => f.type === filter);
+  useEffect(() => {
+    const fetchFleet = async () => {
+      try {
+        setLoading(true);
+        const filters = filter !== 'all' ? { category: filter } : {};
+        const data = await api.getFleetCars(filters);
+        setFleet(data);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch fleet:', err);
+        setError('Failed to load rental fleet. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFleet();
+  }, [filter]);
+
+  const filtered = fleet;
   const visible = filtered.slice(0, visibleCount);
 
   return (
@@ -53,27 +75,49 @@ export default function Rent() {
           ))}
         </div>
 
-        <div className="rent-fleet-grid">
-          {visible.map(car => (
-            <div key={car.id} className="fleet-card">
-              <div className="fleet-card-img">
-                <img src={car.img} alt={car.name} loading="lazy" />
-              </div>
-              <div className="fleet-card-body">
-                <div className="fleet-card-name">{car.name}</div>
-                <div className="fleet-card-sub">{car.subtitle}</div>
-                <div className="fleet-card-price">GHS {car.price} <span>/day</span></div>
-                <div className="fleet-card-specs">
-                  <span className="fleet-card-spec"><i className="bi bi-people"></i> {car.seats}</span>
-                  <span className="fleet-card-spec"><i className="bi bi-fuel-pump"></i> {car.fuel}</span>
-                  <span className="fleet-card-spec"><i className="bi bi-gear"></i> {car.transmission}</span>
-                  <span className="fleet-card-spec"><i className="bi bi-geo-alt"></i> {car.location}</span>
+        {loading && (
+          <div style={{ textAlign: 'center', padding: 60, color: '#8FA3BD' }}>
+            <div className="spinner" style={{ marginBottom: 16 }}></div>
+            <p>Loading fleet...</p>
+          </div>
+        )}
+        
+        {error && (
+          <div style={{ textAlign: 'center', padding: 60, color: '#dc3545' }}>
+            <p>{error}</p>
+            <button className="btn-primary" onClick={() => window.location.reload()} style={{ marginTop: 16 }}>Retry</button>
+          </div>
+        )}
+        
+        {!loading && !error && (
+          <div className="rent-fleet-grid">
+            {visible.map(car => (
+              <div key={car._id} className="fleet-card">
+                <div className="fleet-card-img">
+                  {car.image || car.gallery?.[0] ? (
+                    <img src={car.image || car.gallery?.[0]} alt={`${car.make} ${car.model}`} loading="lazy" />
+                  ) : (
+                    <div style={{ height: '100%', background: 'linear-gradient(135deg, #e8edf5, #d0daea)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className="bi bi-car-front" style={{ fontSize: 48, color: '#8FA3BD' }}></i>
+                    </div>
+                  )}
                 </div>
-                <button className="btn-primary" style={{ width: '100%', marginTop: 12, padding: '10px' }}>Book Now</button>
+                <div className="fleet-card-body">
+                  <div className="fleet-card-name">{car.make} {car.model}</div>
+                  <div className="fleet-card-sub">{car.year} • {car.transmission}</div>
+                  <div className="fleet-card-price">GHS {car.dailyRate || car.price} <span>/day</span></div>
+                  <div className="fleet-card-specs">
+                    <span className="fleet-card-spec"><i className="bi bi-people"></i> {car.specs?.seats || 5}</span>
+                    <span className="fleet-card-spec"><i className="bi bi-fuel-pump"></i> {car.specs?.fuelType || 'N/A'}</span>
+                    <span className="fleet-card-spec"><i className="bi bi-gear"></i> {car.transmission}</span>
+                    <span className="fleet-card-spec"><i className="bi bi-geo-alt"></i> {car.availableLocations?.[0] || 'Ghana'}</span>
+                  </div>
+                  <button className="btn-primary" style={{ width: '100%', marginTop: 12, padding: '10px' }}>Book Now</button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {visibleCount < filtered.length && (
           <div style={{ textAlign: 'center', marginTop: 28 }}>

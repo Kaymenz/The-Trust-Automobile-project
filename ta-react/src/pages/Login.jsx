@@ -3,17 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) { setError('Please fill in all fields'); return; }
-    login({ name: email.split('@')[0], email, role: 'user' });
-    navigate('/dashboard');
+    
+    setError('');
+    const result = await login({ email, password });
+    
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.error || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
@@ -49,7 +56,9 @@ export default function Login() {
               <label>Password</label>
               <input type="password" placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
             </div>
-            <button type="submit" className="btn-primary">Sign In</button>
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? 'Signing In...' : 'Sign In'}
+            </button>
           </form>
           <div className="auth-divider"><span>or</span></div>
           <p className="auth-bottom">

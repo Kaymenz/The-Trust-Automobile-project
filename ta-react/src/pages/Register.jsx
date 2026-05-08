@@ -11,7 +11,7 @@ const ROLES = [
 ];
 
 export default function Register() {
-  const { login } = useAuth();
+  const { register, loading } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState('');
@@ -19,6 +19,8 @@ export default function Register() {
   const [error, setError] = useState('');
 
   const update = (field, val) => setForm(f => ({ ...f, [field]: val }));
+  const roleMap = { parts: 'parts_dealer' };
+  const selectedRole = roleMap[role] || role || 'buyer';
 
   const handleNext = () => {
     if (!role) { setError('Please select a role'); return; }
@@ -26,83 +28,105 @@ export default function Register() {
     setStep(2);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.firstName || !form.lastName || !form.email || !form.password) {
       setError('Please fill in all required fields'); return;
     }
     if (form.password !== form.confirm) { setError('Passwords do not match'); return; }
-    login({ name: `${form.firstName} ${form.lastName}`, email: form.email, role, firstName: form.firstName, lastName: form.lastName, phone: form.phone });
-    navigate('/dashboard');
+    
+    setError('');
+    const fullName = `${form.firstName} ${form.lastName}`.trim();
+    const result = await register({
+      name: fullName,
+      email: form.email,
+      password: form.password,
+      role: selectedRole,
+      phone: form.phone || undefined,
+    });
+    
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.error || 'Registration failed. Please try again.');
+    }
   };
 
   const progress = step === 1 ? 33 : 66;
 
   return (
-    <>
-      <div style={{ background: '#0B1E3D', padding: '16px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <div style={{ width: 36, height: 36, background: 'var(--gold-500)', borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem', color: 'var(--navy-900)' }}>TA</div>
-          <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', letterSpacing: '0.06em', lineHeight: 1.1 }}>Trust Automobile<small style={{ display: 'block', fontSize: '0.6rem', fontWeight: 400, color: 'var(--slate-500)', letterSpacing: '0.14em' }}>Verified Marketplace</small></div>
-        </Link>
-        <Link to="/login" style={{ fontWeight: 600, fontSize: '0.85rem', letterSpacing: '0.08em', color: 'var(--slate-500)', textDecoration: 'none' }}>Already have an account? Sign In</Link>
+    <div className="auth-page">
+      <div className="auth-side">
+        <div className="side-inner">
+          <Link to="/" className="side-logo">
+            <div className="lm">TA</div>
+            <div className="lt">Trust Automobile<small>Verified Marketplace</small></div>
+          </Link>
+          <div className="side-hero">
+            <h2 className="side-hero-title">Create Your Account</h2>
+            <p className="side-hero-sub">
+              Join Ghana&apos;s trusted auto marketplace to buy, sell, rent, or offer automotive services.
+            </p>
+          </div>
+        </div>
+        <div className="side-footer">© 2026 Trust Automobile Ghana</div>
       </div>
 
-      <div className="reg-page">
-        <div className="reg-card">
+      <div className="auth-form-wrap">
+        <div className="auth-card register-card">
           <div className="reg-progress"><div className="reg-progress-fill" style={{ width: `${progress}%` }}></div></div>
+          <div className="step-label">Step {step} of 2</div>
 
           {step === 1 && (
-            <div style={{ padding: '20px 32px 32px' }}>
-              <div className="reg-card-head">
-                <div className="step-label">Step 1 of 2</div>
-                <h2>Choose Your Path</h2>
-                <p>What would you like to do on Trust Automobile?</p>
-              </div>
-              <div style={{ height: 1, background: '#EEF2F8', margin: '20px 0' }}></div>
-              {error && <p style={{ color: 'var(--no-600)', fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <>
+              <h2>Choose Your Path</h2>
+              <p className="auth-sub">Select what you want to do on Trust Automobile</p>
+              {error && <p className="auth-error">{error}</p>}
               <div className="path-grid">
                 {ROLES.map(r => (
-                  <div key={r.id} className={`path-card ${role === r.id ? 'active' : ''}`} onClick={() => setRole(r.id)}>
-                    <i className={r.icon} style={{ fontSize: 24, color: role === r.id ? 'var(--gold-500)' : 'var(--navy-600)', marginBottom: 8 }}></i>
-                    <div style={{ fontWeight: 600, color: 'var(--navy-900)', fontSize: 14 }}>{r.label}</div>
-                    <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>{r.desc}</div>
-                  </div>
+                  <button key={r.id} type="button" className={`path-card ${role === r.id ? 'active' : ''}`} onClick={() => setRole(r.id)}>
+                    <i className={r.icon}></i>
+                    <div className="path-title">{r.label}</div>
+                    <div className="path-desc">{r.desc}</div>
+                  </button>
                 ))}
               </div>
-              <button className="btn-primary" style={{ width: '100%', marginTop: 24 }} onClick={handleNext}>Continue</button>
-            </div>
+              <button type="button" className="btn-primary mt-16" onClick={handleNext} disabled={loading}>Continue</button>
+            </>
           )}
 
           {step === 2 && (
-            <div style={{ padding: '20px 32px 32px' }}>
-              <div className="reg-card-head">
-                <div className="step-label">Step 2 of 2</div>
-                <h2>Your Details</h2>
-                <p>Fill in your information to create an account</p>
-              </div>
-              <div style={{ height: 1, background: '#EEF2F8', margin: '20px 0' }}></div>
-              {error && <p style={{ color: 'var(--no-600)', fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <>
+              <h2>Your Details</h2>
+              <p className="auth-sub">Fill in your information to create an account</p>
+              {error && <p className="auth-error">{error}</p>}
               <form onSubmit={handleSubmit}>
-                <div className="form-grid-2" style={{ marginBottom: 16 }}>
+                <div className="form-grid-2">
                   <div className="form-group"><label>First Name *</label><input value={form.firstName} onChange={e => update('firstName', e.target.value)} /></div>
                   <div className="form-group"><label>Last Name *</label><input value={form.lastName} onChange={e => update('lastName', e.target.value)} /></div>
                 </div>
-                <div className="form-group" style={{ marginBottom: 16 }}><label>Email *</label><input type="email" value={form.email} onChange={e => update('email', e.target.value)} /></div>
-                <div className="form-group" style={{ marginBottom: 16 }}><label>Phone</label><input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} /></div>
-                <div className="form-grid-2" style={{ marginBottom: 16 }}>
+                <div className="form-group"><label>Email *</label><input type="email" value={form.email} onChange={e => update('email', e.target.value)} /></div>
+                <div className="form-group"><label>Phone</label><input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} /></div>
+                <div className="form-grid-2">
                   <div className="form-group"><label>Password *</label><input type="password" value={form.password} onChange={e => update('password', e.target.value)} /></div>
                   <div className="form-group"><label>Confirm Password *</label><input type="password" value={form.confirm} onChange={e => update('confirm', e.target.value)} /></div>
                 </div>
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <button type="button" className="btn-secondary" onClick={() => setStep(1)}>Back</button>
-                  <button type="submit" className="btn-primary" style={{ flex: 1 }}>Create Account</button>
+                <div className="form-actions">
+                  <button type="button" className="btn-secondary" onClick={() => setStep(1)} disabled={loading}>Back</button>
+                  <button type="submit" className="btn-primary" disabled={loading}>
+                    {loading ? 'Creating Account...' : 'Create Account'}
+                  </button>
                 </div>
               </form>
-            </div>
+            </>
           )}
+
+          <div className="auth-divider"><span>or</span></div>
+          <p className="auth-bottom">
+            Already have an account? <Link to="/login" className="auth-link">Sign In</Link>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
