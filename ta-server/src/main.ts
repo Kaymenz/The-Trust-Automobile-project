@@ -30,6 +30,14 @@ async function bootstrap() {
   // API prefix
   app.setGlobalPrefix('api/v1');
 
+  // Logging & Timeout Interceptors
+  const { LoggingInterceptor } = await import('./common/interceptors/logging.interceptor');
+  const { TimeoutInterceptor } = await import('./common/interceptors/timeout.interceptor');
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new TimeoutInterceptor(),
+  );
+
   // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Trust Automobile API')

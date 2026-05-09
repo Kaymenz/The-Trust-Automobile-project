@@ -11,7 +11,7 @@ const ROLES = [
 ];
 
 export default function Register() {
-  const { register, sendOtp, verifyOtp, resendOtp, loading } = useAuth();
+  const { register, verifyOtp, resendOtp, loading } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1: role, 2: details, 3: otp
   const [role, setRole] = useState('');
@@ -40,20 +40,19 @@ export default function Register() {
     if (form.password !== form.confirm) { setError('Passwords do not match'); return; }
     
     setError('');
+    const normalizedEmail = form.email.trim().toLowerCase();
     const fullName = `${form.firstName} ${form.lastName}`.trim();
     const result = await register({
       name: fullName,
-      email: form.email,
+      email: normalizedEmail,
       password: form.password,
       role: selectedRole,
       phone: form.phone || undefined,
     });
     
     if (result.success) {
-      setEmail(form.email);
+      setEmail(normalizedEmail);
       setStep(3);
-      // Auto send OTP after registration
-      await sendOtp(form.email);
     } else {
       setError(result.error || 'Registration failed. Please try again.');
     }

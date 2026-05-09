@@ -66,15 +66,19 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.usersService.findByEmail(registerDto.email);
+    const normalizedEmail = registerDto.email?.trim().toLowerCase();
+    const existingUser = await this.usersService.findByEmail(normalizedEmail);
     if (existingUser) {
       throw new ConflictException('Email already registered');
     }
 
-    const user = await this.usersService.create(registerDto);
+    const user = await this.usersService.create({
+      ...registerDto,
+      email: normalizedEmail,
+    });
     
     // Send OTP for email verification
-    await this.sendOtp({ email: registerDto.email });
+    await this.sendOtp({ email: normalizedEmail });
 
     return {
       success: true,
@@ -180,4 +184,3 @@ export class AuthService {
     return this.usersService.findById(userId);
   }
 }
-
