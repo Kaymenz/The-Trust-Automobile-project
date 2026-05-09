@@ -2,7 +2,7 @@
 // Integrates with NestJS backend
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1').replace(/\/$/, '');
-const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 15000);
+const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 60000);
 
 class ApiError extends Error {
   constructor(message, status = 0, details = null) {
@@ -124,6 +124,13 @@ class ApiService {
   }
 
   // ==================== AUTHENTICATION ====================
+
+  async ping() {
+    return this.request('/health', {
+      timeoutMs: 6000,
+      retries: 1,
+    });
+  }
 
   async login(credentials) {
     const data = await this.request('/auth/login', {

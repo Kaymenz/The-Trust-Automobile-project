@@ -5,9 +5,27 @@ import { CarCardSkeleton } from '../components/SkeletonLoader';
 import { api } from '../utils/api';
 import { useEffect, useRef, useState } from 'react';
 
-const MAKE_ICONS = {
-  Toyota: '🚗', Honda: '🏎️', 'Mercedes-Benz': '⭐', Hyundai: '🚙',
-  BMW: '🏁', Ford: '🛻', Kia: '🚘', Nissan: '🚕', Volkswagen: '🚜',
+// Import user-provided PNG logos
+import logoToyota from '../assets/logos/toyota.png';
+import logoHonda from '../assets/logos/honda.png';
+import logoMercedesBenz from '../assets/logos/mercedes-benz.png';
+import logoHyundai from '../assets/logos/hyundai.png';
+import logoBMW from '../assets/logos/bmw.png';
+import logoFord from '../assets/logos/ford.png';
+import logoKia from '../assets/logos/kia.png';
+import logoNissan from '../assets/logos/nissan.png';
+import logoLexus from '../assets/logos/lexus.png';
+
+const logoMap = {
+  Toyota: logoToyota,
+  Honda: logoHonda,
+  'Mercedes-Benz': logoMercedesBenz,
+  Hyundai: logoHyundai,
+  BMW: logoBMW,
+  Ford: logoFord,
+  Kia: logoKia,
+  Nissan: logoNissan,
+  Lexus: logoLexus
 };
 
 export default function Home() {
@@ -40,6 +58,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        api.ping().catch(() => {});
         
         // Fetch featured listings
         const featuredData = await api.getFeaturedListings();
@@ -149,10 +168,10 @@ export default function Home() {
           {makes.slice(0, 8).map(make => (
             <Link to={`/search?make=${make}`} key={make} className="make-card">
               <div className="make-card-icon">
-                  <span>{MAKE_ICONS[make] || '🚗'}</span>
-                </div>
+                <img src={logoMap[make] || 'https://logo.clearbit.com/auto.com'} alt={`${make} logo`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                <span style={{ display: 'none', fontSize: '40px' }}>🚗</span>
+              </div>
               <div className="make-card-name">{make}</div>
-              <div className="make-card-count">{makeCounts[make] || 0} cars</div>
             </Link>
           ))}
         </div>

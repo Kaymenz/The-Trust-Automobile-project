@@ -13,7 +13,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    const existingUser = await this.findByEmail(createUserDto.email);
+    const normalizedEmail = createUserDto.email?.trim().toLowerCase();
+    const existingUser = await this.findByEmail(normalizedEmail);
     if (existingUser) {
       throw new ConflictException('Email already registered');
     }
@@ -21,6 +22,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const createdUser = new this.userModel({
       ...createUserDto,
+      email: normalizedEmail,
       password: hashedPassword,
       status: UserStatus.PENDING,
       emailVerified: false,
@@ -42,7 +44,9 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email: email.toLowerCase() }).exec();
+    const normalizedEmail = email?.trim().toLowerCase();
+    if (!normalizedEmail) return null;
+    return this.userModel.findOne({ email: normalizedEmail }).exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
