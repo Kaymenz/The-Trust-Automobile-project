@@ -68,6 +68,18 @@ export class User {
   @Prop({ default: false })
   phoneVerified: boolean;
 
+  @Prop()
+  otpCode?: string;
+
+  @Prop({ type: Date })
+  otpExpiry?: Date;
+
+  @Prop({ default: 0 })
+  otpAttempts: number;
+
+  @Prop({ type: Date })
+  lastOtpRequestAt?: Date;
+
   @Prop({ type: Date })
   lastLoginAt?: Date;
 

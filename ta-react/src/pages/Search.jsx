@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CarCard from '../components/CarCard';
+import { CarCardSkeleton } from '../components/SkeletonLoader';
 import { api } from '../utils/api';
 
 export default function Search() {
@@ -173,9 +174,8 @@ export default function Search() {
           </div>
           
           {loading && (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8FA3BD' }}>
-              <div className="spinner" style={{ marginBottom: 16 }}></div>
-              <p>Loading listings...</p>
+            <div className="cards-grid">
+              {Array.from({ length: 8 }).map((_, i) => <CarCardSkeleton key={i} />)}
             </div>
           )}
           

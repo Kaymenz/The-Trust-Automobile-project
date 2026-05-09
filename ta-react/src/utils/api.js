@@ -151,8 +151,43 @@ class ApiService {
     return this.request('/auth/me');
   }
 
+  async sendOtp(email) {
+    return this.request('/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async verifyOtp(email, otp) {
+    const data = await this.request('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
+    if (data.accessToken) {
+      this.setToken(data.accessToken);
+    }
+    return data;
+  }
+
+  async resendOtp(email) {
+    return this.request('/auth/resend-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
   logout() {
     this.clearToken();
+  }
+
+  // ==================== DASHBOARD ====================
+
+  async getDashboardStats() {
+    return this.request('/dashboard/stats');
+  }
+
+  async getRecentActivity() {
+    return this.request('/dashboard/recent-activity');
   }
 
   // ==================== USERS ====================

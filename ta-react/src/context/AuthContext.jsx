@@ -23,9 +23,12 @@ export function AuthProvider({ children }) {
         name: data.user.name || data.user.email,
         email: data.user.email,
         role: data.user.role,
+        status: data.user.status,
         accessToken: data.accessToken,
       };
       localStorage.setItem('ta_user', JSON.stringify(userData));
+      localStorage.setItem('ta_token', data.accessToken);
+      api.setToken(data.accessToken);
       setUser(userData);
       return { success: true, user: userData };
     } catch (error) {
@@ -35,21 +38,66 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Register with API
+  // Register with API (creates account without logging in - OTP required)
   const register = async (userData) => {
     setLoading(true);
     try {
       const data = await api.register(userData);
-      const newUser = {
+      // Store the email for OTP verification (don't log in yet)
+      localStorage.setItem('ta_register_email', userData.email);
+      return { success: true, message: data.message, email: userData.email };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Send OTP
+  const sendOtp = async (email) => {
+    setLoading(true);
+    try {
+      const data = await api.sendOtp(email);
+      return { success: true, message: data.message };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verify OTP and login user
+  const verifyOtp = async (email, otp) => {
+    setLoading(true);
+    try {
+      const data = await api.verifyOtp(email, otp);
+      const userData = {
         id: data.user.id || data.user._id,
         name: data.user.name || data.user.email,
         email: data.user.email,
         role: data.user.role,
+        status: data.user.status,
         accessToken: data.accessToken,
       };
-      localStorage.setItem('ta_user', JSON.stringify(newUser));
-      setUser(newUser);
-      return { success: true, user: newUser };
+      localStorage.setItem('ta_user', JSON.stringify(userData));
+      localStorage.setItem('ta_token', data.accessToken);
+      localStorage.removeItem('ta_register_email');
+      api.setToken(data.accessToken);
+      setUser(userData);
+      return { success: true, message: data.message, user: userData };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Resend OTP
+  const resendOtp = async (email) => {
+    setLoading(true);
+    try {
+      const data = await api.resendOtp(email);
+      return { success: true, message: data.message };
     } catch (error) {
       return { success: false, error: error.message };
     } finally {
@@ -60,12 +108,15 @@ export function AuthProvider({ children }) {
   const logout = () => {
     api.logout();
     localStorage.removeItem('ta_user');
+    localStorage.removeItem('ta_token');
+    localStorage.removeItem('ta_register_email');
     setUser(null);
   };
 
   useEffect(() => {
     const handleUnauthorized = () => {
       localStorage.removeItem('ta_user');
+      localStorage.removeItem('ta_token');
       setUser(null);
     };
 
@@ -82,6 +133,7 @@ export function AuthProvider({ children }) {
         name: `${data.profile?.firstName || ''} ${data.profile?.lastName || ''}`.trim() || data.email,
         email: data.email,
         role: data.role,
+        status: data.status,
       };
       localStorage.setItem('ta_user', JSON.stringify(userData));
       setUser(userData);
@@ -103,7 +155,20 @@ export function AuthProvider({ children }) {
   const isSaved = (id) => savedCars.includes(id);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading, fetchCurrentUser, savedCars, toggleSave, isSaved }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      logout, 
+      register, 
+      sendOtp,
+      verifyOtp,
+      resendOtp,
+      loading, 
+      fetchCurrentUser, 
+      savedCars, 
+      toggleSave, 
+      isSaved 
+    }}>
       {children}
     </AuthContext.Provider>
   );
