@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CarCard from '../components/CarCard';
+import { CarCardSkeleton } from '../components/SkeletonLoader';
 import { api } from '../utils/api';
 
 export default function Search() {
@@ -133,10 +134,10 @@ export default function Search() {
             <div className="filter-label">Fuel Type</div>
             <select value={fuel} onChange={e => setFuel(e.target.value)}>
               <option value="">Any</option>
-              <option>Petrol</option>
-              <option>Diesel</option>
-              <option>Electric</option>
-              <option>Hybrid</option>
+              <option value="petrol">Petrol</option>
+              <option value="diesel">Diesel</option>
+              <option value="electric">Electric</option>
+              <option value="hybrid">Hybrid</option>
             </select>
           </div>
 
@@ -144,9 +145,9 @@ export default function Search() {
             <div className="filter-label">Transmission</div>
             <select value={transmission} onChange={e => setTransmission(e.target.value)}>
               <option value="">Any</option>
-              <option>Automatic</option>
-              <option>Manual</option>
-              <option>CVT</option>
+              <option value="automatic">Automatic</option>
+              <option value="manual">Manual</option>
+              <option value="cvt">CVT</option>
             </select>
           </div>
 
@@ -173,9 +174,8 @@ export default function Search() {
           </div>
           
           {loading && (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8FA3BD' }}>
-              <div className="spinner" style={{ marginBottom: 16 }}></div>
-              <p>Loading listings...</p>
+            <div className="cards-grid">
+              {Array.from({ length: 8 }).map((_, i) => <CarCardSkeleton key={i} />)}
             </div>
           )}
           

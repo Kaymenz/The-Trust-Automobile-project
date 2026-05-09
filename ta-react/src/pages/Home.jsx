@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CarCard from '../components/CarCard';
+import { CarCardSkeleton } from '../components/SkeletonLoader';
 import { api } from '../utils/api';
 import { useEffect, useRef, useState } from 'react';
 
@@ -129,13 +130,10 @@ export default function Home() {
           <Link to="/search" className="view-all">View All Cars →</Link>
         </div>
         <div className="cards-grid">
-          {loading ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#8FA3BD' }}>
-              Loading featured cars...
-            </div>
-          ) : (
-            featured.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.1} />)
-          )}
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => <CarCardSkeleton key={i} />)
+            : featured.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.1} />)
+          }
         </div>
       </section>
 
@@ -170,13 +168,10 @@ export default function Home() {
           <Link to="/search" className="view-all">View All →</Link>
         </div>
         <div className="cards-grid">
-          {loading ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#8FA3BD' }}>
-              Loading recent listings...
-            </div>
-          ) : (
-            recent.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.05} />)
-          )}
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => <CarCardSkeleton key={i} />)
+            : recent.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.05} />)
+          }
         </div>
       </section>
 

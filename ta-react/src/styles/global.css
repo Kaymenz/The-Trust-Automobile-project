@@ -317,6 +317,7 @@ footer{background:var(--navy-900);padding:56px 40px 32px}
 .listing-specs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .listing-spec{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate-700)}
 .listing-spec i{font-size:16px;color:var(--slate-500)}
+.listing-spec svg{width:18px;height:18px;fill:var(--slate-500);flex-shrink:0}
 .listing-desc{font-size:13px;color:var(--slate-700);line-height:1.7;margin-bottom:24px;padding-top:20px;border-top:1px solid var(--slate-100)}
 .seller-card{background:#fff;border-radius:var(--r-lg);border:1px solid var(--slate-100);padding:24px}
 .seller-card h4{font-size:13px;font-weight:700;color:var(--navy-900);margin-bottom:16px}
@@ -483,6 +484,61 @@ footer{background:var(--navy-900);padding:56px 40px 32px}
   .thumb{padding-top:60%}
 }
 
+/* === SPINNER === */
+.spinner{width:36px;height:36px;border:3px solid var(--slate-100);border-top-color:var(--gold-500);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* === SKELETON LOADERS === */
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skeleton{background:linear-gradient(90deg,var(--slate-100) 25%,var(--slate-50) 50%,var(--slate-100) 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;border-radius:var(--r-md)}
+.skel-card{background:#fff;border-radius:var(--r-lg);border:1px solid var(--slate-100);overflow:hidden}
+.skel-img{height:180px;background:linear-gradient(90deg,var(--slate-100) 25%,var(--slate-50) 50%,var(--slate-100) 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear}
+.skel-body{padding:16px}
+.skel-line{height:12px;margin-bottom:10px;border-radius:var(--r-sm);background:linear-gradient(90deg,var(--slate-100) 25%,var(--slate-50) 50%,var(--slate-100) 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear}
+.skel-line.short{width:60%}
+.skel-line.xshort{width:40%}
+.skel-mechanic{background:#fff;border-radius:var(--r-lg);border:1px solid var(--slate-100);padding:20px;display:flex;gap:16px}
+.skel-avatar{width:56px;height:56px;border-radius:12px;flex-shrink:0;background:linear-gradient(90deg,var(--slate-100) 25%,var(--slate-50) 50%,var(--slate-100) 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear}
+.skel-actions{display:flex;gap:8px;margin-top:12px}
+.skel-btn{height:34px;border-radius:var(--r-md);background:linear-gradient(90deg,var(--slate-100) 25%,var(--slate-50) 50%,var(--slate-100) 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear}
+
+/* === LAMBORGHINI INTRO OVERLAY === */
+.lambo-intro{position:fixed;inset:0;z-index:9999;background:var(--navy-900);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.lambo-intro-exit{animation:lamboFadeOut 0.55s var(--ease-out) forwards}
+@keyframes lamboFadeOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+.lambo-road{position:absolute;bottom:0;left:0;right:0;height:28px;background:var(--navy-800);border-top:2px solid rgba(255,255,255,0.06)}
+.lambo-road-line{position:absolute;bottom:10px;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,var(--gold-500) 0,var(--gold-500) 48px,transparent 48px,transparent 88px);opacity:0.35;animation:lamboRoadMove 0.3s linear infinite}
+@keyframes lamboRoadMove{from{transform:translateX(0)}to{transform:translateX(-88px)}}
+.lambo-scene{position:relative;display:flex;align-items:flex-end;width:100%;height:240px}
+.lambo-car{position:absolute;bottom:24px;z-index:2;width:min(660px,90vw);animation:lamboDrive 1.2s cubic-bezier(0.2,0,0.8,1) forwards}
+.lambo-car svg{width:100%;height:auto;display:block}
+@keyframes lamboDrive{0%{transform:translateX(-700px)}100%{transform:translateX(calc(100vw + 100px))}}
+.lambo-streaks{position:absolute;bottom:60px;left:0;width:100%;pointer-events:none;animation:lamboStreaks 1.2s cubic-bezier(0.2,0,0.8,1) forwards;opacity:0.5}
+@keyframes lamboStreaks{0%{transform:translateX(-700px);opacity:0.6}100%{transform:translateX(calc(100vw + 100px));opacity:0}}
+.lambo-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;animation:lamboLogoReveal 0.5s ease forwards;animation-delay:1.05s;opacity:0}
+@keyframes lamboLogoReveal{from{opacity:0;transform:translate(-50%,-50%) scale(0.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.lambo-logo-mark{width:64px;height:64px;background:var(--gold-500);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:var(--navy-900);letter-spacing:-0.03em;box-shadow:var(--shadow-gold)}
+.lambo-logo-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.02em}
+.lambo-logo-sub{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--slate-500)}
+
+/* === LEAFLET MAP OVERRIDES === */
+.mechanic-map-wrap{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--slate-100)}
+.leaflet-container{font-family:var(--font)}
+.mechanic-pin{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--gold-500);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid var(--navy-900);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.mechanic-pin-inner{transform:rotate(45deg);color:var(--navy-900);font-size:16px;font-weight:700}
+.leaflet-popup-content-wrapper{border-radius:var(--r-lg)!important;border:1px solid var(--slate-100);box-shadow:var(--shadow-lg)!important}
+.leaflet-popup-tip{display:none}
+.map-popup{padding:4px 2px}
+.map-popup-name{font-size:14px;font-weight:700;color:var(--navy-900);margin-bottom:4px}
+.map-popup-spec{font-size:12px;color:var(--navy-600);font-weight:600;margin-bottom:4px}
+.map-popup-loc{font-size:12px;color:var(--slate-500)}
+.map-popup-btn{margin-top:10px;width:100%;padding:7px;font-size:12px}
+
+/* view toggle */
+.view-toggle{display:flex;gap:4px;background:var(--slate-100);border-radius:var(--r-md);padding:3px}
+.view-toggle-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:none;background:transparent;color:var(--slate-600);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.view-toggle-btn.active{background:#fff;color:var(--navy-900);box-shadow:var(--shadow-sm)}
+
 /* === PORTAL / DASHBOARD MOBILE NAVIGATION === */
 /* Hide main site nav and footer on portal pages */
 .portal-page nav,
@@ -500,3 +556,37 @@ footer{background:var(--navy-900);padding:56px 40px 32px}
   .portal-overlay.open{opacity:1;pointer-events:auto}
   .portal-main{padding-top:56px}
 }
+
+/* === NAVIGATION MAP === */
+.leaflet-popup-content{margin:8px 12px !important}
+.leaflet-popup-content-wrapper{border-radius:var(--r-lg)!important;border:1px solid var(--slate-100);box-shadow:var(--shadow-lg)!important}
+.leaflet-popup-tip{display:none}
+
+/* Route animation */
+@keyframes dashFlow{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+
+/* Responsive navigation panel */
+@media(max-width:640px){
+  .mechanic-map-wrap{height:400px!important}
+}
+
+/* === MODALS === */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease}
+.modal-content{background:#fff;border-radius:var(--r-xl);padding:28px;width:100%;box-shadow:var(--shadow-xl);animation:fadeInUp 0.25s ease;max-height:90vh;overflow-y:auto}
+.modal-content .form-group{margin-bottom:0}
+.modal-content .form-group label{font-size:12px;font-weight:600;color:var(--navy-700);margin-bottom:6px;display:block}
+.modal-content .form-group input,.modal-content .form-group select,.modal-content .form-group textarea{width:100%;padding:10px 12px;border:1.5px solid var(--slate-200);border-radius:var(--r-md);font-size:13px;transition:border-color 0.15s;font-family:inherit}
+.modal-content .form-group input:focus,.modal-content .form-group select:focus,.modal-content .form-group textarea:focus{border-color:var(--navy-500);outline:none}
+
+/* === BOOKING CARDS === */
+.booking-card{background:#fff;border:1px solid var(--slate-100);border-radius:var(--r-lg);padding:18px;transition:all 0.2s}
+.booking-card:hover{border-color:var(--slate-200);box-shadow:var(--shadow-md)}
+.booking-type-badge{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block}
+.booking-type-badge.test_drive{background:rgba(37,99,235,0.1);color:#2563EB}
+.booking-type-badge.purchase{background:rgba(22,163,74,0.1);color:#16A34A}
+.booking-type-badge.rental{background:rgba(168,85,247,0.1);color:#A855F7}
+.booking-status{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block}
+.booking-status.pending{background:rgba(234,179,8,0.1);color:#CA8A04}
+.booking-status.confirmed{background:rgba(22,163,74,0.1);color:#16A34A}
+.booking-status.cancelled{background:rgba(220,38,38,0.1);color:#DC2626}
+.booking-status.completed{background:rgba(37,99,235,0.1);color:#2563EB}

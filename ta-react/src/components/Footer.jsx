@@ -18,7 +18,8 @@ export default function Footer() {
           <li><Link to="/search">All Cars</Link></li>
           <li><Link to="/search?condition=New">New Cars</Link></li>
           <li><Link to="/search?condition=Used">Used Cars</Link></li>
-          <li><Link to="/search">By Make</Link></li>
+          <li><Link to="/spareparts">Spare Parts</Link></li>
+          <li><Link to="/mechanic">Mechanics</Link></li>
         </ul></div>
         <div className="footer-col"><h4>Account</h4><ul>
           <li><Link to="/login">Sign In</Link></li>

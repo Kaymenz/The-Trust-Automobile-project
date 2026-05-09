@@ -151,8 +151,43 @@ class ApiService {
     return this.request('/auth/me');
   }
 
+  async sendOtp(email) {
+    return this.request('/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async verifyOtp(email, otp) {
+    const data = await this.request('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
+    if (data.accessToken) {
+      this.setToken(data.accessToken);
+    }
+    return data;
+  }
+
+  async resendOtp(email) {
+    return this.request('/auth/resend-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
   logout() {
     this.clearToken();
+  }
+
+  // ==================== DASHBOARD ====================
+
+  async getDashboardStats() {
+    return this.request('/dashboard/stats');
+  }
+
+  async getRecentActivity() {
+    return this.request('/dashboard/recent-activity');
   }
 
   // ==================== USERS ====================
@@ -329,6 +364,95 @@ class ApiService {
     return this.request('/mechanics/nearby', {
       query: { lat, lng, maxDistance: maxDistance.toString() },
       retries: 1,
+    });
+  }
+
+  // ==================== BOOKINGS ====================
+
+  async getMyBookings() {
+    return this.request('/bookings/my');
+  }
+
+  async getBooking(id) {
+    return this.request(`/bookings/${id}`);
+  }
+
+  async createBooking(data) {
+    return this.request('/bookings', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async cancelBooking(id) {
+    return this.request(`/bookings/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async requestTestDrive({ listingId, vehicleDetails, preferredDate, preferredTime, phone, message }) {
+    return this.createBooking({
+      type: 'test_drive',
+      listingId,
+      vehicleDetails,
+      preferredDate,
+      preferredTime,
+      phone,
+      message,
+    });
+  }
+
+  async requestPurchase({ listingId, vehicleDetails, totalPrice, phone, message }) {
+    return this.createBooking({
+      type: 'purchase',
+      listingId,
+      vehicleDetails,
+      totalPrice,
+      phone,
+      message,
+    });
+  }
+
+  async requestService({ mechanicId, vehicleDetails, preferredDate, preferredTime, phone, message }) {
+    return this.createBooking({
+      type: 'service',
+      mechanicId,
+      vehicleDetails,
+      preferredDate,
+      preferredTime,
+      phone,
+      message,
+    });
+  }
+
+  // ==================== PARTS ORDERS ====================
+
+  async createPartsOrder(data) {
+    return this.request('/parts-orders', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getMyPartsPurchases() {
+    return this.request('/parts-orders/my-purchases');
+  }
+
+  async getMyPartsSales() {
+    return this.request('/parts-orders/my-sales');
+  }
+
+  async updatePartsOrderStatus(id, status) {
+    return this.request(`/parts-orders/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async updatePartsOrderPayment(id, paymentStatus) {
+    return this.request(`/parts-orders/${id}/payment`, {
+      method: 'PATCH',
+      body: JSON.stringify({ paymentStatus }),
     });
   }
 }

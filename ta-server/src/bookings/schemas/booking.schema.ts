@@ -4,34 +4,54 @@ import { Document, Types } from 'mongoose';
 @Schema({ timestamps: true })
 export class Booking extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  renterId: Types.ObjectId;
+  userId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Fleet', required: true })
-  fleetId: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Listing' })
+  listingId?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Fleet' })
+  fleetId?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Mechanic' })
+  mechanicId?: Types.ObjectId;
+
+  @Prop({ required: true, enum: ['test_drive', 'purchase', 'rental', 'service'] })
+  type: string;
 
   @Prop({ required: true })
   vehicleDetails: string;
 
-  @Prop({ required: true })
-  startDate: Date;
+  @Prop()
+  preferredDate?: Date;
 
-  @Prop({ required: true })
-  endDate: Date;
+  @Prop()
+  preferredTime?: string;
 
-  @Prop({ required: true })
+  @Prop()
+  startDate?: Date;
+
+  @Prop()
+  endDate?: Date;
+
+  @Prop({ default: 0 })
   totalPrice: number;
 
-  @Prop({ default: 'Pending', enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'] })
+  @Prop()
+  message?: string;
+
+  @Prop()
+  phone?: string;
+
+  @Prop({ default: 'pending', enum: ['pending', 'confirmed', 'cancelled', 'completed'] })
   status: string;
 
-  @Prop({ required: false })
+  @Prop()
   insuranceRef?: string;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
-
-  @Prop({ default: Date.now })
-  updatedAt: Date;
 }
 
 export const BookingSchema = SchemaFactory.createForClass(Booking);
+
+BookingSchema.index({ userId: 1, status: 1 });
+BookingSchema.index({ listingId: 1 });
+BookingSchema.index({ mechanicId: 1 });
+BookingSchema.index({ createdAt: -1 });

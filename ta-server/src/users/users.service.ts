@@ -22,6 +22,8 @@ export class UsersService {
     const createdUser = new this.userModel({
       ...createUserDto,
       password: hashedPassword,
+      status: UserStatus.PENDING,
+      emailVerified: false,
     });
 
     return createdUser.save();
@@ -66,6 +68,34 @@ export class UsersService {
 
   async validatePassword(user: UserDocument, password: string): Promise<boolean> {
     return bcrypt.compare(password, user.password);
+  }
+
+  async updateOtp(id: string, otp: string, otpExpiry: Date): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, {
+      otpCode: otp,
+      otpExpiry: otpExpiry,
+      otpAttempts: 0,
+      lastOtpRequestAt: new Date(),
+    }).exec();
+  }
+
+  async incrementOtpAttempts(id: string): Promise<void> {
+    const user = await this.userModel.findById(id);
+    if (user) {
+      await this.userModel.findByIdAndUpdate(id, {
+        otpAttempts: (user.otpAttempts || 0) + 1,
+      }).exec();
+    }
+  }
+
+  async verifyEmail(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, {
+      emailVerified: true,
+      status: UserStatus.ACTIVE,
+      otpCode: null,
+      otpExpiry: null,
+      otpAttempts: 0,
+    }).exec();
   }
 
   async getStats(): Promise<any> {
