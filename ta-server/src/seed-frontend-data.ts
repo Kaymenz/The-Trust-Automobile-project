@@ -4,6 +4,7 @@
  */
 
 import { NestFactory } from '@nestjs/core';
+import { getModelToken } from '@nestjs/mongoose';
 import { AppModule } from './app.module';
 import { UsersService } from './users/users.service';
 import { ListingsService } from './listings/listings.service';
@@ -11,10 +12,10 @@ import { FleetService } from './fleet/fleet.service';
 import { SparePartsService } from './spare-parts/spare-parts.service';
 import { MechanicsService } from './mechanics/mechanics.service';
 import { UserRole, UserStatus } from './users/schemas/user.schema';
-import { ListingStatus } from './listings/schemas/listing.schema';
-import { FleetCarStatus, CarCategory } from './fleet/schemas/fleet-car.schema';
-import { PartStatus } from './spare-parts/schemas/spare-part.schema';
-import { MechanicStatus } from './mechanics/schemas/mechanic.schema';
+import { Listing, ListingStatus } from './listings/schemas/listing.schema';
+import { FleetCar, FleetCarStatus, CarCategory } from './fleet/schemas/fleet-car.schema';
+import { SparePart, PartStatus } from './spare-parts/schemas/spare-part.schema';
+import { Mechanic, MechanicStatus } from './mechanics/schemas/mechanic.schema';
 import * as bcrypt from 'bcrypt';
 
 // Hardcoded data from frontend
@@ -73,6 +74,10 @@ async function bootstrap() {
   const fleetService = app.get(FleetService);
   const sparePartsService = app.get(SparePartsService);
   const mechanicsService = app.get(MechanicsService);
+  const listingModel = app.get(getModelToken(Listing.name));
+  const fleetCarModel = app.get(getModelToken(FleetCar.name));
+  const sparePartModel = app.get(getModelToken(SparePart.name));
+  const mechanicModel = app.get(getModelToken(Mechanic.name));
 
   console.log('🌱 Starting frontend data migration...\n');
 
@@ -173,7 +178,7 @@ async function bootstrap() {
         'CVT': 'cvt',
       };
 
-      await listingsService.create(sellerId, {
+      const listingPayload = {
         make: car.make,
         model: car.model,
         year: car.year,
@@ -188,7 +193,25 @@ async function bootstrap() {
         status: ListingStatus.ACTIVE,
         isFeatured: car.badge === 'Featured',
         featuredUntil: car.badge === 'Featured' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null,
+      };
+      const existing = await listingModel.findOne({
+        seller: sellerId,
+        make: car.make,
+        model: car.model,
+        year: car.year,
       });
+      if (existing) {
+        await listingModel.updateOne(
+          { _id: existing._id },
+          { $set: { ...listingPayload, status: ListingStatus.ACTIVE, verified: true } },
+        );
+      } else {
+        const created = await listingsService.create(sellerId, listingPayload);
+        await listingModel.updateOne(
+          { _id: (created as any)._id },
+          { $set: { status: ListingStatus.ACTIVE, verified: true } },
+        );
+      }
       listingsCount++;
       console.log(`  ✅ ${car.make} ${car.model}`);
     } catch (error) {
@@ -211,7 +234,7 @@ async function bootstrap() {
         'minivan': CarCategory.VAN,
       };
 
-      await fleetService.create({
+      const fleetPayload = {
         make: car.name.split(' ')[0],
         model: car.name.split(' ').slice(1).join(' '),
         year: 2022,
@@ -228,7 +251,17 @@ async function bootstrap() {
           ac: true,
         },
         availableLocations: [car.location],
+      };
+      const existing = await fleetCarModel.findOne({
+        make: fleetPayload.make,
+        model: fleetPayload.model,
+        year: fleetPayload.year,
       });
+      if (existing) {
+        await fleetCarModel.updateOne({ _id: existing._id }, { $set: fleetPayload });
+      } else {
+        await fleetService.create(fleetPayload);
+      }
       fleetCount++;
       console.log(`  ✅ ${car.name}`);
     } catch (error) {
@@ -242,7 +275,7 @@ async function bootstrap() {
   let partsCount = 0;
   for (const part of FRONTEND_PARTS) {
     try {
-      await sparePartsService.create(dealerId, {
+      const partPayload = {
         name: part.name,
         category: part.category,
         price: part.price,
@@ -254,7 +287,13 @@ async function bootstrap() {
         genuine: part.brand === 'OEM',
         negotiable: false,
         location: 'Accra',
-      });
+      };
+      const existing = await sparePartModel.findOne({ dealer: dealerId, name: part.name, brand: part.brand });
+      if (existing) {
+        await sparePartModel.updateOne({ _id: existing._id }, { $set: partPayload });
+      } else {
+        await sparePartsService.create(dealerId, partPayload);
+      }
       partsCount++;
       console.log(`  ✅ ${part.name}`);
     } catch (error) {
@@ -268,8 +307,7 @@ async function bootstrap() {
   let mechanicsCount = 0;
   for (const mechanic of FRONTEND_MECHANICS) {
     try {
-      // Create mechanic profile
-      const mechanicProfile = await mechanicsService.create(mechanicUserId, {
+      const mechanicPayload = {
         workshopName: mechanic.name,
         description: `Professional ${mechanic.specialty} services`,
         address: `${mechanic.location} Industrial Area`,
@@ -294,7 +332,20 @@ async function bootstrap() {
         yearsOfExperience: Math.floor(Math.random() * 15) + 5,
         completedJobs: mechanic.reviews * 3,
         certifications: ['ASE Certified', 'Ghana Auto Association'],
-      });
+      };
+      const existing = await mechanicModel.findOne({ workshopName: mechanic.name });
+      if (existing) {
+        await mechanicModel.updateOne(
+          { _id: existing._id },
+          { $set: { ...mechanicPayload, status: mechanic.available ? MechanicStatus.ACTIVE : MechanicStatus.BUSY } },
+        );
+      } else {
+        const mechanicProfile = await mechanicsService.create(mechanicUserId, mechanicPayload);
+        await mechanicModel.updateOne(
+          { _id: (mechanicProfile as any)._id },
+          { $set: { status: mechanic.available ? MechanicStatus.ACTIVE : MechanicStatus.BUSY } },
+        );
+      }
 
       // Update with unique user for each mechanic if needed
       mechanicsCount++;

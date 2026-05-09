@@ -74,6 +74,9 @@ export class SparePart {
 
   @Prop()
   location?: string;
+
+  @Prop({ type: [Number], index: '2dsphere' })
+  coordinates?: [number, number]; // [longitude, latitude]
 }
 
 export const SparePartSchema = SchemaFactory.createForClass(SparePart);
@@ -85,3 +88,4 @@ SparePartSchema.index({ price: 1 });
 SparePartSchema.index({ dealer: 1 });
 SparePartSchema.index({ compatibleMakes: 1 });
 SparePartSchema.index({ createdAt: -1 });
+SparePartSchema.index({ coordinates: '2dsphere' });

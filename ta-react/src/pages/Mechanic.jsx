@@ -1,51 +1,163 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import NavigationMap, { createPinIcon } from '../components/NavigationMap';
 import { api } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import { MechanicCardSkeleton } from '../components/SkeletonLoader';
 
-// Fix leaflet default icon path issue with bundlers
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
+function MechanicBookingModal({ mechanic, onClose, onSuccess }) {
+  const [vehicleDetails, setVehicleDetails] = useState('');
+  const [preferredDate, setPreferredDate] = useState('');
+  const [preferredTime, setPreferredTime] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!vehicleDetails || !preferredDate || !preferredTime) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      await api.requestService({
+        mechanicId: mechanic._id,
+        vehicleDetails,
+        preferredDate,
+        preferredTime,
+        phone,
+        message,
+      });
+      onSuccess();
+    } catch (err) {
+      setError(err.message || 'Failed to book service. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const minDate = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <h3 style={{ margin: 0, fontSize: 18, color: 'var(--navy-900)' }}>Book Service Appointment</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--slate-500)' }}>✕</button>
+        </div>
+
+        <div style={{
+          background: 'linear-gradient(135deg, var(--navy-900), var(--navy-700))',
+          borderRadius: 12, padding: 16, marginBottom: 20,
+          display: 'flex', alignItems: 'center', gap: 14,
+        }}>
+          <div style={{
+            width: 44, height: 44, borderRadius: 10,
+            background: 'var(--gold-500)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <i className="bi bi-tools" style={{ fontSize: 18, color: 'var(--navy-900)' }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{mechanic.workshopName || mechanic.user?.name}</div>
+            <div style={{ fontSize: 12, color: 'var(--gold-300)' }}>{mechanic.city}, Ghana</div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group" style={{ marginBottom: 14 }}>
+            <label>Vehicle (Make, Model, Year) *</label>
+            <input
+              type="text"
+              placeholder="e.g. Toyota Camry 2018"
+              value={vehicleDetails}
+              onChange={e => setVehicleDetails(e.target.value)}
+              required
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Preferred Date *</label>
+              <input type="date" min={minDate} value={preferredDate} onChange={e => setPreferredDate(e.target.value)} required />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Preferred Time *</label>
+              <select value={preferredTime} onChange={e => setPreferredTime(e.target.value)} required>
+                <option value="">Select time</option>
+                <option value="08:00 AM">08:00 AM</option>
+                <option value="09:00 AM">09:00 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="11:00 AM">11:00 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="01:00 PM">01:00 PM</option>
+                <option value="02:00 PM">02:00 PM</option>
+                <option value="03:00 PM">03:00 PM</option>
+                <option value="04:00 PM">04:00 PM</option>
+                <option value="05:00 PM">05:00 PM</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 14 }}>
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              placeholder="+233 24 XXX XXXX"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 18 }}>
+            <label>Issue Description / Notes</label>
+            <textarea
+              rows={3}
+              placeholder="Briefly describe the service needed or issue..."
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              style={{ resize: 'vertical' }}
+            />
+          </div>
+
+          {error && (
+            <div style={{
+              background: 'var(--no-100)', border: '1px solid rgba(220,38,38,0.2)',
+              borderRadius: 8, padding: '10px 14px', marginBottom: 14,
+              fontSize: 13, color: 'var(--no-600)',
+            }}>
+              <i className="bi bi-exclamation-circle" style={{ marginRight: 6 }} />{error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={loading}
+            style={{ width: '100%', padding: '12px 24px', fontSize: 14 }}
+          >
+            {loading ? 'Booking...' : 'Confirm Booking'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 function createMechanicIcon(status) {
   const color = status === 'active' ? '#E8A828' : '#94A3B8';
   const borderColor = status === 'active' ? '#0B1D35' : '#475569';
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="36" height="48">
-    <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 30 18 30S36 31.5 36 18C36 8.06 27.94 0 18 0z" fill="${color}" stroke="${borderColor}" stroke-width="2"/>
-    <text x="18" y="22" text-anchor="middle" dominant-baseline="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="${borderColor}">⚙</text>
-  </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [36, 48],
-    iconAnchor: [18, 48],
-    popupAnchor: [0, -48],
-  });
-}
-
-function MapBoundsUpdater({ mechanics }) {
-  const map = useMap();
-  useEffect(() => {
-    if (mechanics.length === 0) return;
-    const coords = mechanics
-      .filter(m => m.location && m.location.length === 2)
-      .map(m => [m.location[1], m.location[0]]);
-    if (coords.length > 0) {
-      map.fitBounds(coords, { padding: [48, 48], maxZoom: 13 });
-    }
-  }, [mechanics, map]);
-  return null;
+  return createPinIcon(color, borderColor, '⚙');
 }
 
 export default function Mechanic() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [view, setView] = useState('list'); // 'list' | 'map'
@@ -53,8 +165,9 @@ export default function Mechanic() {
   const [specializations, setSpecializations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   const [selectedMechanic, setSelectedMechanic] = useState(null);
-  const mapRef = useRef(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const fetchMechanics = async () => {
@@ -82,11 +195,28 @@ export default function Mechanic() {
       .catch(() => {});
   }, []);
 
+  const handleBook = (mechanic) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setSelectedMechanic(mechanic);
+  };
+
+  const handleSuccess = () => {
+    setSelectedMechanic(null);
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 5000);
+  };
+
   // mechanics that have valid GPS coordinates
   const mappable = mechanics.filter(m => m.location && m.location.length === 2);
 
-  // Ghana center as default map view
-  const ghanaCenter = [7.9465, -1.0232];
+  // Coordinate getter for NavigationMap
+  const getCoords = (m) => {
+    if (!m.location || m.location.length !== 2) return null;
+    return [m.location[1], m.location[0]]; // [lat, lng]
+  };
 
   return (
     <Layout activePage="mechanic">
@@ -101,6 +231,23 @@ export default function Mechanic() {
       </div>
 
       <section className="section">
+        {success && (
+          <div style={{
+            background: 'var(--yes-100)', border: '1.5px solid var(--yes-300)',
+            borderRadius: 12, padding: '16px 20px', marginBottom: 24,
+            display: 'flex', alignItems: 'center', gap: 12, animation: 'fadeInDown 0.3s ease'
+          }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--yes-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+              <i className="bi bi-check" style={{ fontSize: 24 }} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, color: 'var(--yes-700)' }}>Booking Successful!</div>
+              <div style={{ fontSize: 13, color: 'var(--yes-600)' }}>Your appointment has been requested. Check your dashboard for updates.</div>
+            </div>
+            <button onClick={() => setSuccess(false)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--yes-700)', cursor: 'pointer' }}>✕</button>
+          </div>
+        )}
+
         {/* Controls bar */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 28, flexWrap: 'wrap', alignItems: 'center' }}>
           <input
@@ -196,14 +343,16 @@ export default function Mechanic() {
                         </span>
                       </div>
                       <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
-                        <button className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }}>Book Now</button>
-                        <button
-                          className="btn-secondary"
-                          style={{ padding: '7px 16px', fontSize: 13 }}
-                          onClick={() => { setSelectedMechanic(m._id); setView('map'); }}
-                        >
-                          <i className="bi bi-map" /> View on Map
-                        </button>
+                        <button className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }} onClick={() => handleBook(m)}>Book Now</button>
+                        {m.location && m.location.length === 2 && (
+                          <button
+                            className="btn-secondary"
+                            style={{ padding: '7px 16px', fontSize: 13 }}
+                            onClick={() => setView('map')}
+                          >
+                            <i className="bi bi-map" /> View on Map
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -214,83 +363,48 @@ export default function Mechanic() {
 
         {/* MAP VIEW */}
         {!error && view === 'map' && (
-          <div>
-            <div className="mechanic-map-wrap" style={{ height: 560 }}>
-              {loading ? (
-                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--slate-50)' }}>
-                  <div style={{ textAlign: 'center', color: 'var(--slate-500)' }}>
-                    <div className="spinner" style={{ marginBottom: 12 }} />
-                    <p>Loading map…</p>
-                  </div>
+          <NavigationMap
+            items={mechanics}
+            loading={loading}
+            getCoords={getCoords}
+            getIcon={(m) => createMechanicIcon(m.status)}
+            emptyMessage="No mechanics with map locations found. Try clearing your search filters."
+            legendItems={[
+              { color: '#E8A828', label: 'Available' },
+              { color: '#94A3B8', label: 'Unavailable / Busy' },
+            ]}
+            renderPopup={(m, { onNavigate }) => (
+              <div className="map-popup">
+                <div className="map-popup-name">{m.workshopName || m.user?.name}</div>
+                <div className="map-popup-spec">{m.specializations?.slice(0, 2).join(' · ')}</div>
+                <div className="map-popup-loc">
+                  <i className="bi bi-geo-alt" /> {m.address}, {m.city}
                 </div>
-              ) : (
-                <MapContainer
-                  center={ghanaCenter}
-                  zoom={7}
-                  style={{ width: '100%', height: '100%' }}
-                  ref={mapRef}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <MapBoundsUpdater mechanics={mappable} />
-                  {mappable.map(m => (
-                    <Marker
-                      key={m._id}
-                      position={[m.location[1], m.location[0]]}
-                      icon={createMechanicIcon(m.status)}
-                    >
-                      <Popup>
-                        <div className="map-popup">
-                          <div className="map-popup-name">{m.workshopName || m.user?.name}</div>
-                          <div className="map-popup-spec">{m.specializations?.slice(0, 2).join(' · ')}</div>
-                          <div className="map-popup-loc">
-                            <i className="bi bi-geo-alt" /> {m.address}, {m.city}
-                          </div>
-                          <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>
-                            <i className="bi bi-star-fill" style={{ color: '#E8A020' }} /> {(m.rating || 0).toFixed(1)} · {m.reviewCount || 0} reviews
-                          </div>
-                          {(m.mobileService || m.emergencyService) && (
-                            <div style={{ marginTop: 6, display: 'flex', gap: 4 }}>
-                              {m.mobileService && <span className="badge badge-blue" style={{ fontSize: 10 }}>Mobile</span>}
-                              {m.emergencyService && <span className="badge badge-red" style={{ fontSize: 10 }}>24/7</span>}
-                            </div>
-                          )}
-                          <button
-                            className="btn-primary map-popup-btn"
-                            onClick={() => { setSelectedMechanic(m._id); setView('list'); }}
-                          >
-                            Book Now
-                          </button>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
-              )}
-            </div>
-
-            {/* Map legend */}
-            <div style={{ display: 'flex', gap: 20, marginTop: 16, fontSize: 12, color: 'var(--slate-500)', alignItems: 'center' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#E8A828', display: 'inline-block' }} />
-                Available
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#94A3B8', display: 'inline-block' }} />
-                Unavailable / Busy
-              </span>
-              <span>Click a pin for details</span>
-            </div>
-
-            {mappable.length === 0 && !loading && (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--slate-500)' }}>
-                <i className="bi bi-map" style={{ fontSize: 36, display: 'block', marginBottom: 12 }} />
-                No mechanics with map locations found. Try clearing your search filters.
+                <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>
+                  <i className="bi bi-star-fill" style={{ color: '#E8A020' }} /> {(m.rating || 0).toFixed(1)} · {m.reviewCount || 0} reviews
+                </div>
+                {(m.mobileService || m.emergencyService) && (
+                  <div style={{ marginTop: 6, display: 'flex', gap: 4 }}>
+                    {m.mobileService && <span className="badge badge-blue" style={{ fontSize: 10 }}>Mobile</span>}
+                    {m.emergencyService && <span className="badge badge-red" style={{ fontSize: 10 }}>24/7</span>}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                  <button className="btn-primary" style={{ flex: 1, padding: '7px 12px', fontSize: 12 }} onClick={() => handleBook(m)}>
+                    Book Now
+                  </button>
+                  <button
+                    className="btn-secondary"
+                    style={{ padding: '7px 12px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}
+                    onClick={onNavigate}
+                  >
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+                    Navigate
+                  </button>
+                </div>
               </div>
             )}
-          </div>
+          />
         )}
 
         {/* Empty state for list view */}
@@ -302,6 +416,14 @@ export default function Mechanic() {
           </div>
         )}
       </section>
+
+      {selectedMechanic && (
+        <MechanicBookingModal
+          mechanic={selectedMechanic}
+          onClose={() => setSelectedMechanic(null)}
+          onSuccess={handleSuccess}
+        />
+      )}
     </Layout>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -27,88 +27,96 @@ import SpareParts from './pages/spareparts/SpareParts';
 import Cart from './pages/spareparts/Cart';
 import Checkout from './pages/spareparts/Checkout';
 
-export default function App() {
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem('ta_intro_shown');
-  });
+function AppRoutes() {
+  const location = useLocation();
+  const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
-    if (showIntro) {
-      sessionStorage.setItem('ta_intro_shown', '1');
+    const introRoutes = new Set(['/', '/dashboard']);
+    if (introRoutes.has(location.pathname)) {
+      setShowIntro(true);
     }
-  }, [showIntro]);
+  }, [location.pathname]);
 
+  return (
+    <>
+      {showIntro && <LamborghiniIntro key={location.pathname} onComplete={() => setShowIntro(false)} />}
+      <Routes>
+        {/* Public Pages */}
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/listing/:id" element={<Listing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/education" element={<Education />} />
+        <Route path="/mechanic" element={<Mechanic />} />
+
+        {/* Public Access Pages */}
+        <Route path="/rent" element={<Rent />} />
+        <Route path="/sell" element={<Sell />} />
+        <Route path="/spareparts" element={<SpareParts />} />
+
+        {/* Protected Pages - Require Authentication */}
+        <Route path="/post-ad" element={
+          <ProtectedRoute>
+            <PostAd />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/spareparts/cart" element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        } />
+        <Route path="/spareparts/checkout" element={
+          <ProtectedRoute>
+            <Checkout />
+          </ProtectedRoute>
+        } />
+
+        {/* Role-Based Portals */}
+        <Route path="/portals/seller" element={
+          <ProtectedRoute requiredRole="seller">
+            <PortalSeller />
+          </ProtectedRoute>
+        } />
+        <Route path="/portals/renter" element={
+          <ProtectedRoute requiredRole="renter">
+            <PortalRenter />
+          </ProtectedRoute>
+        } />
+        <Route path="/portals/mechanic" element={
+          <ProtectedRoute requiredRole="mechanic">
+            <PortalMechanic />
+          </ProtectedRoute>
+        } />
+        <Route path="/portals/parts" element={
+          <ProtectedRoute requiredRole="parts_dealer">
+            <PortalParts />
+          </ProtectedRoute>
+        } />
+
+        {/* Admin Pages */}
+        <Route path="/admin" element={
+          <ProtectedRoute requiredRole="admin">
+            <Admin />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </>
+  );
+}
+
+export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          {showIntro && <LamborghiniIntro onComplete={() => setShowIntro(false)} />}
-          <Routes>
-            {/* Public Pages */}
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/listing/:id" element={<Listing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/education" element={<Education />} />
-            <Route path="/mechanic" element={<Mechanic />} />
-
-            {/* Public Access Pages */}
-            <Route path="/rent" element={<Rent />} />
-            <Route path="/sell" element={<Sell />} />
-            <Route path="/spareparts" element={<SpareParts />} />
-
-            {/* Protected Pages - Require Authentication */}
-            <Route path="/post-ad" element={
-              <ProtectedRoute>
-                <PostAd />
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/spareparts/cart" element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            } />
-            <Route path="/spareparts/checkout" element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            } />
-
-            {/* Role-Based Portals */}
-            <Route path="/portals/seller" element={
-              <ProtectedRoute requiredRole="seller">
-                <PortalSeller />
-              </ProtectedRoute>
-            } />
-            <Route path="/portals/renter" element={
-              <ProtectedRoute requiredRole="renter">
-                <PortalRenter />
-              </ProtectedRoute>
-            } />
-            <Route path="/portals/mechanic" element={
-              <ProtectedRoute requiredRole="mechanic">
-                <PortalMechanic />
-              </ProtectedRoute>
-            } />
-            <Route path="/portals/parts" element={
-              <ProtectedRoute requiredRole="parts_dealer">
-                <PortalParts />
-              </ProtectedRoute>
-            } />
-
-            {/* Admin Pages */}
-            <Route path="/admin" element={
-              <ProtectedRoute requiredRole="admin">
-                <Admin />
-              </ProtectedRoute>
-            } />
-          </Routes>
+          <AppRoutes />
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>

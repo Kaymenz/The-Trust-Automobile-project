@@ -12,58 +12,82 @@ export class BookingsService {
     @InjectModel(Booking.name) private bookingModel: Model<Booking>,
   ) {}
 
-  async findByRenterId(renterId: string): Promise<Booking[]> {
+  async findByUserId(userId: string): Promise<Booking[]> {
     try {
-      this.logger.debug(`Fetching bookings for renter: ${renterId}`);
-      
+      this.logger.debug(`Fetching bookings for user: ${userId}`);
       const bookings = await this.bookingModel
-        .find({ renterId })
+        .find({ userId })
         .sort({ createdAt: -1 })
         .exec();
-      
-      this.logger.debug(`Found ${bookings.length} bookings for renter ${renterId}`);
+      this.logger.debug(`Found ${bookings.length} bookings for user ${userId}`);
       return bookings;
     } catch (error) {
-      this.logger.error(`Error fetching bookings for renter ${renterId}:`, error);
+      this.logger.error(`Error fetching bookings for user ${userId}:`, error);
       throw error;
     }
   }
 
-  async create(
-    createBookingDto: CreateBookingDto,
-    renterId: string,
-  ): Promise<Booking> {
+  // Legacy compat — alias for old renter-based queries
+  async findByRenterId(renterId: string): Promise<Booking[]> {
+    return this.findByUserId(renterId);
+  }
+
+  async create(createBookingDto: CreateBookingDto, userId: string): Promise<Booking> {
     try {
-      // Validate dates
-      const startDate = new Date(createBookingDto.startDate);
-      const endDate = new Date(createBookingDto.endDate);
-      
-      if (startDate >= endDate) {
-        throw new BadRequestException('End date must be after start date');
+      const validTypes = ['test_drive', 'purchase', 'rental', 'service'];
+      if (!validTypes.includes(createBookingDto.type)) {
+        throw new BadRequestException(`Invalid type. Must be one of: ${validTypes.join(', ')}`);
       }
 
-      if (startDate < new Date()) {
-        throw new BadRequestException('Start date cannot be in the past');
+      if (!createBookingDto.vehicleDetails) {
+        throw new BadRequestException('Vehicle details are required');
       }
 
-      if (createBookingDto.totalPrice <= 0) {
-        throw new BadRequestException('Total price must be greater than 0');
+      // For rentals, validate dates
+      if (createBookingDto.type === 'rental') {
+        if (!createBookingDto.startDate || !createBookingDto.endDate) {
+          throw new BadRequestException('Start and end dates are required for rentals');
+        }
+        const startDate = new Date(createBookingDto.startDate);
+        const endDate = new Date(createBookingDto.endDate);
+        if (startDate >= endDate) {
+          throw new BadRequestException('End date must be after start date');
+        }
       }
 
-      this.logger.debug(`Creating booking for renter ${renterId}:`, createBookingDto);
+      // For purchases, validate listing and price
+      if (createBookingDto.type === 'purchase' && !createBookingDto.listingId) {
+        throw new BadRequestException('Listing ID is required for purchase bookings');
+      }
+
+      // Check for duplicate active bookings on same listing
+      if (createBookingDto.listingId) {
+        const existing = await this.bookingModel.findOne({
+          userId,
+          listingId: createBookingDto.listingId,
+          type: createBookingDto.type,
+          status: { $in: ['pending', 'confirmed'] },
+        });
+        if (existing) {
+          throw new BadRequestException(
+            `You already have an active ${createBookingDto.type.replace('_', ' ')} request for this vehicle.`
+          );
+        }
+      }
+
+      this.logger.debug(`Creating ${createBookingDto.type} booking for user ${userId}:`, createBookingDto);
 
       const booking = new this.bookingModel({
         ...createBookingDto,
-        renterId,
-        status: createBookingDto.status || 'Pending',
+        userId,
+        status: createBookingDto.status || 'pending',
       });
 
       const savedBooking = await booking.save();
-      this.logger.log(`Booking created successfully: ${savedBooking._id}`);
-      
+      this.logger.log(`Booking created: ${savedBooking._id} (${createBookingDto.type})`);
       return savedBooking;
     } catch (error) {
-      this.logger.error(`Error creating booking for renter ${renterId}:`, error);
+      this.logger.error(`Error creating booking for user ${userId}:`, error);
       throw error;
     }
   }
@@ -71,11 +95,9 @@ export class BookingsService {
   async findById(id: string): Promise<Booking> {
     try {
       const booking = await this.bookingModel.findById(id).exec();
-      
       if (!booking) {
         throw new NotFoundException('Booking not found');
       }
-
       return booking;
     } catch (error) {
       this.logger.error(`Error fetching booking ${id}:`, error);
@@ -85,14 +107,12 @@ export class BookingsService {
 
   async updateStatus(id: string, status: string): Promise<Booking> {
     try {
-      const validStatuses = ['Pending', 'Confirmed', 'Cancelled', 'Completed'];
-      
+      const validStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
       if (!validStatuses.includes(status)) {
         throw new BadRequestException(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
       }
 
       this.logger.debug(`Updating booking ${id} status to: ${status}`);
-
       const booking = await this.bookingModel
         .findByIdAndUpdate(id, { status }, { new: true })
         .exec();
@@ -107,5 +127,19 @@ export class BookingsService {
       this.logger.error(`Error updating booking ${id} status:`, error);
       throw error;
     }
+  }
+
+  async cancelBooking(id: string, userId: string): Promise<Booking> {
+    const booking = await this.bookingModel.findById(id).exec();
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+    if (booking.userId.toString() !== userId) {
+      throw new BadRequestException('You can only cancel your own bookings');
+    }
+    if (['cancelled', 'completed'].includes(booking.status)) {
+      throw new BadRequestException('This booking cannot be cancelled');
+    }
+    return this.updateStatus(id, 'cancelled');
   }
 }

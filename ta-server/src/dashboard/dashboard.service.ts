@@ -57,9 +57,9 @@ export class DashboardService {
 
   private async getBuyerStats(userId: string) {
     const savedCars = await this.listingModel.countDocuments({ 'savedBy': userId });
-    const totalBookings = await this.bookingModel.countDocuments({ buyerId: userId });
-    const activeBookings = await this.bookingModel.countDocuments({ buyerId: userId, status: 'active' });
-    const completedBookings = await this.bookingModel.countDocuments({ buyerId: userId, status: 'completed' });
+    const totalBookings = await this.bookingModel.countDocuments({ userId });
+    const activeBookings = await this.bookingModel.countDocuments({ userId, status: { $in: ['pending', 'confirmed'] } });
+    const completedBookings = await this.bookingModel.countDocuments({ userId, status: 'completed' });
 
     return {
       savedCars,
@@ -70,9 +70,9 @@ export class DashboardService {
   }
 
   private async getRenterStats(userId: string) {
-    const totalRentals = await this.bookingModel.countDocuments({ renterId: userId });
-    const activeRentals = await this.bookingModel.countDocuments({ renterId: userId, status: 'active' });
-    const completedRentals = await this.bookingModel.countDocuments({ renterId: userId, status: 'completed' });
+    const totalRentals = await this.bookingModel.countDocuments({ userId, type: 'rental' });
+    const activeRentals = await this.bookingModel.countDocuments({ userId, type: 'rental', status: { $in: ['pending', 'confirmed'] } });
+    const completedRentals = await this.bookingModel.countDocuments({ userId, type: 'rental', status: 'completed' });
 
     return {
       totalRentals,
@@ -144,7 +144,7 @@ export class DashboardService {
 
   private async getBuyerActivity(userId: string) {
     const recentBookings = await this.bookingModel
-      .find({ buyerId: userId })
+      .find({ userId })
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
@@ -159,7 +159,7 @@ export class DashboardService {
 
   private async getRenterActivity(userId: string) {
     const recentRentals = await this.bookingModel
-      .find({ renterId: userId })
+      .find({ userId, type: 'rental' })
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();

@@ -1,8 +1,38 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
-import { CARS, MAKES } from '../data/cars';
+import CarCard from '../components/CarCard';
+import { CarCardSkeleton } from '../components/SkeletonLoader';
+import { api } from '../utils/api';
 
 export default function Sell() {
+  const [stats, setStats] = useState({ total: 0, sold: 0, pending: 0 });
+  const [recentListings, setRecentListings] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSellPageData = async () => {
+      try {
+        setLoading(true);
+        const [statsData, listingsData, makesData] = await Promise.all([
+          api.getListingStats(),
+          api.getListings({ limit: 3 }),
+          api.getCarMakes(),
+        ]);
+        setStats(statsData || { total: 0, sold: 0, pending: 0 });
+        setRecentListings(Array.isArray(listingsData) ? listingsData.slice(0, 3) : []);
+        setMakes(Array.isArray(makesData) ? makesData : []);
+      } catch (error) {
+        console.error('Failed to fetch sell page data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSellPageData();
+  }, []);
+
   return (
     <Layout activePage="sell">
       <section className="hero">
@@ -58,9 +88,9 @@ export default function Sell() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 800 }}>
           {[
-            { icon: 'bi-eye-fill', title: 'Maximum Visibility', desc: 'Your listing reaches thousands of active buyers daily' },
+            { icon: 'bi-eye-fill', title: 'Maximum Visibility', desc: `${stats.total?.toLocaleString() || 0}+ active marketplace listings and growing buyer traffic` },
             { icon: 'bi-shield-check', title: 'Verified Badge', desc: 'Stand out with our trust verification seal' },
-            { icon: 'bi-graph-up', title: 'Analytics', desc: 'Track views, inquiries, and engagement on your ads' },
+            { icon: 'bi-graph-up', title: 'Analytics', desc: `${makes.length || 0} makes currently represented across live inventory` },
             { icon: 'bi-chat-dots', title: 'Direct Messaging', desc: 'Communicate with buyers through our secure platform' },
           ].map(b => (
             <div key={b.title} style={{ display: 'flex', gap: 14, padding: 20, background: '#F4F7FB', borderRadius: 12 }}>
@@ -72,6 +102,28 @@ export default function Sell() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="section">
+        <div className="section-header">
+          <div>
+            <div className="section-title">Live <span>Marketplace</span></div>
+            <div className="section-subtitle">Recent cars buyers are seeing right now</div>
+          </div>
+          <Link to="/search" className="view-all">View All Cars →</Link>
+        </div>
+        <div className="cards-grid">
+          {loading
+            ? Array.from({ length: 3 }).map((_, i) => <CarCardSkeleton key={i} />)
+            : recentListings.map((car, i) => <CarCard key={car._id} car={car} delay={i * 0.05} />)
+          }
+        </div>
+        {!loading && recentListings.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#8FA3BD' }}>
+            <p style={{ fontSize: 16, fontWeight: 600 }}>No live listings yet</p>
+            <p style={{ fontSize: 14 }}>Seed the server data or post the first verified car.</p>
+          </div>
+        )}
       </section>
 
       <section className="section" style={{ background: '#0B1E3D', textAlign: 'center' }}>

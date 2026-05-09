@@ -109,7 +109,7 @@ export class AuthService {
     const otp = this.emailService.generateOtp();
     const otpExpiry = this.emailService.getOtpExpiry();
 
-    await this.usersService.updateOtp(user._id, otp, otpExpiry);
+    await this.usersService.updateOtp(user._id.toString(), otp, otpExpiry);
     await this.emailService.sendOtpEmail(sendOtpDto.email, otp, user.name);
 
     return {
@@ -141,12 +141,12 @@ export class AuthService {
 
     // Verify OTP
     if (user.otpCode !== verifyOtpDto.otp) {
-      await this.usersService.incrementOtpAttempts(user._id);
+      await this.usersService.incrementOtpAttempts(user._id.toString());
       throw new BadRequestException('Invalid OTP. Please try again.');
     }
 
     // Mark email as verified
-    await this.usersService.verifyEmail(user._id);
+    await this.usersService.verifyEmail(user._id.toString());
     
     // Send welcome email
     await this.emailService.sendWelcomeEmail(verifyOtpDto.email, user.name);

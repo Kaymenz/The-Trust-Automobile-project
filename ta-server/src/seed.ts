@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import { UsersService } from './users/users.service';
 import { ListingsService } from './listings/listings.service';
 import { Mechanic } from './mechanics/schemas/mechanic.schema';
+import { SparePart } from './spare-parts/schemas/spare-part.schema';
+import { Listing, ListingStatus } from './listings/schemas/listing.schema';
 import { UserRole, UserStatus } from './users/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 
@@ -427,6 +429,42 @@ const GHANA_MECHANICS: Array<{
   },
 ];
 
+// ── Spare Parts with GPS coordinates ──────────────────────────────────────────
+const GHANA_SPARE_PARTS: Array<{
+  name: string; category: string; price: number; brand: string;
+  location: string; coordinates: [number, number]; stock: number;
+  genuine: boolean; description: string; partNumber?: string;
+}> = [
+  // ── ACCRA ──
+  { name: 'Brake Pad Set (Front)', category: 'Brakes', price: 180, brand: 'Bosch', location: 'Accra', coordinates: [-0.1900, 5.6050], stock: 24, genuine: true, description: 'Premium ceramic brake pads. Fits Toyota, Honda, Hyundai.', partNumber: 'BP-TY-001' },
+  { name: 'Air Filter', category: 'Engine', price: 65, brand: 'Mann-Filter', location: 'Accra', coordinates: [-0.1750, 5.5600], stock: 40, genuine: true, description: 'High-flow engine air filter for improved performance.', partNumber: 'AF-MF-220' },
+  { name: 'Spark Plug Set (4pc)', category: 'Engine', price: 120, brand: 'NGK', location: 'Accra', coordinates: [-0.1480, 5.6380], stock: 35, genuine: true, description: 'Iridium spark plugs for Japanese and Korean vehicles.' },
+  { name: 'Radiator Fan Assembly', category: 'Cooling', price: 450, brand: 'Denso', location: 'Accra', coordinates: [-0.2250, 5.6160], stock: 8, genuine: true, description: 'Complete radiator fan assembly with motor.', partNumber: 'RF-DN-088' },
+  { name: 'Headlight Bulb H7', category: 'Electrical', price: 35, brand: 'Philips', location: 'Accra', coordinates: [-0.1240, 5.6370], stock: 60, genuine: true, description: 'High-brightness halogen headlight bulb.' },
+  { name: 'Timing Belt Kit', category: 'Engine', price: 380, brand: 'Gates', location: 'Accra', coordinates: [-0.2490, 5.6100], stock: 12, genuine: true, description: 'Complete timing belt kit with tensioner and water pump.' },
+  { name: 'Wiper Blade Set', category: 'Accessories', price: 45, brand: 'Bosch', location: 'Accra', coordinates: [-0.0900, 5.5800], stock: 50, genuine: false, description: 'All-weather wiper blades, universal fit.' },
+  { name: 'Oil Filter', category: 'Engine', price: 28, brand: 'Toyota Genuine', location: 'Accra', coordinates: [-0.1660, 5.6840], stock: 80, genuine: true, description: 'Genuine Toyota oil filter for Camry, Corolla, RAV4.' },
+  // ── KUMASI ──
+  { name: 'Alternator', category: 'Electrical', price: 550, brand: 'Valeo', location: 'Kumasi', coordinates: [-1.6480, 6.7160], stock: 6, genuine: true, description: 'Reconditioned alternator with 1-year warranty.' },
+  { name: 'Shock Absorber (Front)', category: 'Suspension', price: 280, brand: 'KYB', location: 'Kumasi', coordinates: [-1.6240, 6.6940], stock: 14, genuine: true, description: 'Gas-charged front shock absorber. Fits most sedans and SUVs.' },
+  { name: 'Clutch Kit', category: 'Transmission', price: 650, brand: 'Exedy', location: 'Kumasi', coordinates: [-1.6450, 6.7040], stock: 5, genuine: true, description: 'Complete clutch kit — disc, pressure plate, release bearing.' },
+  { name: 'Battery 12V 75Ah', category: 'Electrical', price: 420, brand: 'Varta', location: 'Kumasi', coordinates: [-1.6380, 6.6740], stock: 18, genuine: true, description: 'Premium start-stop battery for tropical climate.' },
+  { name: 'Cabin Air Filter', category: 'Engine', price: 40, brand: 'Mann-Filter', location: 'Kumasi', coordinates: [-1.6100, 6.7030], stock: 30, genuine: false, description: 'Activated carbon cabin filter for clean air.' },
+  // ── TAKORADI ──
+  { name: 'CV Joint Boot Kit', category: 'Suspension', price: 85, brand: 'SKF', location: 'Takoradi', coordinates: [-1.7500, 4.8940], stock: 20, genuine: true, description: 'CV joint boot kit with grease and clamps.' },
+  { name: 'Fuel Pump Assembly', category: 'Engine', price: 380, brand: 'Denso', location: 'Takoradi', coordinates: [-1.7750, 4.9040], stock: 7, genuine: true, description: 'In-tank electric fuel pump assembly.' },
+  { name: 'Wheel Bearing Kit', category: 'Suspension', price: 220, brand: 'NSK', location: 'Takoradi', coordinates: [-1.8110, 4.8920], stock: 10, genuine: true, description: 'Front wheel bearing kit. Japanese quality.' },
+  // ── TAMALE ──
+  { name: 'Starter Motor', category: 'Electrical', price: 480, brand: 'Bosch', location: 'Tamale', coordinates: [-0.8520, 9.4000], stock: 4, genuine: true, description: 'Heavy-duty starter motor for diesel engines.' },
+  { name: 'Tyre 265/70R16 (Each)', category: 'Tyres', price: 520, brand: 'Bridgestone', location: 'Tamale', coordinates: [-0.8400, 9.4100], stock: 16, genuine: true, description: 'All-terrain tyre, perfect for northern Ghana roads.' },
+  // ── CAPE COAST ──
+  { name: 'Brake Disc (Pair)', category: 'Brakes', price: 340, brand: 'Brembo', location: 'Cape Coast', coordinates: [-1.2470, 5.1050], stock: 8, genuine: true, description: 'Vented brake discs for sedans and compact SUVs.' },
+  { name: 'Power Steering Fluid', category: 'Fluids', price: 25, brand: 'Castrol', location: 'Cape Coast', coordinates: [-1.2400, 5.1080], stock: 45, genuine: false, description: 'Premium power steering fluid, 1L bottle.' },
+  // ── TEMA ──
+  { name: 'Turbocharger Assembly', category: 'Engine', price: 2800, brand: 'Garrett', location: 'Tema', coordinates: [-0.0040, 5.6700], stock: 2, genuine: true, description: 'Reconditioned turbo for diesel pickup trucks.' },
+  { name: 'Air Compressor (AC)', category: 'Cooling', price: 750, brand: 'Denso', location: 'Tema', coordinates: [0.0120, 5.6560], stock: 5, genuine: true, description: 'AC compressor for Toyota and Honda models.' },
+];
+
 // ── Extra car listings for Ghana ───────────────────────────────────────────────
 const EXTRA_LISTINGS = [
   { make: 'Toyota', model: 'Land Cruiser', year: 2019, price: 320000, mileage: 62000, transmission: 'automatic', fuelType: 'diesel', color: 'White', location: 'Accra', description: 'Bulletproof spec LC200 GX in pristine condition. Full bush-service history.', features: ['4WD', 'Leather Seats', 'Navigation', 'Sunroof', 'Backup Camera'], isFeatured: true, featuredUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
@@ -455,6 +493,8 @@ async function bootstrap() {
   const usersService = app.get(UsersService);
   const listingsService = app.get(ListingsService);
   const mechanicModel = app.get(getModelToken(Mechanic.name));
+  const listingModel = app.get(getModelToken(Listing.name));
+  const sparePartModel = app.get(getModelToken(SparePart.name));
 
   console.log('🌱 Starting full database seed...\n');
 
@@ -497,7 +537,36 @@ async function bootstrap() {
 
   for (const listingData of baseListings) {
     try {
-      await listingsService.create(sellerId, listingData);
+      const lookup = {
+        make: listingData.make,
+        model: listingData.model,
+        year: listingData.year,
+        seller: sellerId,
+      };
+      const existing = await listingModel.findOne(lookup);
+      if (existing) {
+        await listingModel.updateOne(
+          { _id: existing._id },
+          {
+            $set: {
+              ...listingData,
+              status: ListingStatus.ACTIVE,
+              verified: true,
+            },
+          },
+        );
+      } else {
+        const created = await listingsService.create(sellerId, listingData);
+        await listingModel.updateOne(
+          { _id: (created as any)._id },
+          {
+            $set: {
+              status: ListingStatus.ACTIVE,
+              verified: true,
+            },
+          },
+        );
+      }
       console.log(`  ✅ ${listingData.make} ${listingData.model} (${listingData.year})`);
     } catch {
       console.log(`  ⏭  ${listingData.make} ${listingData.model} may already exist`);
@@ -564,9 +633,45 @@ async function bootstrap() {
     }
   }
 
+  // ── Spare Parts ──
+  console.log('\n🔩 Seeding spare parts with GPS coordinates...');
+  for (const sp of GHANA_SPARE_PARTS) {
+    try {
+      const existing = await sparePartModel.findOne({ name: sp.name, location: sp.location });
+      if (!existing) {
+        await sparePartModel.create({
+          dealer: sellerId,
+          name: sp.name,
+          category: sp.category,
+          price: sp.price,
+          brand: sp.brand,
+          location: sp.location,
+          coordinates: sp.coordinates,
+          stock: sp.stock,
+          genuine: sp.genuine,
+          description: sp.description,
+          partNumber: sp.partNumber || '',
+          status: sp.stock > 0 ? 'active' : 'out_of_stock',
+        });
+        console.log(`  ✅ ${sp.name} (${sp.location})`);
+      } else {
+        // Update coordinates if missing
+        if (!existing.coordinates || existing.coordinates.length !== 2) {
+          await sparePartModel.updateOne({ _id: existing._id }, { $set: { coordinates: sp.coordinates } });
+          console.log(`  🔄 Updated coordinates for ${sp.name}`);
+        } else {
+          console.log(`  ⏭  ${sp.name} already exists`);
+        }
+      }
+    } catch (err) {
+      console.error(`  ❌ Failed: ${sp.name}:`, err.message);
+    }
+  }
+
   console.log('\n✅ Full seed completed!');
   console.log(`   Listings: ${baseListings.length}`);
   console.log(`   Mechanics: ${GHANA_MECHANICS.length}`);
+  console.log(`   Spare Parts: ${GHANA_SPARE_PARTS.length}`);
   await app.close();
   process.exit(0);
 }

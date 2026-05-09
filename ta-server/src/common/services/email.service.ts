@@ -10,10 +10,10 @@ export class EmailService {
       service: process.env.SMTP_SERVICE || 'gmail',
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+      secure: process.env.SMTP_SECURE === 'true' || parseInt(process.env.SMTP_PORT || '587') === 465,
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        pass: process.env.SMTP_PASS || process.env.SMTP_PASSWORD,
       },
     });
   }
@@ -43,7 +43,7 @@ export class EmailService {
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      console.log('Email sent successfully:', result.messageId);
+      console.log(`Email sent successfully to ${email}:`, result.messageId);
       return true;
     } catch (error) {
       console.error('Error sending OTP email:', error);

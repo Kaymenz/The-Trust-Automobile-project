@@ -24,6 +24,7 @@ export default function Navbar({ activePage }) {
         <li><Link to="/search" className={activePage === 'search' ? 'active' : ''}>Buy a Car</Link></li>
         <li><Link to="/post-ad" className={activePage === 'post' ? 'active' : ''}>Sell a Car</Link></li>
         <li><Link to="/mechanic" className={activePage === 'mechanic' ? 'active' : ''}>Mechanics</Link></li>
+        <li><Link to="/spareparts" className={activePage === 'spareparts' ? 'active' : ''}>Spare Parts</Link></li>
       </ul>
       <div className="nav-actions">
         {user ? (
