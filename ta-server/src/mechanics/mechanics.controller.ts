@@ -61,6 +61,19 @@ export class MechanicsController {
     return this.mechanicsService.getCities();
   }
 
+  @Get('my/profile')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.MECHANIC, UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get my mechanic profile' })
+  @ApiResponse({ status: 200, description: 'Mechanic profile retrieved successfully', type: MechanicResponseDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
+  @ApiResponse({ status: 403, description: 'Forbidden - Mechanic or admin access required', type: ApiErrorResponse })
+  @ApiResponse({ status: 404, description: 'Mechanic profile not found', type: ApiErrorResponse })
+  findMyProfile(@Request() req: any) {
+    return this.mechanicsService.findByUser(req.user.userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get mechanic by ID' })
   @ApiResponse({ status: 200, description: 'Mechanic retrieved successfully', type: MechanicResponseDto })
@@ -80,19 +93,6 @@ export class MechanicsController {
   @ApiResponse({ status: 403, description: 'Forbidden - Mechanic or admin access required', type: ApiErrorResponse })
   create(@Body() createMechanicDto: any, @Request() req: any) {
     return this.mechanicsService.create(req.user.userId, createMechanicDto);
-  }
-
-  @Get('my/profile')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.MECHANIC, UserRole.ADMIN)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get my mechanic profile' })
-  @ApiResponse({ status: 200, description: 'Mechanic profile retrieved successfully', type: MechanicResponseDto })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  @ApiResponse({ status: 403, description: 'Forbidden - Mechanic or admin access required', type: ApiErrorResponse })
-  @ApiResponse({ status: 404, description: 'Mechanic profile not found', type: ApiErrorResponse })
-  findMyProfile(@Request() req: any) {
-    return this.mechanicsService.findByUser(req.user.userId);
   }
 
   @Patch(':id')
