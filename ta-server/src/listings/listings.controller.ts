@@ -70,6 +70,16 @@ export class ListingsController {
     return this.listingsService.getStats();
   }
 
+  @Get('my/listings')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user listings', description: 'Retrieve all listings created by the authenticated user.' })
+  @ApiResponse({ status: 200, description: 'User listings retrieved', type: [ListingResponseDto] })
+  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
+  findMyListings(@Request() req: any) {
+    return this.listingsService.findBySeller(req.user.userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get single listing by ID', description: 'Retrieve a specific car listing by its ID.' })
   @ApiResponse({ status: 200, description: 'Listing retrieved successfully', type: ListingResponseDto })
@@ -87,16 +97,6 @@ export class ListingsController {
   @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorResponse })
   create(@Body() createListingDto: any, @Request() req: any) {
     return this.listingsService.create(req.user.userId, createListingDto);
-  }
-
-  @Get('my/listings')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user listings', description: 'Retrieve all listings created by the authenticated user.' })
-  @ApiResponse({ status: 200, description: 'User listings retrieved', type: [ListingResponseDto] })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  findMyListings(@Request() req: any) {
-    return this.listingsService.findBySeller(req.user.userId);
   }
 
   @Patch(':id')

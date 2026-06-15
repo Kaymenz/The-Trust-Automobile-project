@@ -6,15 +6,13 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
 function BookingModal({ type, car, onClose, onSuccess }) {
-  const [phone, setPhone] = useState('');
-  const [message, setMessage] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTime, setPreferredTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const isTestDrive = type === 'test_drive';
-  const title = isTestDrive ? 'Request Test Drive' : 'Buy This Car';
+  const title = isTestDrive ? 'Request Test Drive' : 'Confirm Purchase Interest';
   const vehicleDetails = `${car.make} ${car.model} ${car.year}`;
 
   const handleSubmit = async (e) => {
@@ -28,16 +26,14 @@ function BookingModal({ type, car, onClose, onSuccess }) {
           vehicleDetails,
           preferredDate: preferredDate || undefined,
           preferredTime: preferredTime || undefined,
-          phone: phone || undefined,
-          message: message || `I would like to test drive the ${vehicleDetails}.`,
+          message: `Test drive request for ${vehicleDetails}.`,
         });
       } else {
         await api.requestPurchase({
           listingId: car._id || car.id,
           vehicleDetails,
           totalPrice: car.price,
-          phone: phone || undefined,
-          message: message || `I would like to purchase the ${vehicleDetails}.`,
+          message: `Purchase interest for ${vehicleDetails}.`,
         });
       }
       onSuccess(type);
@@ -53,7 +49,7 @@ function BookingModal({ type, car, onClose, onSuccess }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 460 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <h3 style={{ margin: 0, fontSize: 18, color: 'var(--navy-900)' }}>{title}</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--slate-500)' }}>✕</button>
@@ -82,7 +78,7 @@ function BookingModal({ type, car, onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit}>
           {isTestDrive && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label>Preferred Date</label>
                 <input type="date" min={minDate} value={preferredDate} onChange={e => setPreferredDate(e.target.value)} />
@@ -105,39 +101,16 @@ function BookingModal({ type, car, onClose, onSuccess }) {
             </div>
           )}
 
-          <div className="form-group" style={{ marginBottom: 14 }}>
-            <label>Phone Number</label>
-            <input
-              type="tel"
-              placeholder="+233 24 XXX XXXX"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-            />
+          <div style={{
+            background: 'rgba(232,160,32,0.08)', border: '1px solid rgba(232,160,32,0.2)',
+            borderRadius: 10, padding: '12px 14px', marginBottom: 18,
+            fontSize: 12, color: 'var(--navy-700)', lineHeight: 1.6,
+          }}>
+            <i className="bi bi-info-circle" style={{ color: 'var(--gold-600)', marginRight: 6 }} />
+            {isTestDrive
+              ? 'The seller will be notified and will contact you via your registered email to confirm the date and location.'
+              : 'By confirming, you\'re expressing interest to purchase. The seller will contact you via your registered details to arrange payment and transfer. No money is charged now.'}
           </div>
-
-          <div className="form-group" style={{ marginBottom: 18 }}>
-            <label>Message {!isTestDrive && <span style={{ color: 'var(--slate-400)', fontWeight: 400 }}>(optional)</span>}</label>
-            <textarea
-              rows={3}
-              placeholder={isTestDrive
-                ? 'Any preferences or questions about the test drive...'
-                : 'Add details about your offer or financing plans...'}
-              value={message}
-              onChange={e => setMessage(e.target.value)}
-              style={{ resize: 'vertical' }}
-            />
-          </div>
-
-          {!isTestDrive && (
-            <div style={{
-              background: 'rgba(232,160,32,0.08)', border: '1px solid rgba(232,160,32,0.2)',
-              borderRadius: 10, padding: '12px 14px', marginBottom: 16,
-              fontSize: 12, color: 'var(--navy-700)', lineHeight: 1.6,
-            }}>
-              <i className="bi bi-info-circle" style={{ color: 'var(--gold-600)', marginRight: 6 }} />
-              By submitting, you're expressing interest to purchase. The seller will contact you to arrange payment and transfer. No money is charged now.
-            </div>
-          )}
 
           {error && (
             <div style={{
@@ -167,7 +140,7 @@ function BookingModal({ type, car, onClose, onSuccess }) {
             ) : (
               <>
                 <i className="bi bi-bag-check" style={{ marginRight: 8 }} />
-                Submit Purchase Interest
+                Confirm Purchase Interest
               </>
             )}
           </button>
