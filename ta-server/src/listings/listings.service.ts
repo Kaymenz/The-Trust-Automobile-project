@@ -10,8 +10,12 @@ export class ListingsService {
   ) {}
 
   async create(sellerId: string, createListingDto: any): Promise<Listing> {
+    const dto = { ...createListingDto };
+    if (dto.fuelType) dto.fuelType = dto.fuelType.toLowerCase();
+    if (dto.transmission) dto.transmission = dto.transmission.toLowerCase();
+    if (dto.condition) dto.condition = dto.condition.toLowerCase();
     const createdListing = new this.listingModel({
-      ...createListingDto,
+      ...dto,
       seller: sellerId,
       status: ListingStatus.PENDING,
     });
@@ -30,8 +34,9 @@ export class ListingsService {
     }
     if (query.year) filter.year = Number(query.year);
     if (query.location) filter.location = query.location;
-    if (query.transmission) filter.transmission = query.transmission;
-    if (query.fuelType) filter.fuelType = query.fuelType;
+    if (query.condition) filter.condition = query.condition.toLowerCase();
+    if (query.transmission) filter.transmission = query.transmission.toLowerCase();
+    if (query.fuelType) filter.fuelType = query.fuelType.toLowerCase();
 
     return this.listingModel
       .find(filter)
@@ -65,18 +70,20 @@ export class ListingsService {
   }
 
   async update(id: string, sellerId: string, updateListingDto: any): Promise<Listing> {
-    const listing = await this.listingModel.findOne({
-      _id: id,
-      seller: sellerId,
-    });
+    const dto = { ...updateListingDto };
+    if (dto.fuelType) dto.fuelType = dto.fuelType.toLowerCase();
+    if (dto.transmission) dto.transmission = dto.transmission.toLowerCase();
+    if (dto.condition) dto.condition = dto.condition.toLowerCase();
+
+    const listing = await this.listingModel
+      .findOneAndUpdate({ _id: id, seller: sellerId }, dto, { new: true })
+      .exec();
 
     if (!listing) {
       throw new NotFoundException('Listing not found or you do not have permission');
     }
 
-    return this.listingModel
-      .findByIdAndUpdate(id, updateListingDto, { new: true })
-      .exec();
+    return listing;
   }
 
   async remove(id: string, sellerId: string): Promise<void> {

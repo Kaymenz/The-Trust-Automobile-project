@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument, UserStatus } from './schemas/user.schema';
+import { Listing } from '../listings/schemas/listing.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -10,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Listing.name) private listingModel: Model<Listing>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
@@ -84,12 +86,7 @@ export class UsersService {
   }
 
   async incrementOtpAttempts(id: string): Promise<void> {
-    const user = await this.userModel.findById(id);
-    if (user) {
-      await this.userModel.findByIdAndUpdate(id, {
-        otpAttempts: (user.otpAttempts || 0) + 1,
-      }).exec();
-    }
+    await this.userModel.findByIdAndUpdate(id, { $inc: { otpAttempts: 1 } }).exec();
   }
 
   async verifyEmail(id: string): Promise<void> {
@@ -99,6 +96,29 @@ export class UsersService {
       otpCode: null,
       otpExpiry: null,
       otpAttempts: 0,
+    }).exec();
+  }
+
+  async getSavedCars(userId: string): Promise<Listing[]> {
+    const user = await this.userModel.findById(userId).select('savedCars').lean();
+    if (!user) throw new NotFoundException('User not found');
+    if (!user.savedCars || user.savedCars.length === 0) return [];
+    return this.listingModel
+      .find({ _id: { $in: user.savedCars }, status: 'active' })
+      .populate('seller', 'name email phone avatar')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async saveCar(userId: string, listingId: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $addToSet: { savedCars: listingId },
+    }).exec();
+  }
+
+  async unsaveCar(userId: string, listingId: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $pull: { savedCars: listingId },
     }).exec();
   }
 

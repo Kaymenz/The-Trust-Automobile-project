@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserRole } from '../users/schemas/user.schema';
 
 @Injectable()
@@ -33,36 +33,36 @@ export class DashboardService {
   }
 
   private async getSellerStats(userId: string) {
-    const totalListings = await this.listingModel.countDocuments({ userId });
-    const activeListings = await this.listingModel.countDocuments({ userId, status: 'active' });
-    const soldItems = await this.listingModel.countDocuments({ userId, status: 'sold' });
-    
-    const listings = await this.listingModel
-      .find({ userId })
-      .select('views impressions')
-      .lean();
-    
-    const totalViews = listings.reduce((sum, l) => sum + (l.views || 0), 0);
-    const totalImpressions = listings.reduce((sum, l) => sum + (l.impressions || 0), 0);
+    const sellerRef = new Types.ObjectId(userId);
+
+    const [totalListings, activeListings, soldItems, viewsAgg] = await Promise.all([
+      this.listingModel.countDocuments({ seller: sellerRef }),
+      this.listingModel.countDocuments({ seller: sellerRef, status: 'active' }),
+      this.listingModel.countDocuments({ seller: sellerRef, status: 'sold' }),
+      this.listingModel.aggregate([
+        { $match: { seller: sellerRef } },
+        { $group: { _id: null, totalViews: { $sum: '$views' } } },
+      ]),
+    ]);
 
     return {
       totalListings,
       activeListings,
       soldItems,
-      totalViews,
-      totalImpressions,
-      conversionRate: totalImpressions > 0 ? ((totalViews / totalImpressions) * 100).toFixed(2) : 0,
+      totalViews: viewsAgg[0]?.totalViews || 0,
     };
   }
 
   private async getBuyerStats(userId: string) {
-    const savedCars = await this.listingModel.countDocuments({ 'savedBy': userId });
-    const totalBookings = await this.bookingModel.countDocuments({ userId });
-    const activeBookings = await this.bookingModel.countDocuments({ userId, status: { $in: ['pending', 'confirmed'] } });
-    const completedBookings = await this.bookingModel.countDocuments({ userId, status: 'completed' });
+    const [user, totalBookings, activeBookings, completedBookings] = await Promise.all([
+      this.userModel.findById(userId).select('savedCars').lean(),
+      this.bookingModel.countDocuments({ userId }),
+      this.bookingModel.countDocuments({ userId, status: { $in: ['pending', 'confirmed'] } }),
+      this.bookingModel.countDocuments({ userId, status: 'completed' }),
+    ]);
 
     return {
-      savedCars,
+      savedCars: (user?.savedCars || []).length,
       totalBookings,
       activeBookings,
       completedBookings,
@@ -70,48 +70,48 @@ export class DashboardService {
   }
 
   private async getRenterStats(userId: string) {
-    const totalRentals = await this.bookingModel.countDocuments({ userId, type: 'rental' });
-    const activeRentals = await this.bookingModel.countDocuments({ userId, type: 'rental', status: { $in: ['pending', 'confirmed'] } });
-    const completedRentals = await this.bookingModel.countDocuments({ userId, type: 'rental', status: 'completed' });
+    const [totalRentals, activeRentals, completedRentals] = await Promise.all([
+      this.bookingModel.countDocuments({ userId, type: 'rental' }),
+      this.bookingModel.countDocuments({ userId, type: 'rental', status: { $in: ['pending', 'confirmed'] } }),
+      this.bookingModel.countDocuments({ userId, type: 'rental', status: 'completed' }),
+    ]);
 
-    return {
-      totalRentals,
-      activeRentals,
-      completedRentals,
-    };
+    return { totalRentals, activeRentals, completedRentals };
   }
 
   private async getMechanicStats(userId: string) {
-    const totalServices = await this.bookingModel.countDocuments({ mechanicId: userId });
-    const completedServices = await this.bookingModel.countDocuments({ mechanicId: userId, status: 'completed' });
+    const mechanic = await this.mechanicModel.findOne({ user: new Types.ObjectId(userId) }).lean();
+    if (!mechanic) {
+      return { totalServices: 0, completedServices: 0, rating: 0 };
+    }
 
-    return {
-      totalServices,
-      completedServices,
-      rating: 4.5, // This should come from actual ratings
-    };
+    const [totalServices, completedServices] = await Promise.all([
+      this.bookingModel.countDocuments({ mechanicId: mechanic._id }),
+      this.bookingModel.countDocuments({ mechanicId: mechanic._id, status: 'completed' }),
+    ]);
+
+    return { totalServices, completedServices, rating: mechanic.rating || 0 };
   }
 
   private async getPartsStats(userId: string) {
-    const totalOrders = await this.partsOrderModel.countDocuments({ supplierId: userId });
-    const totalItems = await this.partsOrderModel.countDocuments({ supplierId: userId });
+    const dealerRef = new Types.ObjectId(userId);
 
-    return {
-      totalOrders,
-      totalItems,
-    };
+    const [totalOrders, pendingOrders] = await Promise.all([
+      this.partsOrderModel.countDocuments({ dealerId: dealerRef }),
+      this.partsOrderModel.countDocuments({ dealerId: dealerRef, status: 'Pending' }),
+    ]);
+
+    return { totalOrders, pendingOrders, totalItems: totalOrders };
   }
 
   private async getAdminStats() {
-    const totalUsers = await this.userModel.countDocuments();
-    const totalListings = await this.listingModel.countDocuments();
-    const totalBookings = await this.bookingModel.countDocuments();
+    const [totalUsers, totalListings, totalBookings] = await Promise.all([
+      this.userModel.countDocuments(),
+      this.listingModel.countDocuments(),
+      this.bookingModel.countDocuments(),
+    ]);
 
-    return {
-      totalUsers,
-      totalListings,
-      totalBookings,
-    };
+    return { totalUsers, totalListings, totalBookings };
   }
 
   async getRecentActivity(userId: string, role: string) {
@@ -129,7 +129,7 @@ export class DashboardService {
 
   private async getSellerActivity(userId: string) {
     const recentListings = await this.listingModel
-      .find({ userId })
+      .find({ seller: new Types.ObjectId(userId) })
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
@@ -137,7 +137,7 @@ export class DashboardService {
     return recentListings.map(l => ({
       type: 'listing',
       action: 'Created listing',
-      title: l.title,
+      title: [l.make, l.model, l.year].filter(Boolean).join(' '),
       date: l.createdAt,
     }));
   }
@@ -152,7 +152,7 @@ export class DashboardService {
     return recentBookings.map(b => ({
       type: 'booking',
       action: 'Made booking',
-      title: b.carTitle || 'Booking',
+      title: b.vehicleDetails || 'Booking',
       date: b.createdAt,
     }));
   }
@@ -167,7 +167,7 @@ export class DashboardService {
     return recentRentals.map(r => ({
       type: 'rental',
       action: 'Rented car',
-      title: r.carTitle || 'Rental',
+      title: r.vehicleDetails || 'Rental',
       date: r.createdAt,
     }));
   }

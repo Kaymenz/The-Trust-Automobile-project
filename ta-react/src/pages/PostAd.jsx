@@ -156,19 +156,19 @@ export default function PostAd() {
               </div>
               <div className="form-group"><label>Condition *</label>
                 <select value={form.condition} onChange={e => update('condition', e.target.value)}>
-                  <option value="">Select</option><option>New</option><option>Used</option>
+                  <option value="">Select</option><option value="new">New</option><option value="used">Used</option>
                 </select>
               </div>
               <div className="form-group"><label>Fuel Type</label>
                 <select value={form.fuel} onChange={e => update('fuel', e.target.value)}>
-                  <option value="">Select</option><option>Petrol</option><option>Diesel</option><option>Electric</option><option>Hybrid</option>
+                  <option value="">Select</option><option value="petrol">Petrol</option><option value="diesel">Diesel</option><option value="electric">Electric</option><option value="hybrid">Hybrid</option>
                 </select>
               </div>
             </div>
             <div className="form-grid-3 mb-16">
               <div className="form-group"><label>Transmission</label>
                 <select value={form.transmission} onChange={e => update('transmission', e.target.value)}>
-                  <option value="">Select</option><option>Automatic</option><option>Manual</option><option>CVT</option>
+                  <option value="">Select</option><option value="automatic">Automatic</option><option value="manual">Manual</option><option value="cvt">CVT</option>
                 </select>
               </div>
               <div className="form-group"><label>Price (GHS) *</label><input type="number" placeholder="e.g. 150000" value={form.price} onChange={e => update('price', e.target.value)} /></div>

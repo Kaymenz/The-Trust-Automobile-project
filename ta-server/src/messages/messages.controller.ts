@@ -48,7 +48,7 @@ export class MessagesController {
     type: ApiErrorResponse,
   })
   getMyMessages(@Request() req: any) {
-    return this.messagesService.findByUserId(req.user.id);
+    return this.messagesService.findByUserId(req.user.userId);
   }
 
   @Get('my/unread')
@@ -68,7 +68,7 @@ export class MessagesController {
     type: ApiErrorResponse,
   })
   getUnreadCount(@Request() req: any) {
-    return this.messagesService.getUnreadCount(req.user.id);
+    return this.messagesService.getUnreadCount(req.user.userId);
   }
 
   @Get('search')
@@ -90,7 +90,7 @@ export class MessagesController {
     type: ApiErrorResponse,
   })
   searchMessages(@Query('q') query: string, @Request() req: any) {
-    return this.messagesService.searchMessages(req.user.id, query);
+    return this.messagesService.searchMessages(req.user.userId, query);
   }
 
   @Get('conversation/:userId')
@@ -111,7 +111,7 @@ export class MessagesController {
     type: ApiErrorResponse,
   })
   getConversation(@Param('userId') userId: string, @Request() req: any) {
-    return this.messagesService.getConversation(req.user.id, userId);
+    return this.messagesService.getConversation(req.user.userId, userId);
   }
 
   @Get(':id')
@@ -169,8 +169,8 @@ export class MessagesController {
   ) {
     return this.messagesService.create(
       createMessageDto,
-      req.user.id,
-      req.user.name,
+      req.user.userId,
+      req.user.name || req.user.email,
       req.user.email
     );
   }

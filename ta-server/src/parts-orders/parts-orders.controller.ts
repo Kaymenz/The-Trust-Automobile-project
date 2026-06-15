@@ -18,7 +18,7 @@ export class PartsOrdersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get orders made by me' })
   getMyPurchases(@Request() req: any) {
-    return this.partsOrdersService.findByBuyerId(req.user.id);
+    return this.partsOrdersService.findByBuyerId(req.user.userId);
   }
 
   @Get('my-sales')
@@ -26,7 +26,7 @@ export class PartsOrdersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get orders received as a dealer' })
   getMySales(@Request() req: any) {
-    return this.partsOrdersService.findByDealerId(req.user.id);
+    return this.partsOrdersService.findByDealerId(req.user.userId);
   }
 
   @Get(':id')
@@ -43,7 +43,7 @@ export class PartsOrdersController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new parts order' })
   createOrder(@Body() createOrderDto: CreatePartsOrderDto, @Request() req: any) {
-    return this.partsOrdersService.create(createOrderDto, req.user.id);
+    return this.partsOrdersService.create(createOrderDto, req.user.userId);
   }
 
   @Patch(':id')

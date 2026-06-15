@@ -48,7 +48,7 @@ export class SellerController {
     type: ApiErrorResponse,
   })
   getInquiries(@Request() req: any) {
-    return this.sellerService.getInquiriesBySeller(req.user.id);
+    return this.sellerService.getInquiriesBySeller(req.user.userId);
   }
 
   @Get('analytics')
@@ -75,6 +75,6 @@ export class SellerController {
     type: ApiErrorResponse,
   })
   getAnalytics(@Request() req: any) {
-    return this.sellerService.getAnalyticsBySeller(req.user.id);
+    return this.sellerService.getAnalyticsBySeller(req.user.userId);
   }
 }
