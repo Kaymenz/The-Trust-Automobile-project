@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, IsNotEmpty, IsIn } from 'class-validator';
 
 export class CreateBookingDto {
   @ApiProperty({ example: '507f1f77bcf86cd799439011', description: 'Listing ID' })
@@ -19,10 +19,13 @@ export class CreateBookingDto {
 
   @ApiProperty({ example: 'test_drive', description: 'Booking type', enum: ['test_drive', 'purchase', 'rental', 'service'] })
   @IsString()
+  @IsNotEmpty()
+  @IsIn(['test_drive', 'purchase', 'rental', 'service'])
   type: string;
 
   @ApiProperty({ example: 'Toyota Camry 2020', description: 'Vehicle description' })
   @IsString()
+  @IsNotEmpty()
   vehicleDetails: string;
 
   @ApiProperty({ example: '2024-02-15', description: 'Preferred date' })
