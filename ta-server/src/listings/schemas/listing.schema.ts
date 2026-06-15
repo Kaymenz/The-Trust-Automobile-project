@@ -26,6 +26,11 @@ export enum FuelType {
   LPG = 'lpg',
 }
 
+export enum Condition {
+  NEW = 'new',
+  USED = 'used',
+}
+
 @Schema({ timestamps: true })
 export class Listing {
   @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'User' })
@@ -45,6 +50,9 @@ export class Listing {
 
   @Prop({ type: String, enum: ListingStatus, default: ListingStatus.PENDING })
   status: ListingStatus;
+
+  @Prop({ type: String, enum: Condition })
+  condition?: Condition;
 
   @Prop()
   mileage?: number;

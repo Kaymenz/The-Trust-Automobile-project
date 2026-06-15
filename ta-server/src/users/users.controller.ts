@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -66,6 +68,36 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
   getMe(@CurrentUser() user: any) {
     return this.usersService.findById(user.userId);
+  }
+
+  @Get('me/saved-cars')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get saved cars', description: 'Retrieve all saved/favourited car listings for the current user.' })
+  @ApiResponse({ status: 200, description: 'Saved cars retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
+  getSavedCars(@CurrentUser() user: any) {
+    return this.usersService.getSavedCars(user.userId);
+  }
+
+  @Post('me/saved-cars/:listingId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Save a car listing' })
+  @ApiResponse({ status: 204, description: 'Car saved successfully' })
+  async saveCar(@CurrentUser() user: any, @Param('listingId') listingId: string) {
+    await this.usersService.saveCar(user.userId, listingId);
+  }
+
+  @Delete('me/saved-cars/:listingId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remove a saved car listing' })
+  @ApiResponse({ status: 204, description: 'Car removed from saved' })
+  async unsaveCar(@CurrentUser() user: any, @Param('listingId') listingId: string) {
+    await this.usersService.unsaveCar(user.userId, listingId);
   }
 
   @Get(':id')

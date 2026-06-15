@@ -18,7 +18,7 @@ export class BookingsController {
   @ApiOperation({ summary: 'Get my bookings', description: 'Get all bookings for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Bookings retrieved successfully' })
   getMyBookings(@Request() req: any) {
-    return this.bookingsService.findByUserId(req.user.id);
+    return this.bookingsService.findByUserId(req.user.userId);
   }
 
   @Get(':id')
@@ -39,7 +39,7 @@ export class BookingsController {
     @Body() createBookingDto: CreateBookingDto,
     @Request() req: any,
   ) {
-    return this.bookingsService.create(createBookingDto, req.user.id);
+    return this.bookingsService.create(createBookingDto, req.user.userId);
   }
 
   @Patch(':id/status')
@@ -58,6 +58,6 @@ export class BookingsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Cancel a booking' })
   cancelBooking(@Param('id') id: string, @Request() req: any) {
-    return this.bookingsService.cancelBooking(id, req.user.id);
+    return this.bookingsService.cancelBooking(id, req.user.userId);
   }
 }

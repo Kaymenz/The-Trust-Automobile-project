@@ -144,12 +144,35 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const toggleSave = (id) => {
+  const toggleSave = async (id) => {
+    // Snapshot current list before any mutation — used for clean revert on failure
+    const snapshot = savedCars;
+    const alreadySaved = snapshot.includes(id);
+
+    // Optimistic update
     setSavedCars(prev => {
       const next = prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id];
       localStorage.setItem('ta_saved', JSON.stringify(next));
       return next;
     });
+
+    // Sync with server if logged in
+    if (user) {
+      try {
+        if (alreadySaved) {
+          await api.unsaveCar(id);
+        } else {
+          await api.saveCar(id);
+        }
+      } catch (err) {
+        // Restore to the pre-optimistic snapshot directly — avoids stale-closure inversion
+        setSavedCars(() => {
+          localStorage.setItem('ta_saved', JSON.stringify(snapshot));
+          return snapshot;
+        });
+        throw err; // let call sites show error feedback
+      }
+    }
   };
 
   const isSaved = (id) => savedCars.includes(id);

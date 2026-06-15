@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 function BookingModal({ type, car, onClose, onSuccess }) {
   const [phone, setPhone] = useState('');
@@ -219,6 +220,7 @@ export default function Listing() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, isSaved, toggleSave } = useAuth();
+  const { showToast } = useToast();
   const [modal, setModal] = useState(null); // null | 'test_drive' | 'purchase'
   const [successType, setSuccessType] = useState(null);
 
@@ -297,7 +299,7 @@ export default function Listing() {
                 <svg viewBox="0 0 24 24"><path d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"/></svg>
               )}
               {car.condition && <span className="gallery-badge">{car.condition}</span>}
-              <button className={`gallery-save ${saved ? 'saved' : ''}`} onClick={() => toggleSave(carId)}>
+              <button className={`gallery-save ${saved ? 'saved' : ''}`} onClick={() => toggleSave(carId).catch(() => showToast('Failed to save car. Please try again.', 'error'))}>
                 <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               </button>
             </div>

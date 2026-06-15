@@ -218,6 +218,22 @@ class ApiService {
     return this.request('/users/stats');
   }
 
+  async getSavedCars() {
+    return this.request('/users/me/saved-cars', { retries: 1 });
+  }
+
+  async saveCar(listingId) {
+    return this.request(`/users/me/saved-cars/${listingId}`, {
+      method: 'POST',
+    });
+  }
+
+  async unsaveCar(listingId) {
+    return this.request(`/users/me/saved-cars/${listingId}`, {
+      method: 'DELETE',
+    });
+  }
+
   // ==================== LISTINGS (CAR SALES) ====================
 
   async getListings(filters = {}) {
