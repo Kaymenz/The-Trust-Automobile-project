@@ -54,15 +54,15 @@ export class DashboardService {
   }
 
   private async getBuyerStats(userId: string) {
-    const [user, totalBookings, activeBookings, completedBookings] = await Promise.all([
-      this.userModel.findById(userId).select('savedCars').lean(),
+    const [userDoc, totalBookings, activeBookings, completedBookings] = await Promise.all([
+      this.userModel.findById(userId).select('savedCars').lean<{ savedCars?: unknown[] }>(),
       this.bookingModel.countDocuments({ userId }),
       this.bookingModel.countDocuments({ userId, status: { $in: ['pending', 'confirmed'] } }),
       this.bookingModel.countDocuments({ userId, status: 'completed' }),
     ]);
 
     return {
-      savedCars: (user?.savedCars || []).length,
+      savedCars: (userDoc?.savedCars || []).length,
       totalBookings,
       activeBookings,
       completedBookings,
@@ -80,7 +80,9 @@ export class DashboardService {
   }
 
   private async getMechanicStats(userId: string) {
-    const mechanic = await this.mechanicModel.findOne({ user: new Types.ObjectId(userId) }).lean();
+    const mechanic = await this.mechanicModel
+      .findOne({ user: new Types.ObjectId(userId) })
+      .lean<{ _id: unknown; rating?: number }>();
     if (!mechanic) {
       return { totalServices: 0, completedServices: 0, rating: 0 };
     }

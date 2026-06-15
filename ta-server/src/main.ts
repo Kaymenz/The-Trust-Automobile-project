@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/mongoose-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,6 +41,9 @@ async function bootstrap() {
 
   // API prefix
   app.setGlobalPrefix('api/v1');
+
+  // Global exception filter — converts Mongoose errors to proper HTTP responses
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // Logging & Timeout Interceptors
   const { LoggingInterceptor } = await import('./common/interceptors/logging.interceptor');

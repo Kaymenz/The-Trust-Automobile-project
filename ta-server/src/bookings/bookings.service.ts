@@ -34,15 +34,6 @@ export class BookingsService {
 
   async create(createBookingDto: CreateBookingDto, userId: string): Promise<Booking> {
     try {
-      const validTypes = ['test_drive', 'purchase', 'rental', 'service'];
-      if (!validTypes.includes(createBookingDto.type)) {
-        throw new BadRequestException(`Invalid type. Must be one of: ${validTypes.join(', ')}`);
-      }
-
-      if (!createBookingDto.vehicleDetails) {
-        throw new BadRequestException('Vehicle details are required');
-      }
-
       // For rentals, validate dates
       if (createBookingDto.type === 'rental') {
         if (!createBookingDto.startDate || !createBookingDto.endDate) {
