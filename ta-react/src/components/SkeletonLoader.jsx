@@ -1,7 +1,22 @@
 export function CarCardSkeleton() {
   return (
     <div className="skel-card">
-      <div className="skel-img" />
+      <div className="skel-img" style={{ position: 'relative' }}>
+        <svg
+          viewBox="0 0 280 180"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.06 }}
+          aria-hidden="true"
+        >
+          <path d="M30 130L42 95L65 72L110 60L160 58L205 65L232 85L254 100L262 130H30Z" fill="white"/>
+          <path d="M68 72L82 42H170L192 72H68Z" fill="white" opacity="0.85"/>
+          <circle cx="78" cy="132" r="24" fill="white"/>
+          <circle cx="200" cy="132" r="24" fill="white"/>
+          <circle cx="78" cy="132" r="12" fill="currentColor" opacity="0.3"/>
+          <circle cx="200" cy="132" r="12" fill="currentColor" opacity="0.3"/>
+          <path d="M20 128H268" stroke="white" strokeWidth="3" strokeOpacity="0.4"/>
+        </svg>
+      </div>
       <div className="skel-body">
         <div className="skel-line xshort" style={{ marginBottom: 6 }} />
         <div className="skel-line" />
