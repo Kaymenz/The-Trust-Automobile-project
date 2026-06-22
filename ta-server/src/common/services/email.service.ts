@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class EmailService {
@@ -85,12 +86,12 @@ export class EmailService {
   }
 
   generateOtp(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return randomInt(100000, 1000000).toString();
   }
 
   getOtpExpiry(): Date {
     const expiry = new Date();
-    expiry.setMinutes(expiry.getMinutes() + 10); // 10 minutes expiry
+    expiry.setMinutes(expiry.getMinutes() + 10);
     return expiry;
   }
 
@@ -101,6 +102,6 @@ export class EmailService {
   isOtpThrottled(lastRequestTime: Date | undefined): boolean {
     if (!lastRequestTime) return false;
     const timeDiffSeconds = (new Date().getTime() - new Date(lastRequestTime).getTime()) / 1000;
-    return timeDiffSeconds < 60; // 1 minute throttle between OTP requests
+    return timeDiffSeconds < 60;
   }
 }
