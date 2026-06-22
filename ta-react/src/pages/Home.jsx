@@ -49,7 +49,7 @@ export default function Home() {
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.car-card, .make-card, .feature-card, .fade-in').forEach(el => obs.observe(el));
+    document.querySelectorAll('.car-card, .make-card, .feature-card, .fade-in').forEach(el => { if (el instanceof Element) obs.observe(el); });
     return () => obs.disconnect();
   }, []);
 
