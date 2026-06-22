@@ -168,7 +168,7 @@ export default function Home() {
           {makes.slice(0, 8).map(make => (
             <Link to={`/search?make=${make}`} key={make} className="make-card">
               <div className="make-card-icon">
-                <img src={logoMap[make] || 'https://logo.clearbit.com/auto.com'} alt={`${make} logo`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                <img src={logoMap[make] || 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=200&auto=format&fit=crop&q=60'} alt={`${make} logo`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
                 <span style={{ display: 'none', fontSize: '40px' }}>🚗</span>
               </div>
               <div className="make-card-name">{make}</div>

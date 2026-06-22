@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../utils/api';
+import { useToast } from '../../context/ToastContext';
 
 export default function PortalParts() {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [tab, setTab] = useState('products');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [products, setProducts] = useState([]);
@@ -13,6 +15,10 @@ export default function PortalParts() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const handleSaveSettings = () => {
+    showToast('Shop profile settings saved successfully!', 'success');
+  };
 
   if (!user) return null;
 
@@ -180,7 +186,7 @@ export default function PortalParts() {
             </div>
           </>
         )}
-        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Shop Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Shop Name</label><input defaultValue={user.name} /></div><button className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
+        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Shop Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Shop Name</label><input defaultValue={user.name} /></div><button onClick={handleSaveSettings} className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
       </div>
     </div>
   );

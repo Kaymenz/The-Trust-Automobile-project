@@ -120,8 +120,8 @@ export default function SpareParts() {
           {categories.map(c => (
             <button key={c} onClick={() => setCategory(c)}
               style={{
-                padding: '8px 18px', borderRadius: 20, border: `1.5px solid ${category === c ? '#E8A020' : 'var(--slate-200)'}`,
-                background: category === c ? 'rgba(232,160,32,0.1)' : '#fff', color: category === c ? '#E8A020' : 'var(--slate-500)',
+                padding: '8px 18px', borderRadius: 20, border: `1.5px solid ${category === c ? 'var(--gold-500)' : 'var(--slate-200)'}`,
+                background: category === c ? 'rgba(212,175,55,0.1)' : 'var(--surface)', color: category === c ? 'var(--gold-400)' : 'var(--slate-500)',
                 fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s',
               }}>
               {c}
@@ -159,12 +159,12 @@ export default function SpareParts() {
         {!error && view === 'grid' && !loading && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
             {parts.map(part => (
-              <div key={part._id || part.id} style={{ background: '#fff', borderRadius: 14, border: '1px solid var(--slate-100)', overflow: 'hidden', transition: 'all 0.25s' }}>
+              <div key={part._id || part.id} style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--slate-100)', overflow: 'hidden', transition: 'all 0.25s' }}>
                 <div style={{ height: 160, background: 'linear-gradient(135deg, var(--slate-100), var(--slate-200))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {part.image ? (
                     <img src={part.image} alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <i className="bi bi-box-seam" style={{ fontSize: 40, color: 'var(--slate-400)', opacity: 0.5 }}></i>
+                    <img src="https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=400&auto=format&fit=crop&q=60" alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   )}
                 </div>
                 <div style={{ padding: 16 }}>

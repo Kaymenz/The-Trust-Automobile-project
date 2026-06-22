@@ -1,0 +1,68 @@
+name: Deploy Backend to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - react
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authorize Docker
+        run: |
+          gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_NAME="${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/ta-server/ta-server:${{ github.sha }}"
+          docker build -t $IMAGE_NAME ./ta-server
+          docker push $IMAGE_NAME
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+      - name: Format Secrets for Cloud Run
+        id: format_secrets
+        run: |
+          # Read secrets list and format them as Cloud Run secrets
+          SECRETS_LIST="${{ vars.GCP_SECRETS_LIST }}"
+          FORMATTED_SECRETS=""
+          IFS=',' read -ra ADDR <<< "$SECRETS_LIST"
+          for secret in "${ADDR[@]}"; do
+            if [ -n "$FORMATTED_SECRETS" ]; then
+              FORMATTED_SECRETS="$FORMATTED_SECRETS,$secret=$secret:latest"
+            else
+              FORMATTED_SECRETS="$secret=$secret:latest"
+            fi
+          done
+          echo "formatted_secrets=$FORMATTED_SECRETS" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ta-server
+          region: ${{ vars.GCP_REGION }}
+          image: ${{ env.IMAGE_NAME }}
+          env_vars: |
+            NODE_ENV=production
+          secrets: ${{ steps.format_secrets.outputs.formatted_secrets }}
+          flags: --allow-unauthenticated

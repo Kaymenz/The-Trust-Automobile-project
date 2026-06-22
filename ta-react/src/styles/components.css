@@ -30,13 +30,13 @@
 
 .btn-secondary {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
-  background: transparent; color: var(--navy-600);
+  background: transparent; color: var(--gold-400);
   font-size: var(--t-sm); font-weight: var(--w-semibold);
-  padding: 10px 26px; border-radius: var(--r-md); border: 1.5px solid var(--navy-500);
+  padding: 10px 26px; border-radius: var(--r-md); border: 1.5px solid var(--gold-500);
   cursor: pointer; transition: all var(--dur-fast);
   text-decoration: none; white-space: nowrap; line-height: 1;
 }
-.btn-secondary:hover { background: var(--navy-500); color: #fff; }
+.btn-secondary:hover { background: var(--gold-500); color: var(--navy-900); }
 
 .btn-danger {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
@@ -139,7 +139,7 @@
   color: var(--navy-600); margin-bottom: 2px; line-height: 1.4;
 }
 .card-title {
-  font-size: var(--t-sm); font-weight: var(--w-bold); color: var(--navy-900);
+  font-size: var(--t-sm); font-weight: var(--w-bold); color: var(--slate-900);
   margin-bottom: var(--s-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   line-height: var(--lh-snug);
 }
@@ -160,7 +160,7 @@
 }
 .card-price {
   font-size: var(--t-xl); font-weight: var(--w-extrabold);
-  color: var(--navy-900); letter-spacing: var(--ls-tight); line-height: var(--lh-tight);
+  color: var(--gold-400); letter-spacing: var(--ls-tight); line-height: var(--lh-tight);
 }
 
 .card-location {

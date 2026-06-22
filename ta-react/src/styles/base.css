@@ -24,16 +24,16 @@ button, input, select, textarea { font: inherit; }
 ul, ol { list-style: none; }
 
 /* Typography helpers */
-.heading-1 { font-size: var(--t-5xl); font-weight: var(--w-extrabold); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); color: var(--navy-900); }
-.heading-2 { font-size: var(--t-3xl); font-weight: var(--w-bold); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); color: var(--navy-900); }
-.heading-3 { font-size: var(--t-2xl); font-weight: var(--w-bold); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); color: var(--navy-900); }
-.heading-4 { font-size: var(--t-xl); font-weight: var(--w-bold); line-height: var(--lh-snug); color: var(--navy-900); }
-.heading-5 { font-size: var(--t-lg); font-weight: var(--w-semibold); line-height: var(--lh-snug); color: var(--navy-900); }
+.heading-1 { font-size: var(--t-5xl); font-weight: var(--w-extrabold); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); color: var(--slate-900); }
+.heading-2 { font-size: var(--t-3xl); font-weight: var(--w-bold); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); color: var(--slate-900); }
+.heading-3 { font-size: var(--t-2xl); font-weight: var(--w-bold); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); color: var(--slate-900); }
+.heading-4 { font-size: var(--t-xl); font-weight: var(--w-bold); line-height: var(--lh-snug); color: var(--slate-900); }
+.heading-5 { font-size: var(--t-lg); font-weight: var(--w-semibold); line-height: var(--lh-snug); color: var(--slate-900); }
 
 .label { font-size: var(--t-2xs); font-weight: var(--w-semibold); letter-spacing: var(--ls-wider); text-transform: uppercase; color: var(--slate-600); }
 .label-gold { font-size: var(--t-2xs); font-weight: var(--w-bold); letter-spacing: var(--ls-widest); text-transform: uppercase; color: var(--gold-700); }
 
-.text-navy { color: var(--navy-900); }
+.text-navy { color: var(--slate-900); }
 .text-gold { color: var(--gold-500); }
 .text-slate { color: var(--slate-600); }
 .text-blue { color: var(--navy-600); }

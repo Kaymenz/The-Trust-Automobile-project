@@ -3,10 +3,10 @@ import Layout from '../components/Layout';
 import VID from '../utils/video';
 
 const SAMPLE_VIDEOS = [
-  { id: 1, title: 'How to Inspect a Used Car Before Buying', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', category: 'buying' },
-  { id: 2, title: 'Understanding Car Insurance in Ghana', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', category: 'insurance' },
-  { id: 3, title: 'Maintenance Tips for Tropical Climates', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', category: 'maintenance' },
-  { id: 4, title: 'Car Financing Options Explained', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', category: 'financing' },
+  { id: 1, title: 'How to Inspect a Used Car Before Buying', url: 'https://www.youtube.com/watch?v=y1P7P_1kFfU', category: 'buying' },
+  { id: 2, title: 'Understanding Car Insurance in Ghana', url: 'https://www.youtube.com/watch?v=F3G8D5z8l4o', category: 'insurance' },
+  { id: 3, title: 'Maintenance Tips for Tropical Climates', url: 'https://www.youtube.com/watch?v=aG04B5xXNf0', category: 'maintenance' },
+  { id: 4, title: 'Car Financing Options Explained', url: 'https://www.youtube.com/watch?v=7uVmsBfQ2pU', category: 'financing' },
 ];
 
 const CATEGORIES = ['all', 'buying', 'selling', 'maintenance', 'insurance', 'financing'];

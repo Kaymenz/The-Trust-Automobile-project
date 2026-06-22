@@ -1,29 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, Circle } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Fix leaflet default icon path issue with bundlers
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
+import { createRoot } from 'react-dom/client';
 
 // ── Custom marker icons ──────────────────────────────────────────────────────
-function createPinIcon(color, borderColor, emoji) {
+// Returns a plain data object describing the custom SVG icon
+export function createPinIcon(color, borderColor, emoji) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="36" height="48">
     <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 30 18 30S36 31.5 36 18C36 8.06 27.94 0 18 0z" fill="${color}" stroke="${borderColor}" stroke-width="2"/>
     <text x="18" y="22" text-anchor="middle" dominant-baseline="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="${borderColor}">${emoji}</text>
   </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [36, 48],
-    iconAnchor: [18, 48],
-    popupAnchor: [0, -48],
-  });
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    width: 36,
+    height: 48,
+    anchorX: 18,
+    anchorY: 48
+  };
 }
 
 function createUserIcon() {
@@ -31,99 +22,167 @@ function createUserIcon() {
     <circle cx="16" cy="16" r="14" fill="#2563EB" stroke="#fff" stroke-width="3"/>
     <circle cx="16" cy="16" r="6" fill="#fff"/>
   </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-  });
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    width: 32,
+    height: 32,
+    anchorX: 16,
+    anchorY: 16
+  };
 }
 
-// ── Decode OSRM polyline (polyline6 / polyline5) ─────────────────────────────
-function decodePolyline(str, precision = 5) {
-  let index = 0, lat = 0, lng = 0;
-  const coords = [];
-  const factor = Math.pow(10, precision);
-
-  while (index < str.length) {
-    let b, shift = 0, result = 0;
-    do {
-      b = str.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    lat += (result & 1) ? ~(result >> 1) : (result >> 1);
-
-    shift = 0; result = 0;
-    do {
-      b = str.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    lng += (result & 1) ? ~(result >> 1) : (result >> 1);
-
-    coords.push([lat / factor, lng / factor]);
-  }
-  return coords;
-}
-
-// ── Map sub-component: fits bounds ────────────────────────────────────────────
-function MapBoundsUpdater({ items, getCoords }) {
-  const map = useMap();
-  useEffect(() => {
-    if (items.length === 0) return;
-    const coords = items
-      .map(getCoords)
-      .filter(c => c);
-    if (coords.length > 0) {
-      map.fitBounds(coords, { padding: [48, 48], maxZoom: 13 });
-    }
-  }, [items, map, getCoords]);
-  return null;
-}
-
-// ── Map sub-component: animate route view ─────────────────────────────────────
-function RouteView({ routeCoords, userPos, destPos }) {
-  const map = useMap();
-  useEffect(() => {
-    if (routeCoords && routeCoords.length > 0) {
-      const bounds = L.latLngBounds(routeCoords);
-      if (userPos) bounds.extend(userPos);
-      if (destPos) bounds.extend(destPos);
-      map.flyToBounds(bounds, { padding: [60, 60], maxZoom: 15, duration: 1.2 });
-    }
-  }, [routeCoords, userPos, destPos, map]);
-  return null;
-}
+// ── Google Maps Custom Navy Styling ──────────────────────────────────────────
+const mapStyles = [
+  { elementType: "geometry", stylers: [{ color: "#080A0F" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#080A0F" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#E5E7EB" }] },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#D4AF37" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9CA3AF" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#0E121A" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9CA3AF" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#141A24" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1C2330" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9CA3AF" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#1C2330" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#C5A059" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#D4AF37" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#050608" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9CA3AF" }],
+  },
+];
 
 // ── Main component ───────────────────────────────────────────────────────────
 export default function NavigationMap({
   items = [],
   getCoords,       // (item) => [lat, lng] or null
-  getIcon,         // (item) => L.Icon
+  getIcon,         // (item) => IconData object
   renderPopup,     // (item, { onNavigate }) => JSX
   loading = false,
   emptyMessage = 'No locations found.',
   legendItems = [],
 }) {
+  const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
+  
+  // Script loading state
+  const [mapLoaded, setMapLoaded] = useState(false);
+  
+  // Geolocation & Navigation States
   const [userPos, setUserPos] = useState(null);
   const [navigatingTo, setNavigatingTo] = useState(null);
-  const [routeCoords, setRouteCoords] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
   const [routeLoading, setRouteLoading] = useState(false);
   const [geoError, setGeoError] = useState(null);
 
-  // Ghana center as default map view
-  const ghanaCenter = [7.9465, -1.0232];
+  // References for cleanup
+  const markersRef = useRef([]);
+  const circlesRef = useRef([]);
+  const polylinesRef = useRef([]);
+  const animationIntervalRef = useRef(null);
+  const currentInfoWindowRef = useRef(null);
+  const directionsServiceRef = useRef(null);
 
-  // mappable items
+  // Ghana center as default map view
+  const ghanaCenter = { lat: 7.9465, lng: -1.0232 };
+
+  // Mappable items
   const mappable = items.filter(item => {
     const c = getCoords(item);
     return c && c.length === 2;
   });
 
-  // Get user location
+  // 1. Dynamic Script Loader for Google Maps
+  useEffect(() => {
+    if (window.google && window.google.maps) {
+      setMapLoaded(true);
+      return;
+    }
+
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyBiuUrIx-g0kpEKR-2lY5PgeOctgr6hnsE';
+    const existingScript = document.getElementById('google-maps-script');
+    
+    if (existingScript) {
+      const handleLoad = () => setMapLoaded(true);
+      existingScript.addEventListener('load', handleLoad);
+      return () => {
+        existingScript.removeEventListener('load', handleLoad);
+      };
+    }
+
+    const script = document.createElement('script');
+    script.id = 'google-maps-script';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => setMapLoaded(true);
+    document.head.appendChild(script);
+  }, []);
+
+  // 2. Initialize the Google Map
+  useEffect(() => {
+    if (!mapLoaded || !mapContainerRef.current || mapRef.current) return;
+
+    const map = new window.google.maps.Map(mapContainerRef.current, {
+      center: ghanaCenter,
+      zoom: 7,
+      styles: mapStyles,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+    });
+    
+    mapRef.current = map;
+    directionsServiceRef.current = new window.google.maps.DirectionsService();
+  }, [mapLoaded]);
+
+  // 3. Geolocation Helper
   const getUserLocation = useCallback(() => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -146,68 +205,29 @@ export default function NavigationMap({
     });
   }, []);
 
-  // Fetch route from OSRM (free open source routing)
-  const fetchRoute = useCallback(async (from, to) => {
-    try {
-      setRouteLoading(true);
-      // OSRM public demo server — production should use own instance
-      const url = `https://router.project-osrm.org/route/v1/driving/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=polyline`;
-      const resp = await fetch(url);
-      const data = await resp.json();
-
-      if (data.code === 'Ok' && data.routes?.length > 0) {
-        const route = data.routes[0];
-        const decoded = decodePolyline(route.geometry);
-        setRouteCoords(decoded);
-        setRouteInfo({
-          distance: (route.distance / 1000).toFixed(1),
-          duration: Math.ceil(route.duration / 60),
-        });
-      } else {
-        // Fallback: straight line
-        setRouteCoords([from, to]);
-        setRouteInfo({
-          distance: (L.latLng(from).distanceTo(L.latLng(to)) / 1000).toFixed(1),
-          duration: '—',
-        });
-      }
-    } catch (err) {
-      console.error('Route fetch error:', err);
-      // Fallback: straight line
-      setRouteCoords([from, to]);
-      const distKm = (L.latLng(from).distanceTo(L.latLng(to)) / 1000).toFixed(1);
-      setRouteInfo({ distance: distKm, duration: '—' });
-    } finally {
-      setRouteLoading(false);
-    }
-  }, []);
-
-  // Navigate to a destination
+  // 4. Handle Navigation Trigger
   const handleNavigate = useCallback(async (item) => {
     const destCoords = getCoords(item);
     if (!destCoords) return;
 
     setNavigatingTo(item);
-    setRouteCoords(null);
     setRouteInfo(null);
 
     try {
-      const from = await getUserLocation();
-      await fetchRoute(from, destCoords);
+      await getUserLocation();
     } catch {
-      // If geolocation fails, zoom to destination anyway
-      setRouteCoords(null);
+      // Allow proceeding even if user location fails
     }
-  }, [getCoords, getUserLocation, fetchRoute]);
+  }, [getCoords, getUserLocation]);
 
-  // Stop navigation
+  // 5. Stop Navigation
   const handleStopNavigation = useCallback(() => {
     setNavigatingTo(null);
-    setRouteCoords(null);
     setRouteInfo(null);
+    setUserPos(null);
   }, []);
 
-  // Open in Google Maps for actual turn-by-turn
+  // 6. Open in Google Maps for actual turn-by-turn
   const openInGoogleMaps = useCallback(() => {
     if (!navigatingTo) return;
     const dest = getCoords(navigatingTo);
@@ -221,6 +241,234 @@ export default function NavigationMap({
     }
     window.open(url, '_blank');
   }, [navigatingTo, userPos, getCoords]);
+
+  // Helper to construct a Google Maps marker icon configuration
+  const makeGoogleIcon = (iconData) => {
+    if (!iconData || !iconData.url) return null;
+    return {
+      url: iconData.url,
+      size: new window.google.maps.Size(iconData.width, iconData.height),
+      scaledSize: new window.google.maps.Size(iconData.width, iconData.height),
+      anchor: new window.google.maps.Point(iconData.anchorX, iconData.anchorY),
+    };
+  };
+
+  // Helper to render popup React component inside InfoWindow
+  const setupInfoWindow = (marker, item) => {
+    let root = null;
+    const infoWindow = new window.google.maps.InfoWindow();
+    
+    marker.addListener('click', () => {
+      if (currentInfoWindowRef.current) {
+        currentInfoWindowRef.current.close();
+      }
+      currentInfoWindowRef.current = infoWindow;
+      
+      const container = document.createElement('div');
+      root = createRoot(container);
+      root.render(renderPopup(item, { onNavigate: () => {
+        infoWindow.close();
+        handleNavigate(item);
+      }}));
+      
+      infoWindow.setContent(container);
+      infoWindow.open(mapRef.current, marker);
+    });
+
+    infoWindow.addListener('closeclick', () => {
+      if (root) {
+        root.unmount();
+        root = null;
+      }
+    });
+  };
+
+  // 7. Render Markers, Circles, Route Polylines
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+
+    const map = mapRef.current;
+
+    // Clear previous markers
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+
+    // Clear previous circles
+    circlesRef.current.forEach(c => c.setMap(null));
+    circlesRef.current = [];
+
+    // Clear previous polylines & animation intervals
+    polylinesRef.current.forEach(p => p.setMap(null));
+    polylinesRef.current = [];
+    if (animationIntervalRef.current) {
+      clearInterval(animationIntervalRef.current);
+      animationIntervalRef.current = null;
+    }
+
+    if (navigatingTo) {
+      const destCoords = getCoords(navigatingTo);
+      if (!destCoords) return;
+
+      // Draw ONLY the destination marker (removes all other pins!)
+      const destIcon = makeGoogleIcon(getIcon(navigatingTo));
+      const destMarker = new window.google.maps.Marker({
+        position: { lat: destCoords[0], lng: destCoords[1] },
+        map: map,
+        icon: destIcon,
+        zIndex: 10,
+      });
+      setupInfoWindow(destMarker, navigatingTo);
+      markersRef.current.push(destMarker);
+
+      // Draw User marker, circle, and route if userPos is active
+      if (userPos) {
+        const userIcon = makeGoogleIcon(createUserIcon());
+        const userMarker = new window.google.maps.Marker({
+          position: { lat: userPos[0], lng: userPos[1] },
+          map: map,
+          icon: userIcon,
+          title: "Your Location",
+          zIndex: 10,
+        });
+        markersRef.current.push(userMarker);
+
+        const userCircle = new window.google.maps.Circle({
+          map: map,
+          center: { lat: userPos[0], lng: userPos[1] },
+          radius: 80,
+          fillColor: '#D4AF37',
+          fillOpacity: 0.12,
+          strokeColor: '#D4AF37',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+        });
+        circlesRef.current.push(userCircle);
+
+        // Fetch directions and draw custom styled polylines
+        setRouteLoading(true);
+        directionsServiceRef.current.route({
+          origin: { lat: userPos[0], lng: userPos[1] },
+          destination: { lat: destCoords[0], lng: destCoords[1] },
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+          setRouteLoading(false);
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            const leg = result.routes[0].legs[0];
+            setRouteInfo({
+              distance: (leg.distance.value / 1000).toFixed(1),
+              duration: Math.ceil(leg.duration.value / 60),
+            });
+
+            const path = result.routes[0].overview_path;
+
+            // Draw route shadow
+            const shadowLine = new window.google.maps.Polyline({
+              path: path,
+              strokeColor: 'rgba(8, 10, 15, 0.4)',
+              strokeOpacity: 1.0,
+              strokeWeight: 8,
+              map: map,
+            });
+            polylinesRef.current.push(shadowLine);
+
+            // Draw main route line
+            const mainLine = new window.google.maps.Polyline({
+              path: path,
+              strokeColor: '#C5A059',
+              strokeOpacity: 0.8,
+              strokeWeight: 5,
+              map: map,
+            });
+            polylinesRef.current.push(mainLine);
+
+            // Draw animated dash overlay
+            const dashLine = new window.google.maps.Polyline({
+              path: path,
+              strokeColor: '#E5C158',
+              strokeOpacity: 0.0,
+              strokeWeight: 3,
+              icons: [{
+                icon: {
+                  path: 'M 0,-1.5 0,1.5',
+                  strokeOpacity: 1.0,
+                  scale: 3,
+                  strokeColor: '#E5C158',
+                  strokeWeight: 3,
+                },
+                offset: '0px',
+                repeat: '20px',
+              }],
+              map: map,
+            });
+            polylinesRef.current.push(dashLine);
+
+            // Start dash animation
+            let offset = 0;
+            const intervalId = setInterval(() => {
+              offset = (offset + 1) % 20;
+              const icons = dashLine.get('icons');
+              if (icons && icons[0]) {
+                icons[0].offset = offset + 'px';
+                dashLine.set('icons', icons);
+              }
+            }, 50);
+            animationIntervalRef.current = intervalId;
+
+            // Fit map bounds to show full route path
+            const bounds = new window.google.maps.LatLngBounds();
+            path.forEach(latLng => bounds.extend(latLng));
+            map.fitBounds(bounds);
+          } else {
+            console.error('Route calculation failed: ', status);
+          }
+        });
+      } else {
+        // Fallback zoom on target only
+        map.setCenter({ lat: destCoords[0], lng: destCoords[1] });
+        map.setZoom(14);
+      }
+    } else {
+      // Not navigating: show ALL markers & fit bounds
+      const bounds = new window.google.maps.LatLngBounds();
+      let hasCoords = false;
+
+      mappable.forEach(item => {
+        const coords = getCoords(item);
+        const iconData = getIcon(item);
+
+        const marker = new window.google.maps.Marker({
+          position: { lat: coords[0], lng: coords[1] },
+          map: map,
+          icon: makeGoogleIcon(iconData),
+        });
+
+        setupInfoWindow(marker, item);
+        markersRef.current.push(marker);
+        
+        bounds.extend(new window.google.maps.LatLng(coords[0], coords[1]));
+        hasCoords = true;
+      });
+
+      if (hasCoords) {
+        map.fitBounds(bounds);
+      } else {
+        map.setCenter(ghanaCenter);
+        map.setZoom(7);
+      }
+    }
+  }, [mapLoaded, navigatingTo, userPos, items]);
+
+  // 8. Cleanup ref values on unmount
+  useEffect(() => {
+    return () => {
+      markersRef.current.forEach(m => m.setMap(null));
+      circlesRef.current.forEach(c => c.setMap(null));
+      polylinesRef.current.forEach(p => p.setMap(null));
+      if (animationIntervalRef.current) {
+        clearInterval(animationIntervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div>
@@ -294,7 +542,7 @@ export default function NavigationMap({
         </div>
       )}
 
-      {geoError && !routeCoords && navigatingTo && (
+      {geoError && !routeInfo && navigatingTo && (
         <div style={{
           background: 'var(--no-100)',
           border: '1px solid rgba(220,38,38,0.2)',
@@ -317,7 +565,7 @@ export default function NavigationMap({
 
       {/* Map container */}
       <div className="mechanic-map-wrap" style={{ height: navigatingTo ? 480 : 560, transition: 'height 0.3s ease' }}>
-        {loading ? (
+        {loading || !mapLoaded ? (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--slate-50)' }}>
             <div style={{ textAlign: 'center', color: 'var(--slate-500)' }}>
               <div className="spinner" style={{ marginBottom: 12 }} />
@@ -325,117 +573,7 @@ export default function NavigationMap({
             </div>
           </div>
         ) : (
-          <MapContainer
-            center={ghanaCenter}
-            zoom={7}
-            style={{ width: '100%', height: '100%' }}
-            ref={mapRef}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {!navigatingTo && <MapBoundsUpdater items={mappable} getCoords={getCoords} />}
-
-            {/* Destination markers */}
-            {mappable.map((item, idx) => (
-              <Marker
-                key={item._id || item.id || idx}
-                position={getCoords(item)}
-                icon={getIcon(item)}
-              >
-                <Popup>
-                  {renderPopup(item, { onNavigate: () => handleNavigate(item) })}
-                </Popup>
-              </Marker>
-            ))}
-
-            {/* User location marker */}
-            {userPos && navigatingTo && (
-              <>
-                <Marker position={userPos} icon={createUserIcon()}>
-                  <Popup>
-                    <div style={{ textAlign: 'center', padding: 4 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-900)' }}>Your Location</div>
-                    </div>
-                  </Popup>
-                </Marker>
-                <Circle
-                  center={userPos}
-                  radius={80}
-                  pathOptions={{
-                    color: '#2563EB',
-                    fillColor: '#2563EB',
-                    fillOpacity: 0.12,
-                    weight: 2,
-                  }}
-                />
-              </>
-            )}
-
-            {/* Route polyline */}
-            {routeCoords && routeCoords.length > 1 && (
-              <>
-                {/* Route shadow */}
-                <Polyline
-                  positions={routeCoords}
-                  pathOptions={{
-                    color: 'rgba(11,29,53,0.25)',
-                    weight: 8,
-                    lineCap: 'round',
-                    lineJoin: 'round',
-                  }}
-                />
-                {/* Main route line */}
-                <Polyline
-                  positions={routeCoords}
-                  pathOptions={{
-                    color: '#2563EB',
-                    weight: 5,
-                    lineCap: 'round',
-                    lineJoin: 'round',
-                  }}
-                />
-                {/* Animated direction dashes */}
-                <Polyline
-                  positions={routeCoords}
-                  pathOptions={{
-                    color: '#60A5FA',
-                    weight: 3,
-                    dashArray: '8 16',
-                    lineCap: 'round',
-                  }}
-                />
-                <RouteView
-                  routeCoords={routeCoords}
-                  userPos={userPos}
-                  destPos={getCoords(navigatingTo)}
-                />
-              </>
-            )}
-
-            {/* Route loading indicator overlay */}
-            {routeLoading && (
-              <div style={{
-                position: 'absolute',
-                top: 16, left: '50%', transform: 'translateX(-50%)',
-                zIndex: 1000,
-                background: 'var(--navy-900)',
-                color: '#fff',
-                padding: '8px 20px',
-                borderRadius: 20,
-                fontSize: 12,
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                boxShadow: 'var(--shadow-lg)',
-              }}>
-                <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
-                Calculating route…
-              </div>
-            )}
-          </MapContainer>
+          <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
         )}
       </div>
 
@@ -467,5 +605,3 @@ export default function NavigationMap({
     </div>
   );
 }
-
-export { createPinIcon };

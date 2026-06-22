@@ -106,8 +106,8 @@ export default function Checkout() {
           }}>
             <i className="bi bi-shield-check" style={{ fontSize: 40, color: 'var(--yes-600)' }}></i>
           </div>
-          <h2 style={{ marginBottom: 12, color: 'var(--navy-900)' }}>Payment Held in Escrow</h2>
-          <p style={{ color: 'var(--slate-600)', marginBottom: 32, maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.6 }}>
+          <h2 style={{ marginBottom: 12, color: 'var(--slate-900)' }}>Payment Held in Escrow</h2>
+          <p style={{ color: 'var(--slate-500)', marginBottom: 32, maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.6 }}>
             Your payment of <strong>GHS {total.toLocaleString()}</strong> has been securely held. 
             The funds will only be released to the dealer once you confirm receipt of your parts.
           </p>
@@ -184,17 +184,17 @@ export default function Checkout() {
           </div>
 
           <div>
-            <div style={{ background: '#fff', borderRadius: 16, border: '1px solid var(--slate-100)', padding: 24, position: 'sticky', top: 100, boxShadow: 'var(--shadow-sm)' }}>
-              <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--navy-900)', marginBottom: 20 }}>Order Summary</h4>
+            <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--slate-100)', padding: 24, position: 'sticky', top: 100, boxShadow: 'var(--shadow-sm)' }}>
+              <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--slate-900)', marginBottom: 20 }}>Order Summary</h4>
               
               <div style={{ maxHeight: 200, overflowY: 'auto', marginBottom: 20 }}>
                 {cart.map((item, idx) => (
                   <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 13 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, color: 'var(--navy-900)' }}>{item.name}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--slate-900)' }}>{item.name}</div>
                       <div style={{ fontSize: 11, color: 'var(--slate-400)' }}>Qty: {item.qty || 1}</div>
                     </div>
-                    <div style={{ fontWeight: 700, color: 'var(--navy-800)' }}>GHS {(item.price * (item.qty || 1)).toLocaleString()}</div>
+                    <div style={{ fontWeight: 700, color: 'var(--slate-800)' }}>GHS {(item.price * (item.qty || 1)).toLocaleString()}</div>
                   </div>
                 ))}
               </div>
@@ -209,12 +209,12 @@ export default function Checkout() {
                   <span style={{ fontWeight: 600 }}>GHS {deliveryFee.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
-                  <span style={{ fontWeight: 800, fontSize: 16, color: 'var(--navy-900)' }}>Total</span>
-                  <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 800, color: 'var(--gold-600)' }}>GHS {total.toLocaleString()}</span>
+                  <span style={{ fontWeight: 800, fontSize: 16, color: 'var(--slate-900)' }}>Total</span>
+                  <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 24, fontWeight: 800, color: 'var(--gold-400)' }}>GHS {total.toLocaleString()}</span>
                 </div>
               </div>
 
-              <div style={{ background: 'var(--navy-900)', borderRadius: 12, padding: 16, marginBottom: 20, color: '#fff' }}>
+              <div style={{ background: 'var(--navy-800)', borderRadius: 12, padding: 16, marginBottom: 20, color: '#fff' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   <i className="bi bi-shield-lock-fill" style={{ color: 'var(--gold-400)' }} />
                   <span style={{ fontSize: 13, fontWeight: 700 }}>Trust Escrow™</span>

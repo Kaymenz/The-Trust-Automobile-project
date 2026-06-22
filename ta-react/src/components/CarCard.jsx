@@ -11,19 +11,13 @@ export default function CarCard({ car, delay = 0 }) {
   const saved = isSaved(carId);
 
   // Handle API data format differences
-  const imageUrl = car.images?.[0] || null;
+  const imageUrl = car.images?.[0] || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&auto=format&fit=crop&q=60';
   const badge = car.condition || (car.isFeatured ? 'Featured' : null);
 
   return (
     <div className="car-card" style={{ animationDelay: `${delay}s` }} onClick={() => navigate(`/listing/${carId}`)}>
       <div className="car-card-img">
-        {imageUrl ? (
-          <img src={imageUrl} alt={`${car.make} ${car.model}`} className="car-card-img" />
-        ) : (
-          <div className="car-card-img-placeholder">
-            <svg viewBox="0 0 24 24"><path d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"/></svg>
-          </div>
-        )}
+        <img src={imageUrl} alt={`${car.make} ${car.model}`} className="car-card-img" />
         {badge && <span className={`card-badge ${badge === 'New' ? 'new' : ''}`}>{badge}</span>}
         <button className={`card-save ${saved ? 'saved' : ''}`} onClick={e => { e.stopPropagation(); toggleSave(carId).catch(() => showToast('Failed to save car. Please try again.', 'error')); }}>
           <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>

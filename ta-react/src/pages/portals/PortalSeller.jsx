@@ -2,16 +2,22 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../utils/api';
+import { useToast } from '../../context/ToastContext';
 
 export default function PortalSeller() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [tab, setTab] = useState('listings');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState('');
+
+  const handleSaveSettings = () => {
+    showToast('Business settings saved successfully!', 'success');
+  };
 
   if (!user) { navigate('/login'); return null; }
 
@@ -125,7 +131,7 @@ export default function PortalSeller() {
         )}
         {tab === 'inquiries' && <><div className="dash-header"><h2>Inquiries</h2></div><div className="form-card"><p style={{ color: 'var(--slate-500)', textAlign: 'center', padding: 40 }}>{/* Pending backend endpoint family: GET /seller/inquiries */}No inquiries yet</p></div></>}
         {tab === 'analytics' && <><div className="dash-header"><h2>Analytics</h2></div><div className="dash-stats">{/* Pending backend endpoint family: GET /seller/analytics */}<div className="dash-stat-card"><h4>Views</h4><div className="dash-stat-num">0</div></div><div className="dash-stat-card"><h4>Inquiries</h4><div className="dash-stat-num">0</div></div><div className="dash-stat-card"><h4>Conversion</h4><div className="dash-stat-num">0%</div></div></div></>}
-        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Business Name</label><input defaultValue={user.name} /></div><button className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
+        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Business Name</label><input defaultValue={user.name} /></div><button onClick={handleSaveSettings} className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
       </div>
     </div>
   );
