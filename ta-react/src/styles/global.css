@@ -696,3 +696,86 @@ footer{background:var(--navy-900);padding:56px 40px 32px}
 
 /* Skeleton card image — darker tint matches car silhouette */
 .skel-img { background-color: #141A24 !important; }
+
+/* ========== LIGHT / DARK THEME ========== */
+
+/* Button: theme toggle */
+.btn-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+  transition: all .15s var(--ease-out);
+  flex-shrink: 0;
+}
+.btn-theme-toggle:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.32);
+}
+
+/* Light mode override */
+html[data-theme="light"] {
+  --surface: #FFFFFF;
+  --surface-up: #F8FAFB;
+  --surface-down: #F0F2F5;
+  --slate-950: #F9FAFB;
+  --slate-900: #0B1220;
+  --slate-800: #1C2330;
+  --slate-700: #374151;
+  --slate-600: #4B5563;
+  --slate-500: #6B7280;
+  --slate-400: #9CA3AF;
+  --slate-300: #D1D5DB;
+  --slate-200: rgba(0,0,0,0.09);
+  --slate-100: rgba(0,0,0,0.05);
+  --slate-50: #F8FAFB;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.11), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.13), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-navy: 0 12px 40px rgba(0,0,0,0.10);
+  --shadow-focus: 0 0 0 3px rgba(212,175,55,0.20);
+}
+
+html[data-theme="light"] .form-group input,
+html[data-theme="light"] .form-group select,
+html[data-theme="light"] .form-group textarea,
+html[data-theme="light"] .filter-group select,
+html[data-theme="light"] .filter-group input,
+html[data-theme="light"] .sort-select {
+  border-color: rgba(0,0,0,0.14);
+  color: var(--slate-900);
+  background: #fff;
+}
+
+html[data-theme="light"] .ad-preview {
+  background: #F0F2F5;
+  border-color: rgba(0,0,0,0.08);
+}
+html[data-theme="light"] .upload-zone {
+  background: #F8FAFB;
+  border-color: rgba(0,0,0,0.14);
+}
+
+/* Dark mode explicit tokens */
+html[data-theme="dark"] {
+  --surface: #0E121A;
+  --surface-up: #141A24;
+  --surface-down: #080A0F;
+  --slate-900: #F3F4F6;
+  --slate-800: #E5E7EB;
+  --slate-700: #D1D5DB;
+  --slate-600: #9CA3AF;
+  --slate-500: #9CA3AF;
+  --slate-400: #6B7280;
+  --slate-300: #4B5563;
+  --slate-200: rgba(255,255,255,0.12);
+  --slate-100: rgba(255,255,255,0.08);
+  --slate-50: #080A0F;
+}
