@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - react
 
 jobs:
   deploy:
@@ -43,7 +42,6 @@ jobs:
       - name: Format Secrets for Cloud Run
         id: format_secrets
         run: |
-          # Read secrets list and format them as Cloud Run secrets
           SECRETS_LIST="${{ vars.GCP_SECRETS_LIST }}"
           FORMATTED_SECRETS=""
           IFS=',' read -ra ADDR <<< "$SECRETS_LIST"
@@ -65,4 +63,4 @@ jobs:
           env_vars: |
             NODE_ENV=production
           secrets: ${{ steps.format_secrets.outputs.formatted_secrets }}
-          flags: --allow-unauthenticated
+          flags: --allow-unauthenticated --service-account=ta-server-runner@traceguard-app-backend.iam.gserviceaccount.com
