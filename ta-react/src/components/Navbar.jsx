@@ -1,29 +1,50 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 function TaLogo() {
   return (
     <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      {/* Shield backdrop */}
       <path d="M20 3L34 8.5V20C34 27.5 27.8 33.5 20 36.5C12.2 33.5 6 27.5 6 20V8.5L20 3Z"
         fill="#0B1220" stroke="#D4AF37" strokeWidth="1" strokeOpacity="0.4"/>
-      {/* Car body */}
       <path d="M9 26.5L11 21.5L14 19H26L29 21.5L31 26.5H9Z" fill="#D4AF37"/>
-      {/* Windshield / roofline */}
       <path d="M14.5 19L16 15.5H24L25.5 19H14.5Z" fill="#D4AF37" opacity="0.65"/>
-      {/* Front wheel */}
       <circle cx="13.5" cy="26.5" r="3.2" fill="#0B1220" stroke="#D4AF37" strokeWidth="1"/>
       <circle cx="13.5" cy="26.5" r="1.4" fill="#D4AF37" opacity="0.55"/>
-      {/* Rear wheel */}
       <circle cx="26.5" cy="26.5" r="3.2" fill="#0B1220" stroke="#D4AF37" strokeWidth="1"/>
       <circle cx="26.5" cy="26.5" r="1.4" fill="#D4AF37" opacity="0.55"/>
     </svg>
   );
 }
 
+function SunIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  );
+}
+
 export default function Navbar({ activePage }) {
   const { user, logout } = useAuth();
+  const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -99,6 +120,14 @@ export default function Navbar({ activePage }) {
           ) : (
             <Link to="/login" className="btn-login">Sign In</Link>
           )}
+          <button
+            className="btn-theme-toggle"
+            onClick={toggle}
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+          >
+            {theme === 'light' ? <MoonIcon /> : <SunIcon />}
+          </button>
           <Link to="/post-ad" className="btn-post">+ Post an Ad</Link>
         </div>
         <button
