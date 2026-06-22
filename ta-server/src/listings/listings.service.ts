@@ -56,7 +56,6 @@ export class ListingsService {
       throw new NotFoundException('Listing not found');
     }
 
-    // Increment views
     await this.listingModel.findByIdAndUpdate(id, { $inc: { views: 1 } });
     
     return listing;
@@ -81,6 +80,22 @@ export class ListingsService {
 
     if (!listing) {
       throw new NotFoundException('Listing not found or you do not have permission');
+    }
+
+    return listing;
+  }
+
+  async featureListing(id: string): Promise<Listing> {
+    const listing = await this.listingModel
+      .findByIdAndUpdate(
+        id,
+        { isFeatured: true, featuredUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+        { new: true },
+      )
+      .exec();
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
     }
 
     return listing;
