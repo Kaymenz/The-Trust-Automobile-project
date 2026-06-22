@@ -25,47 +25,47 @@ export class ListingsController {
   constructor(private readonly listingsService: ListingsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all car listings with filters', description: 'Retrieve car listings with optional filtering by make, model, year, price range, fuel type, etc.' })
-  @ApiQuery({ name: 'make', required: false, description: 'Filter by car make' })
-  @ApiQuery({ name: 'model', required: false, description: 'Filter by car model' })
-  @ApiQuery({ name: 'minYear', required: false, description: 'Minimum year' })
-  @ApiQuery({ name: 'maxYear', required: false, description: 'Maximum year' })
-  @ApiQuery({ name: 'minPrice', required: false, description: 'Minimum price' })
-  @ApiQuery({ name: 'maxPrice', required: false, description: 'Maximum price' })
-  @ApiQuery({ name: 'fuelType', required: false, description: 'Filter by fuel type' })
-  @ApiQuery({ name: 'transmission', required: false, description: 'Filter by transmission type' })
-  @ApiQuery({ name: 'location', required: false, description: 'Filter by location' })
-  @ApiResponse({ status: 200, description: 'Listings retrieved successfully', type: [ListingResponseDto] })
+  @ApiOperation({ summary: 'Get all car listings with filters' })
+  @ApiQuery({ name: 'make', required: false })
+  @ApiQuery({ name: 'model', required: false })
+  @ApiQuery({ name: 'minYear', required: false })
+  @ApiQuery({ name: 'maxYear', required: false })
+  @ApiQuery({ name: 'minPrice', required: false })
+  @ApiQuery({ name: 'maxPrice', required: false })
+  @ApiQuery({ name: 'fuelType', required: false })
+  @ApiQuery({ name: 'transmission', required: false })
+  @ApiQuery({ name: 'location', required: false })
+  @ApiResponse({ status: 200, type: [ListingResponseDto] })
   findAll(@Query() query: any) {
     return this.listingsService.findAll(query);
   }
 
   @Get('makes')
-  @ApiOperation({ summary: 'Get all car makes', description: 'Retrieve a list of all available car makes in the system.' })
-  @ApiResponse({ status: 200, description: 'List of makes retrieved', type: [String] })
+  @ApiOperation({ summary: 'Get all car makes' })
+  @ApiResponse({ status: 200, type: [String] })
   getMakes() {
     return this.listingsService.getMakes();
   }
 
   @Get('models')
-  @ApiOperation({ summary: 'Get models for a specific make', description: 'Retrieve all models available for a specific car make.' })
-  @ApiQuery({ name: 'make', required: true, description: 'Car make to get models for' })
-  @ApiResponse({ status: 200, description: 'List of models retrieved', type: [String] })
-  @ApiResponse({ status: 400, description: 'Make parameter required', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Get models for a specific make' })
+  @ApiQuery({ name: 'make', required: true })
+  @ApiResponse({ status: 200, type: [String] })
+  @ApiResponse({ status: 400, type: ApiErrorResponse })
   getModels(@Query('make') make: string) {
     return this.listingsService.getModels(make);
   }
 
   @Get('featured')
-  @ApiOperation({ summary: 'Get featured listings', description: 'Retrieve all featured car listings.' })
-  @ApiResponse({ status: 200, description: 'Featured listings retrieved', type: [ListingResponseDto] })
+  @ApiOperation({ summary: 'Get featured listings' })
+  @ApiResponse({ status: 200, type: [ListingResponseDto] })
   getFeatured() {
     return this.listingsService.getFeatured();
   }
 
   @Get('stats')
-  @ApiOperation({ summary: 'Get listing statistics', description: 'Get count statistics for listings by status.' })
-  @ApiResponse({ status: 200, description: 'Statistics retrieved', type: ListingStatsDto })
+  @ApiOperation({ summary: 'Get listing statistics' })
+  @ApiResponse({ status: 200, type: ListingStatsDto })
   getStats() {
     return this.listingsService.getStats();
   }
@@ -73,17 +73,17 @@ export class ListingsController {
   @Get('my/listings')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user listings', description: 'Retrieve all listings created by the authenticated user.' })
-  @ApiResponse({ status: 200, description: 'User listings retrieved', type: [ListingResponseDto] })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Get current user listings' })
+  @ApiResponse({ status: 200, type: [ListingResponseDto] })
+  @ApiResponse({ status: 401, type: ApiErrorResponse })
   findMyListings(@Request() req: any) {
     return this.listingsService.findBySeller(req.user.userId);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get single listing by ID', description: 'Retrieve a specific car listing by its ID.' })
-  @ApiResponse({ status: 200, description: 'Listing retrieved successfully', type: ListingResponseDto })
-  @ApiResponse({ status: 404, description: 'Listing not found', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Get single listing by ID' })
+  @ApiResponse({ status: 200, type: ListingResponseDto })
+  @ApiResponse({ status: 404, type: ApiErrorResponse })
   findOne(@Param('id') id: string) {
     return this.listingsService.findById(id);
   }
@@ -91,10 +91,9 @@ export class ListingsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create new listing', description: 'Create a new car listing. Requires authentication.' })
-  @ApiResponse({ status: 201, description: 'Listing created successfully', type: ListingResponseDto })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  @ApiResponse({ status: 400, description: 'Validation error', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Create new listing' })
+  @ApiResponse({ status: 201, type: ListingResponseDto })
+  @ApiResponse({ status: 401, type: ApiErrorResponse })
   create(@Body() createListingDto: any, @Request() req: any) {
     return this.listingsService.create(req.user.userId, createListingDto);
   }
@@ -102,11 +101,10 @@ export class ListingsController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update listing', description: 'Update a car listing. Only the owner or admin can update.' })
-  @ApiResponse({ status: 200, description: 'Listing updated successfully', type: ListingResponseDto })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  @ApiResponse({ status: 403, description: 'Forbidden - Not the owner', type: ApiErrorResponse })
-  @ApiResponse({ status: 404, description: 'Listing not found', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Update listing' })
+  @ApiResponse({ status: 200, type: ListingResponseDto })
+  @ApiResponse({ status: 401, type: ApiErrorResponse })
+  @ApiResponse({ status: 404, type: ApiErrorResponse })
   update(@Param('id') id: string, @Body() updateListingDto: any, @Request() req: any) {
     return this.listingsService.update(id, req.user.userId, updateListingDto);
   }
@@ -114,11 +112,10 @@ export class ListingsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete listing', description: 'Delete a car listing. Only the owner or admin can delete.' })
-  @ApiResponse({ status: 204, description: 'Listing deleted successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  @ApiResponse({ status: 403, description: 'Forbidden - Not the owner', type: ApiErrorResponse })
-  @ApiResponse({ status: 404, description: 'Listing not found', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Delete listing' })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({ status: 401, type: ApiErrorResponse })
+  @ApiResponse({ status: 404, type: ApiErrorResponse })
   remove(@Param('id') id: string, @Request() req: any) {
     return this.listingsService.remove(id, req.user.userId);
   }
@@ -127,12 +124,12 @@ export class ListingsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Feature a listing (Admin only)', description: 'Mark a listing as featured. Admin access only.' })
-  @ApiResponse({ status: 200, description: 'Listing featured successfully', type: ListingResponseDto })
-  @ApiResponse({ status: 401, description: 'Unauthorized', type: ApiErrorResponse })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin access required', type: ApiErrorResponse })
-  @ApiResponse({ status: 404, description: 'Listing not found', type: ApiErrorResponse })
+  @ApiOperation({ summary: 'Feature a listing (Admin only)' })
+  @ApiResponse({ status: 200, type: ListingResponseDto })
+  @ApiResponse({ status: 401, type: ApiErrorResponse })
+  @ApiResponse({ status: 403, type: ApiErrorResponse })
+  @ApiResponse({ status: 404, type: ApiErrorResponse })
   featureListing(@Param('id') id: string) {
-    return this.listingsService.update(id, '', { isFeatured: true, featuredUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) });
+    return this.listingsService.featureListing(id);
   }
 }
