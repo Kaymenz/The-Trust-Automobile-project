@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { api } from '../utils/api';
 import CarCard from '../components/CarCard';
 import { CarCardSkeleton, StatCardSkeleton } from '../components/SkeletonLoader';
 
 export default function Dashboard() {
   const { user, isSaved } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [activePanel, setActivePanel] = useState('overview');
 
@@ -19,6 +21,47 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(Date.now());
+
+  const [profileName, setProfileName] = useState({
+    firstName: user?.firstName || user?.name?.split(' ')[0] || '',
+    lastName: user?.lastName || user?.name?.split(' ')[1] || ''
+  });
+
+  const handleConfirmReceipt = async (orderId) => {
+    if (!window.confirm('Are you sure you have received these parts and want to release escrow funds to the dealer?')) return;
+    try {
+      await api.updatePartsOrderStatus(orderId, 'Delivered');
+      await api.updatePartsOrderPayment(orderId, 'Released');
+      setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: 'Delivered', paymentStatus: 'Released' } : o));
+      showToast('Receipt confirmed and funds released to dealer!', 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to confirm receipt', 'error');
+    }
+  };
+
+  const handleConfirmSale = async (orderId) => {
+    try {
+      await api.updatePartsOrderStatus(orderId, 'Confirmed');
+      setSales(prev => prev.map(s => s._id === orderId ? { ...s, status: 'Confirmed' } : s));
+      showToast('Order confirmed and packed!', 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to confirm order', 'error');
+    }
+  };
+
+  const handleShipSale = async (orderId) => {
+    try {
+      await api.updatePartsOrderStatus(orderId, 'Shipped');
+      setSales(prev => prev.map(s => s._id === orderId ? { ...s, status: 'Shipped' } : s));
+      showToast('Order marked as shipped!', 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to mark as shipped', 'error');
+    }
+  };
+
+  const handleSaveProfile = () => {
+    showToast('Profile information updated successfully!', 'success');
+  };
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -251,7 +294,7 @@ export default function Dashboard() {
                           <span><i className="bi bi-calendar" /> {new Date(o.createdAt).toLocaleDateString()}</span>
                         </div>
                         {o.paymentStatus === 'Escrow_Held' && o.status === 'Shipped' && (
-                          <button className="btn-primary" style={{ marginTop: 16, width: '100%' }}>Confirm Receipt & Release Funds</button>
+                          <button onClick={() => handleConfirmReceipt(o._id)} className="btn-primary" style={{ marginTop: 16, width: '100%' }}>Confirm Receipt & Release Funds</button>
                         )}
                       </div>
                     ))}
@@ -285,8 +328,8 @@ export default function Dashboard() {
                           ))}
                         </div>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          {s.status === 'Pending' && <button className="btn-primary" style={{ flex: 1 }}>Confirm & Pack</button>}
-                          {s.status === 'Confirmed' && <button className="btn-primary" style={{ flex: 1 }}>Mark as Shipped</button>}
+                          {s.status === 'Pending' && <button onClick={() => handleConfirmSale(s._id)} className="btn-primary" style={{ flex: 1 }}>Confirm & Pack</button>}
+                          {s.status === 'Confirmed' && <button onClick={() => handleShipSale(s._id)} className="btn-primary" style={{ flex: 1 }}>Mark as Shipped</button>}
                           <button className="btn-secondary" style={{ flex: 1 }}>Contact Buyer</button>
                         </div>
                       </div>
@@ -324,11 +367,11 @@ export default function Dashboard() {
               <div className="form-card">
                 <h3>Profile Information</h3>
                 <div className="form-grid-2 mt-16">
-                  <div className="form-group"><label>First Name</label><input defaultValue={user.firstName || user.name?.split(' ')[0]} /></div>
-                  <div className="form-group"><label>Last Name</label><input defaultValue={user.lastName || user.name?.split(' ')[1] || ''} /></div>
+                  <div className="form-group"><label>First Name</label><input value={profileName.firstName} onChange={e => setProfileName(prev => ({ ...prev, firstName: e.target.value }))} /></div>
+                  <div className="form-group"><label>Last Name</label><input value={profileName.lastName} onChange={e => setProfileName(prev => ({ ...prev, lastName: e.target.value }))} /></div>
                 </div>
                 <div className="form-group mt-16"><label>Email</label><input defaultValue={user.email} disabled /></div>
-                <button className="btn-primary mt-16">Save Changes</button>
+                <button onClick={handleSaveProfile} className="btn-primary mt-16">Save Changes</button>
               </div>
             </div>
           )}

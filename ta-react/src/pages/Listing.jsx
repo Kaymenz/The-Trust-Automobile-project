@@ -269,7 +269,7 @@ export default function Listing() {
               {car.images?.[0] ? (
                 <img src={car.images[0]} alt={`${car.make} ${car.model}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <svg viewBox="0 0 24 24"><path d="M5 11L6.5 6.5H17.5L19 11M17.5 16C16.67 16 16 15.33 16 14.5S16.67 13 17.5 13 19 13.67 19 14.5 18.33 16 17.5 16M6.5 16C5.67 16 5 15.33 5 14.5S5.67 13 6.5 13 8 13.67 8 14.5 7.33 16 6.5 16M18.92 6C18.72 5.42 18.16 5 17.5 5H6.5C5.84 5 5.28 5.42 5.08 6L3 12V20H5V21H7V20H17V21H19V20H21V12L18.92 6Z"/></svg>
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=60" alt={`${car.make} ${car.model}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
               {car.condition && <span className="gallery-badge">{car.condition}</span>}
               <button className={`gallery-save ${saved ? 'saved' : ''}`} onClick={() => toggleSave(carId).catch(() => showToast('Failed to save car. Please try again.', 'error'))}>

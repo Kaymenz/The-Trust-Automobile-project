@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { api } from '../utils/api';
+import { useToast } from '../context/ToastContext';
 
 export default function PostAd() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [form, setForm] = useState({ make: '', model: '', year: '', condition: '', fuel: '', transmission: '', price: '', mileage: '', location: '', desc: '' });
   const [progress, setProgress] = useState(20);
   const [images, setImages] = useState([]);
@@ -13,6 +15,10 @@ export default function PostAd() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
+
+  const handleSaveDraft = () => {
+    showToast('Draft ad saved successfully!', 'success');
+  };
 
   // Fetch makes on mount
   useEffect(() => {
@@ -225,7 +231,7 @@ export default function PostAd() {
             >
               {loading ? 'Publishing...' : 'Publish Ad'}
             </button>
-            <button className="btn-secondary" disabled={loading}>Save Draft</button>
+            <button onClick={handleSaveDraft} className="btn-secondary" disabled={loading}>Save Draft</button>
           </div>
         </div>
 

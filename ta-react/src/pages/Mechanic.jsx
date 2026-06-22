@@ -26,7 +26,7 @@ function MechanicBookingModal({ mechanic, onClose, onSuccess }) {
     setError('');
     try {
       await api.requestService({
-        mechanicId: mechanic._id,
+        mechanicId: mechanic._id || mechanic.id,
         vehicleDetails,
         preferredDate,
         preferredTime,
@@ -47,7 +47,7 @@ function MechanicBookingModal({ mechanic, onClose, onSuccess }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: 18, color: 'var(--navy-900)' }}>Book Service Appointment</h3>
+          <h3 style={{ margin: 0, fontSize: 18, color: 'var(--slate-900)' }}>Book Service Appointment</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--slate-500)' }}>✕</button>
         </div>
 

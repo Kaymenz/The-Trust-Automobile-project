@@ -1,26 +1,27 @@
 :root {
-  /* Navy */
-  --navy-950:#030A14; --navy-900:#0B1D35; --navy-800:#122B4E; --navy-700:#1A3A6B;
-  --navy-600:#224A8E; --navy-500:#2C5DB0; --navy-400:#4A7AC9; --navy-300:#78A0DF;
-  --navy-200:#A8C4ED; --navy-100:#D4E3F7; --navy-50:#EDF3FC;
+  /* Navy -> Mapped to Deep Obsidian & Gold Dark theme colors */
+  --navy-950:#050608; --navy-900:#080A0F; --navy-800:#0E121A; --navy-700:#141A24;
+  --navy-600:#1C2330; --navy-500:#C5A059; --navy-400:#E5C158; --navy-300:#E5E7EB;
+  --navy-200:#F3F4F6; --navy-100:rgba(255, 255, 255, 0.08); --navy-50:rgba(255, 255, 255, 0.04);
 
-  /* Gold */
-  --gold-950:#3D2800; --gold-900:#6B4600; --gold-800:#946200; --gold-700:#B87A10;
-  --gold-600:#D4911C; --gold-500:#E8A828; --gold-400:#F5C05A; --gold-300:#FFD88A;
-  --gold-200:#FFEAB8; --gold-100:#FFF4D9; --gold-50:#FFFBF0;
+  /* Gold -> Mapped to Champagne Gold accent palette */
+  --gold-950:#141008; --gold-900:#282010; --gold-800:#3D3018; --gold-700:#C5A059;
+  --gold-600:#C5A059; --gold-500:#D4AF37; --gold-400:#E5C158; --gold-300:#F3E5AB;
+  --gold-200:#F9E7B9; --gold-100:#FEF9E7; --gold-50:#FFFDF9;
 
-  /* Slate */
-  --slate-950:#0F172A; --slate-900:#1E293B; --slate-800:#334155; --slate-700:#475569;
-  --slate-600:#64748B; --slate-500:#94A3B8; --slate-400:#B8C5D6; --slate-300:#D0DAE8;
-  --slate-200:#E2E8F0; --slate-100:#EFF2F7; --slate-50:#F7F9FC;
+  /* Slate -> Mapped to Pearl White/Silver and borders for Dark theme */
+  --slate-950:#F9FAFB; --slate-900:#F3F4F6; --slate-800:#E5E7EB; --slate-700:#D1D5DB;
+  --slate-600:#9CA3AF; --slate-500:#9CA3AF; --slate-400:#6B7280; --slate-300:#4B5563;
+  --slate-200:rgba(255, 255, 255, 0.12); --slate-100:rgba(255, 255, 255, 0.08); --slate-50:#080A0F;
 
-  /* Semantic */
-  --ok-600:#15803D; --ok-500:#22C55E; --ok-100:#DCFCE7;
+  /* Semantic & Success */
+  --ok-600:#16A34A; --ok-500:#22C55E; --ok-100:#DCFCE7;
+  --yes-100:#DCFCE7; --yes-300:#86EFAC; --yes-500:#22C55E; --yes-600:#16A34A; --yes-700:#15803D;
   --no-600:#DC2626; --no-500:#EF4444; --no-100:#FEE2E2;
   --warn-500:#F59E0B;
 
   /* Surfaces */
-  --surface:#FFFFFF; --surface-up:#FAFBFC; --surface-down:#F0F2F5;
+  --surface:#0E121A; --surface-up:#141A24; --surface-down:#080A0F;
 
   /* Typography */
   --font:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;

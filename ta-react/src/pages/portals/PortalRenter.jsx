@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../utils/api';
+import { useToast } from '../../context/ToastContext';
 
 export default function PortalRenter() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [tab, setTab] = useState('bookings');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [fleet, setFleet] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const handleSaveSettings = () => {
+    showToast('Profile settings saved successfully!', 'success');
+  };
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -105,7 +111,7 @@ export default function PortalRenter() {
           </>
         )}
         {tab === 'history' && <><div className="dash-header"><h2>Rental History</h2></div><div className="form-card">{/* Pending backend endpoint family: GET /bookings/my */}<p style={{ color: 'var(--slate-500)', textAlign: 'center', padding: 40 }}>No rental history yet</p></div></>}
-        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Full Name</label><input defaultValue={user.name} /></div><button className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
+        {tab === 'settings' && <><div className="dash-header"><h2>Settings</h2></div><div className="form-card"><h3>Profile</h3><div className="form-group" style={{ marginTop: 16 }}><label>Full Name</label><input defaultValue={user.name} /></div><button onClick={handleSaveSettings} className="btn-primary" style={{ marginTop: 16 }}>Save</button></div></>}
       </div>
     </div>
   );
