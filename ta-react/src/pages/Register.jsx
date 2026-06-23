@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import goldenLamboLogo from '../assets/golden_lambo_logo.png';
 
 const ROLES = [
   { id: 'buyer', label: 'Car Buyer', icon: 'bi-car-front-fill', desc: 'Browse and buy verified cars' },
@@ -95,8 +96,14 @@ export default function Register() {
       <div className="auth-side">
         <div className="side-inner">
           <Link to="/" className="side-logo">
-            <div className="lm">TA</div>
-            <div className="lt">Trust Automobile<small>Verified Marketplace</small></div>
+            <div className="lm">
+              <img
+                src={goldenLamboLogo}
+                alt="Trust Autopilot Logo"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              />
+            </div>
+            <div className="lt">Trust Autopilot<small>Verified Marketplace</small></div>
           </Link>
           <div className="side-hero">
             <h2 className="side-hero-title">Create Your Account</h2>
@@ -105,7 +112,7 @@ export default function Register() {
             </p>
           </div>
         </div>
-        <div className="side-footer">© 2026 Trust Automobile Ghana</div>
+        <div className="side-footer">© 2026 Trust Autopilot Ghana</div>
       </div>
 
       <div className="auth-form-wrap">
@@ -116,7 +123,7 @@ export default function Register() {
           {step === 1 && (
             <>
               <h2>Choose Your Path</h2>
-              <p className="auth-sub">Select what you want to do on Trust Automobile</p>
+              <p className="auth-sub">Select what you want to do on Trust Autopilot</p>
               {error && <p className="auth-error">{error}</p>}
               <div className="path-grid">
                 {ROLES.map(r => (

@@ -1,4 +1,4 @@
-// API Service for Trust Automobile
+// API Service for Trust Autopilot
 // Integrates with NestJS backend
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1').replace(/\/$/, '');
