@@ -220,8 +220,8 @@ export default function Admin() {
             <div className="dash-header"><h2>Platform Settings</h2></div>
             <div className="form-card">
               <h3>General Settings</h3>
-              <div className="form-group mt-16"><label>Platform Name</label><input defaultValue="Trust Automobile Ghana" /></div>
-              <div className="form-group mt-16"><label>Support Email</label><input defaultValue="support@trustautomobile.com" /></div>
+              <div className="form-group mt-16"><label>Platform Name</label><input defaultValue="Trust Autopilot Ghana" /></div>
+              <div className="form-group mt-16"><label>Support Email</label><input defaultValue="support@trustautopilot.com" /></div>
               <button className="btn-primary mt-16">Save Settings</button>
             </div>
           </>

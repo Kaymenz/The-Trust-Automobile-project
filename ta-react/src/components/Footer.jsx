@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import goldenLamboLogo from '../assets/golden_lambo_logo.png';
 
 export default function Footer() {
   return (
@@ -6,9 +7,20 @@ export default function Footer() {
       <div className="footer-top">
         <div className="footer-brand">
           <Link to="/" className="nav-logo">
-            <div className="nav-logo-icon"><span>TA</span></div>
+            <div className="nav-logo-icon">
+              <img
+                src={goldenLamboLogo}
+                alt="Trust Autopilot Logo"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  display: 'block'
+                }}
+              />
+            </div>
             <div className="nav-logo-text-wrap">
-              <span className="nav-logo-name">Trust Automobile</span>
+              <span className="nav-logo-name">Trust Autopilot</span>
               <span className="nav-logo-sub">Verified Marketplace</span>
             </div>
           </Link>
@@ -28,16 +40,18 @@ export default function Footer() {
           <li><Link to="/dashboard">My Dashboard</Link></li>
         </ul></div>
         <div className="footer-col"><h4>Company</h4><ul>
-          <li><a href="#">About TA</a></li>
+          <li><a href="#">About Trust Autopilot</a></li>
           <li><a href="#">Contact Us</a></li>
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Use</a></li>
         </ul></div>
       </div>
       <div className="footer-bottom">
-        <p className="footer-copy">© 2026 <span>Trust Automobile Ghana</span>. All rights reserved.</p>
+        <p className="footer-copy">© 2026 <span>Trust Autopilot Ghana</span>. All rights reserved.</p>
         <p className="footer-copy">Built with ♥ for Ghana</p>
       </div>
     </footer>
   );
 }
+
+

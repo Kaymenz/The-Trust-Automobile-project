@@ -336,9 +336,9 @@ export default function Listing() {
           <div className="seller-card">
             <h4>Seller Information</h4>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #1a4b8c, #e8a020)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700 }}>TA</div>
+              <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #1a4b8c, #e8a020)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700 }}>TP</div>
               <div>
-                <div style={{ fontWeight: 600, color: 'var(--navy-900)' }}>Trust Automobile</div>
+                <div style={{ fontWeight: 600, color: 'var(--navy-900)' }}>Trust Autopilot</div>
                 <div style={{ fontSize: 12, color: 'var(--slate-500)' }}>Verified Dealer</div>
               </div>
             </div>

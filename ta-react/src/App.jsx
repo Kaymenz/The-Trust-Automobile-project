@@ -5,6 +5,7 @@ import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LamborghiniIntro from './components/LamborghiniIntro';
+import SearchModal from './components/SearchModal';
 
 import Home from './pages/Home';
 import Search from './pages/Search';
@@ -118,6 +119,7 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
+            <SearchModal />
             <AppRoutes />
           </ToastProvider>
         </AuthProvider>

@@ -47,9 +47,9 @@ export default function Sell() {
           <p className="hero-sub">
             Reach thousands of verified buyers across Ghana. Post your ad for free and sell with confidence.
           </p>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="sell-hero-actions">
             <Link to="/post-ad" className="btn-primary"><i className="bi bi-plus-circle"></i> Post Free Ad</Link>
-            <Link to="/search" className="btn-secondary" style={{ borderColor: '#8FA3BD', color: '#8FA3BD' }}>Browse Cars</Link>
+            <Link to="/search" className="btn-secondary">Browse Cars</Link>
           </div>
         </div>
       </section>
@@ -80,24 +80,27 @@ export default function Sell() {
         </div>
       </section>
 
-      <section className="section" style={{ background: '#fff' }}>
+      <section className="section benefits-section">
         <div className="section-header">
           <div>
             <div className="section-title">Seller <span>Benefits</span></div>
+            <div className="section-subtitle">Why choose Trust Autopilot to sell your vehicle</div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 800 }}>
+        <div className="benefits-grid">
           {[
             { icon: 'bi-eye-fill', title: 'Maximum Visibility', desc: `${stats.total?.toLocaleString() || 0}+ active marketplace listings and growing buyer traffic` },
             { icon: 'bi-shield-check', title: 'Verified Badge', desc: 'Stand out with our trust verification seal' },
             { icon: 'bi-graph-up', title: 'Analytics', desc: `${makes.length || 0} makes currently represented across live inventory` },
             { icon: 'bi-chat-dots', title: 'Direct Messaging', desc: 'Communicate with buyers through our secure platform' },
           ].map(b => (
-            <div key={b.title} style={{ display: 'flex', gap: 14, padding: 20, background: '#F4F7FB', borderRadius: 12 }}>
-              <i className={b.icon} style={{ fontSize: 24, color: '#1A4B8C' }}></i>
-              <div>
-                <div style={{ fontWeight: 600, color: '#0B1E3D', marginBottom: 4 }}>{b.title}</div>
-                <div style={{ fontSize: 13, color: '#8FA3BD' }}>{b.desc}</div>
+            <div key={b.title} className="benefit-card">
+              <div className="benefit-icon-wrapper">
+                <i className={b.icon}></i>
+              </div>
+              <div className="benefit-info">
+                <h3 className="benefit-card-title">{b.title}</h3>
+                <p className="benefit-card-desc">{b.desc}</p>
               </div>
             </div>
           ))}
@@ -119,17 +122,28 @@ export default function Sell() {
           }
         </div>
         {!loading && recentListings.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#8FA3BD' }}>
-            <p style={{ fontSize: 16, fontWeight: 600 }}>No live listings yet</p>
-            <p style={{ fontSize: 14 }}>Seed the server data or post the first verified car.</p>
+          <div className="sell-empty-state">
+            <div className="empty-icon-wrap">
+              <i className="bi bi-car-front"></i>
+            </div>
+            <h3>No Live Listings Yet</h3>
+            <p>Seed the server data or post the first verified car.</p>
+            <Link to="/post-ad" className="btn-primary"><i className="bi bi-plus-circle"></i> Post Your Car</Link>
           </div>
         )}
       </section>
 
-      <section className="section" style={{ background: '#0B1E3D', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Ready to Sell?</h2>
-        <p style={{ color: '#8FA3BD', fontSize: 16, marginBottom: 28 }}>Post your ad in minutes — it's completely free.</p>
-        <Link to="/post-ad" className="btn-primary">Post Your Ad Now</Link>
+      <section className="section sell-cta-section">
+        <div className="sell-cta-container">
+          <div className="sell-cta-content">
+            <h2>Ready to Sell?</h2>
+            <p>Post your ad in minutes — it's completely free, secure, and verified.</p>
+            <div className="sell-cta-actions">
+              <Link to="/post-ad" className="btn-primary"><i className="bi bi-plus-circle"></i> Post Your Ad Now</Link>
+              <Link to="/education" className="btn-secondary-white"><i className="bi bi-info-circle"></i> Seller Guidelines</Link>
+            </div>
+          </div>
+        </div>
       </section>
     </Layout>
   );

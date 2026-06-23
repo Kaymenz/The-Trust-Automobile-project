@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import goldenLamboLogo from '../assets/golden_lambo_logo.png';
 
 export default function Login() {
   const { login, loading } = useAuth();
@@ -29,8 +30,14 @@ export default function Login() {
       <div className="auth-side">
         <div className="side-inner">
           <Link to="/" className="side-logo">
-            <div className="lm">TA</div>
-            <div className="lt">Trust Automobile<small>Verified Marketplace</small></div>
+            <div className="lm">
+              <img
+                src={goldenLamboLogo}
+                alt="Trust Autopilot Logo"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              />
+            </div>
+            <div className="lt">Trust Autopilot<small>Verified Marketplace</small></div>
           </Link>
           <div className="side-hero">
             <h2 className="side-hero-title">Welcome Back</h2>
@@ -39,7 +46,7 @@ export default function Login() {
             </p>
           </div>
         </div>
-        <div className="side-footer">© 2026 Trust Automobile Ghana</div>
+        <div className="side-footer">© 2026 Trust Autopilot Ghana</div>
       </div>
 
       <div className="auth-form-wrap">

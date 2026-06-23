@@ -2,21 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import goldenLamboLogo from '../assets/golden_lambo_logo.png';
 
 function TaLogo() {
   return (
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M20 3L34 8.5V20C34 27.5 27.8 33.5 20 36.5C12.2 33.5 6 27.5 6 20V8.5L20 3Z"
-        fill="#0B1220" stroke="#D4AF37" strokeWidth="1" strokeOpacity="0.4"/>
-      <path d="M9 26.5L11 21.5L14 19H26L29 21.5L31 26.5H9Z" fill="#D4AF37"/>
-      <path d="M14.5 19L16 15.5H24L25.5 19H14.5Z" fill="#D4AF37" opacity="0.65"/>
-      <circle cx="13.5" cy="26.5" r="3.2" fill="#0B1220" stroke="#D4AF37" strokeWidth="1"/>
-      <circle cx="13.5" cy="26.5" r="1.4" fill="#D4AF37" opacity="0.55"/>
-      <circle cx="26.5" cy="26.5" r="3.2" fill="#0B1220" stroke="#D4AF37" strokeWidth="1"/>
-      <circle cx="26.5" cy="26.5" r="1.4" fill="#D4AF37" opacity="0.55"/>
-    </svg>
+    <img
+      src={goldenLamboLogo}
+      alt="Trust Autopilot Logo"
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+        display: 'block'
+      }}
+    />
   );
 }
+
 
 function SunIcon() {
   return (
@@ -81,7 +83,7 @@ export default function Navbar({ activePage }) {
       <Link to="/" className="nav-logo">
         <div className="nav-logo-icon"><TaLogo /></div>
         <div className="nav-logo-text-wrap">
-          <span className="nav-logo-name">Trust Automobile</span>
+          <span className="nav-logo-name">Trust Autopilot</span>
           <span className="nav-logo-sub">Verified Marketplace</span>
         </div>
       </Link>
